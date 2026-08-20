@@ -23,12 +23,8 @@ const badges = ["5 free tools", "100% private", "No file limits", "No sign-up"];
 export default function Home() {
   return (
     <>
-      <section className="relative overflow-hidden">
-        <div
-          className="pointer-events-none absolute left-1/2 top-[-10%] h-[420px] w-[720px] -translate-x-1/2 rounded-full bg-accent/10 blur-[120px]"
-          aria-hidden
-        />
-        <Container className="relative flex flex-col items-center gap-8 py-24 text-center sm:py-32">
+      <section>
+        <Container className="flex flex-col items-center gap-8 py-24 text-center sm:py-32">
           <div className="flex flex-wrap items-center justify-center gap-2">
             {badges.map((badge) => (
               <span
