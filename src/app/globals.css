@@ -1,0 +1,57 @@
+@import "tailwindcss";
+
+:root {
+  --color-bg: #08090b;
+  --color-card: #111318;
+  --color-card-border: #1e2128;
+  --color-foreground: #ffffff;
+  --color-secondary: #a7abb4;
+  --color-accent: #a8ff2a;
+  --color-accent-foreground: #08090b;
+  --color-teal: #2ee6c8;
+}
+
+@theme inline {
+  --color-bg: var(--color-bg);
+  --color-card: var(--color-card);
+  --color-card-border: var(--color-card-border);
+  --color-foreground: var(--color-foreground);
+  --color-secondary: var(--color-secondary);
+  --color-accent: var(--color-accent);
+  --color-accent-foreground: var(--color-accent-foreground);
+  --color-teal: var(--color-teal);
+  --font-sans: var(--font-inter);
+  --font-display: var(--font-geist);
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-foreground);
+}
+
+::selection {
+  background: var(--color-accent);
+  color: var(--color-accent-foreground);
+}
+
+.gradient-headline {
+  background: linear-gradient(90deg, var(--color-accent) 0%, var(--color-teal) 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.5s ease-out both;
+}
