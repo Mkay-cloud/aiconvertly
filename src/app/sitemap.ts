@@ -1,11 +1,10 @@
 import type { MetadataRoute } from "next";
 import { tools } from "@/lib/tools";
-
-const siteUrl = "https://aiconvertly.com";
+import { SITE_URL } from "@/lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const toolRoutes: MetadataRoute.Sitemap = tools.map((tool) => ({
-    url: `${siteUrl}/tools/${tool.slug}`,
+    url: `${SITE_URL}/tools/${tool.slug}`,
     lastModified: new Date(),
     changeFrequency: "monthly",
     priority: 0.8,
@@ -13,7 +12,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   return [
     {
-      url: siteUrl,
+      url: SITE_URL,
       lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 1,
