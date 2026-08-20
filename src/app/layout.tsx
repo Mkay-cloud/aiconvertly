@@ -3,6 +3,7 @@ import { Geist, Inter } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { SITE_URL } from "@/lib/site";
 
 const geist = Geist({
   variable: "--font-geist",
@@ -14,10 +15,8 @@ const inter = Inter({
   subsets: ["latin"],
 });
 
-const siteUrl = "https://aiconvertly.com";
-
 export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl),
+  metadataBase: new URL(SITE_URL),
   title: {
     default: "AI convertly — Free PDF & image tools, right in your browser",
     template: "%s | AI convertly",
@@ -39,7 +38,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     type: "website",
-    url: siteUrl,
+    url: SITE_URL,
     siteName: "AI convertly",
     title: "AI convertly — Free PDF & image tools, right in your browser",
     description:
