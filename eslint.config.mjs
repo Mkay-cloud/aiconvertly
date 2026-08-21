@@ -14,6 +14,7 @@ const eslintConfig = defineConfig([
     "next-env.d.ts",
     // Generated/vendored assets copied from node_modules, not source we own.
     "public/*.mjs",
+    "public/ffmpeg/**",
   ]),
 ]);
 

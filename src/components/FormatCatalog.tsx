@@ -14,8 +14,22 @@ const imageToolSlugs = [
   "image-compressor",
   "remove-exif-data",
 ];
+const videoToolSlugs = [
+  "mp4-to-mp3",
+  "video-converter",
+  "video-to-gif",
+  "trim-video-audio",
+  "compress-video",
+  "remove-audio-from-video",
+  "merge-videos",
+  "change-video-speed",
+  "video-resolution-converter",
+];
+const audioToolSlugs = ["audio-converter", "trim-video-audio", "merge-audio"];
 
 const imageFormatBadges = [...imageFormatList.map((f) => f.label), "HEIC"];
+const videoFormatBadges = ["MP4", "WebM", "MOV", "MKV"];
+const audioFormatBadges = ["MP3", "WAV", "OGG"];
 
 function CategoryCard({
   title,
@@ -90,7 +104,7 @@ export function FormatCatalog() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4">
           <CategoryCard
             title="PDF"
             description="Merge, split, rotate, and convert PDF documents."
@@ -101,6 +115,18 @@ export function FormatCatalog() {
             description="Convert, resize, compress, and clean up photos and graphics."
             formats={imageFormatBadges}
             toolSlugs={imageToolSlugs}
+          />
+          <CategoryCard
+            title="Video"
+            description="Convert, trim, compress, and edit video files."
+            formats={videoFormatBadges}
+            toolSlugs={videoToolSlugs}
+          />
+          <CategoryCard
+            title="Audio"
+            description="Convert, trim, and merge audio files."
+            formats={audioFormatBadges}
+            toolSlugs={audioToolSlugs}
           />
         </div>
 

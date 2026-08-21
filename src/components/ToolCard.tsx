@@ -1,17 +1,28 @@
 import Link from "next/link";
 import type { Tool } from "@/lib/tools";
 import {
+  AudioConverterIcon,
+  CompressVideoIcon,
   HeicToJpgIcon,
   ImageCompressorIcon,
   ImageResizerIcon,
   JpgToPdfIcon,
+  MergeAudioIcon,
   MergeIcon,
+  MergeVideosIcon,
+  Mp4ToMp3Icon,
   PdfToJpgIcon,
+  RemoveAudioIcon,
   RemoveExifIcon,
   RotateIcon,
   SplitIcon,
   SwapFormatIcon,
+  TrimIcon,
   UniversalConverterIcon,
+  VideoConverterIcon,
+  VideoResolutionIcon,
+  VideoSpeedIcon,
+  VideoToGifIcon,
   WebpToPngIcon,
 } from "./ToolIcons";
 
@@ -28,6 +39,17 @@ const icons: Record<string, (props: { className?: string }) => React.ReactNode> 
   "image-resizer": ImageResizerIcon,
   "image-compressor": ImageCompressorIcon,
   "remove-exif-data": RemoveExifIcon,
+  "mp4-to-mp3": Mp4ToMp3Icon,
+  "video-converter": VideoConverterIcon,
+  "audio-converter": AudioConverterIcon,
+  "video-to-gif": VideoToGifIcon,
+  "trim-video-audio": TrimIcon,
+  "compress-video": CompressVideoIcon,
+  "remove-audio-from-video": RemoveAudioIcon,
+  "merge-videos": MergeVideosIcon,
+  "change-video-speed": VideoSpeedIcon,
+  "merge-audio": MergeAudioIcon,
+  "video-resolution-converter": VideoResolutionIcon,
 };
 
 export function ToolCard({ tool }: { tool: Tool }) {
