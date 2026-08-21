@@ -15,6 +15,7 @@ const eslintConfig = defineConfig([
     // Generated/vendored assets copied from node_modules, not source we own.
     "public/*.mjs",
     "public/ffmpeg/**",
+    "public/ffmpeg-mt/**",
   ]),
 ]);
 

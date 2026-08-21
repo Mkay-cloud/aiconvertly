@@ -6,10 +6,12 @@ const rootDir = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const publicDir = path.join(rootDir, "public");
 const wasmDir = path.join(publicDir, "wasm");
 const ffmpegDir = path.join(publicDir, "ffmpeg");
+const ffmpegMtDir = path.join(publicDir, "ffmpeg-mt");
 
 mkdirSync(publicDir, { recursive: true });
 mkdirSync(wasmDir, { recursive: true });
 mkdirSync(ffmpegDir, { recursive: true });
+mkdirSync(ffmpegMtDir, { recursive: true });
 
 const assets = [
   {
@@ -46,6 +48,22 @@ const assets = [
   {
     src: "node_modules/@ffmpeg/ffmpeg/dist/esm/errors.js",
     dest: path.join(ffmpegDir, "errors.js"),
+  },
+  // Multi-threaded ffmpeg-core build (needs cross-origin isolation --
+  // COOP/COEP headers, set in next.config.ts -- to use SharedArrayBuffer).
+  // Used when available for dramatically faster encodes; falls back to the
+  // single-threaded core above otherwise. See src/lib/ffmpegClient.ts.
+  {
+    src: "node_modules/@ffmpeg/core-mt/dist/esm/ffmpeg-core.js",
+    dest: path.join(ffmpegMtDir, "ffmpeg-core.js"),
+  },
+  {
+    src: "node_modules/@ffmpeg/core-mt/dist/esm/ffmpeg-core.wasm",
+    dest: path.join(ffmpegMtDir, "ffmpeg-core.wasm"),
+  },
+  {
+    src: "node_modules/@ffmpeg/core-mt/dist/esm/ffmpeg-core.worker.js",
+    dest: path.join(ffmpegMtDir, "ffmpeg-core.worker.js"),
   },
 ];
 

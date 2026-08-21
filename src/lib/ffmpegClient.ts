@@ -19,7 +19,20 @@ export async function loadFFmpeg(
 
   if (!loadPromise) {
     loadPromise = (async () => {
-      const baseURL = "/ffmpeg";
+      // The multi-threaded ffmpeg-core build uses all available CPU cores
+      // instead of one -- a several-times speedup on the video encodes
+      // these tools do. It needs SharedArrayBuffer, which only exists when
+      // the page is cross-origin isolated (COOP/COEP headers, set site-wide
+      // in next.config.ts since every resource here is already
+      // same-origin). Fall back to the single-threaded core if that's ever
+      // not true (e.g. an intermediary strips the headers) instead of
+      // failing outright.
+      const useMultiThread =
+        typeof window !== "undefined" &&
+        window.crossOriginIsolated === true &&
+        typeof SharedArrayBuffer !== "undefined";
+      const baseURL = useMultiThread ? "/ffmpeg-mt" : "/ffmpeg";
+
       const coreURL = await toBlobURL(`${baseURL}/ffmpeg-core.js`, "text/javascript");
       const wasmURL = await toBlobURL(
         `${baseURL}/ffmpeg-core.wasm`,
@@ -29,9 +42,14 @@ export async function loadFFmpeg(
           if (total > 0) currentProgressCb?.(Math.round((received / total) * 100));
         }
       );
+      const workerURL = useMultiThread
+        ? await toBlobURL(`${baseURL}/ffmpeg-core.worker.js`, "text/javascript")
+        : undefined;
+
       await ffmpeg.load({
         coreURL,
         wasmURL,
+        ...(workerURL ? { workerURL } : {}),
         // @ffmpeg/ffmpeg's own worker.js does a runtime `import(coreURL)`
         // with a blob: URL, which webpack intercepts and fails to resolve
         // ("Cannot find module 'blob:...'") when the worker is bundled
