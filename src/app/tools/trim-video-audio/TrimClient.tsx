@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Dropzone } from "@/components/Dropzone";
 import { Button } from "@/components/Button";
 import { Alert, Spinner } from "@/components/Alert";
-import { ProgressBar } from "@/components/ProgressBar";
+import { ConversionStatus } from "@/components/ConversionStatus";
 import { LargeFileWarning } from "@/components/LargeFileWarning";
 import { formatBytes } from "@/lib/format";
 import { downloadBytes, fileBaseName } from "@/lib/download";
@@ -19,6 +19,7 @@ export function TrimClient() {
   const [endTime, setEndTime] = useState(10);
   const {
     run,
+    cancel,
     isLoadingCore,
     coreLoadProgress,
     isProcessing,
@@ -108,10 +109,14 @@ export function TrimClient() {
             </label>
           </div>
 
-          {isLoadingCore && (
-            <ProgressBar label="Loading converter…" percent={coreLoadProgress} />
-          )}
-          {isProcessing && <ProgressBar label="Trimming…" percent={processProgress} />}
+          <ConversionStatus
+            isLoadingCore={isLoadingCore}
+            coreLoadProgress={coreLoadProgress}
+            isProcessing={isProcessing}
+            processProgress={processProgress}
+            processingLabel="Trimming…"
+            onCancel={cancel}
+          />
 
           <Button onClick={handleTrim} disabled={isBusy} className="self-start">
             {isBusy && <Spinner className="h-4 w-4" />}
