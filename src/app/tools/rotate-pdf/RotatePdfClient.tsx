@@ -8,6 +8,7 @@ import { Alert, Spinner } from "@/components/Alert";
 import { formatBytes } from "@/lib/format";
 import { downloadBytes, fileBaseName } from "@/lib/download";
 import { parsePageRanges } from "@/lib/pageRanges";
+import { useHandoffFile } from "@/lib/useHandoffFile";
 
 type Scope = "all" | "custom";
 
@@ -26,6 +27,8 @@ export function RotatePdfClient() {
   const [customPages, setCustomPages] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useHandoffFile((file) => handleFiles([file]));
 
   async function handleFiles(files: File[]) {
     const selected = files[0];

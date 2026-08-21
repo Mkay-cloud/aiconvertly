@@ -9,6 +9,7 @@ import { downloadBlob, fileBaseName } from "@/lib/download";
 import { decodeToCanvas } from "@/lib/decodeImage";
 import { encodeImage } from "@/lib/encodeImage";
 import { imageFormats } from "@/lib/imageFormats";
+import { useHandoffFile } from "@/lib/useHandoffFile";
 
 type Result = { blob: Blob; name: string };
 
@@ -34,6 +35,8 @@ export function ImageCompressorClient() {
   const [result, setResult] = useState<Result | null>(null);
 
   const outputFormat = file?.type === "image/webp" ? "webp" : "jpeg";
+
+  useHandoffFile((file) => handleFiles([file]));
 
   async function handleFiles(files: File[]) {
     const selected = files[0];

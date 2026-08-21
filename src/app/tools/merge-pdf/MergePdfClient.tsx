@@ -8,6 +8,7 @@ import { Button } from "@/components/Button";
 import { Alert, Spinner } from "@/components/Alert";
 import { formatBytes } from "@/lib/format";
 import { downloadBytes } from "@/lib/download";
+import { useHandoffFile } from "@/lib/useHandoffFile";
 
 type PdfItem = {
   id: string;
@@ -21,6 +22,8 @@ export function MergePdfClient() {
   const [items, setItems] = useState<PdfItem[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useHandoffFile((file) => addFiles([file]));
 
   async function addFiles(files: File[]) {
     setError(null);

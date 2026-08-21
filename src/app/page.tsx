@@ -1,6 +1,8 @@
 import { Container } from "@/components/Container";
 import { ToolCard } from "@/components/ToolCard";
 import { ButtonLink } from "@/components/Button";
+import { SmartFileDetector } from "@/components/SmartFileDetector";
+import { FormatCatalog } from "@/components/FormatCatalog";
 import { tools } from "@/lib/tools";
 
 const steps = [
@@ -45,12 +47,10 @@ export default function Home() {
             and converting PDFs and images. No uploads, no accounts, no
             limits.
           </p>
-          <div className="flex flex-col gap-4 sm:flex-row">
-            <ButtonLink href="#tools" size="lg">
-              Browse all tools
-            </ButtonLink>
-            <ButtonLink href="/tools/merge-pdf" variant="secondary" size="lg">
-              Try Merge PDF
+          <div className="flex w-full flex-col items-center gap-4">
+            <SmartFileDetector />
+            <ButtonLink href="#tools" variant="ghost" size="sm">
+              or browse all tools &darr;
             </ButtonLink>
           </div>
         </Container>
@@ -74,6 +74,8 @@ export default function Home() {
           </div>
         </Container>
       </section>
+
+      <FormatCatalog />
 
       <section className="border-t border-card-border/60 py-20 sm:py-24">
         <Container className="flex flex-col gap-12">

@@ -8,6 +8,7 @@ import { Button } from "@/components/Button";
 import { Alert, Spinner } from "@/components/Alert";
 import { formatBytes } from "@/lib/format";
 import { downloadBytes } from "@/lib/download";
+import { useHandoffFile } from "@/lib/useHandoffFile";
 
 type ImageItem = {
   id: string;
@@ -29,6 +30,8 @@ export function JpgToPdfClient() {
       urls.forEach((url) => URL.revokeObjectURL(url));
     };
   }, []);
+
+  useHandoffFile((file) => addFiles([file]));
 
   function addFiles(files: File[]) {
     const supported = files.filter((file) => SUPPORTED_TYPES.has(file.type));

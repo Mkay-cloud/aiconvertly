@@ -11,6 +11,7 @@ import { imageFormats } from "@/lib/imageFormats";
 import { guessFormatFromFile } from "@/lib/guessFormat";
 import { readExifSummary, type ExifTag } from "@/lib/exif";
 import { sleep } from "@/lib/sleep";
+import { useHandoffFile } from "@/lib/useHandoffFile";
 
 type Item = {
   id: string;
@@ -35,6 +36,8 @@ export function RemoveExifDataClient() {
       urls.forEach((url) => URL.revokeObjectURL(url));
     };
   }, []);
+
+  useHandoffFile((file) => handleFiles([file]));
 
   async function handleFiles(files: File[]) {
     setIsProcessing(true);

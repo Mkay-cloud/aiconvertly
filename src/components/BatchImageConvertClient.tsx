@@ -6,6 +6,7 @@ import { Button } from "@/components/Button";
 import { Alert, Spinner } from "@/components/Alert";
 import { downloadBlob } from "@/lib/download";
 import { sleep } from "@/lib/sleep";
+import { useHandoffFile } from "@/lib/useHandoffFile";
 
 type ConvertedImage = {
   id: string;
@@ -45,6 +46,8 @@ export function BatchImageConvertClient({
       urls.forEach((url) => URL.revokeObjectURL(url));
     };
   }, []);
+
+  useHandoffFile((file) => handleFiles([file]));
 
   async function handleFiles(files: File[]) {
     setIsConverting(true);

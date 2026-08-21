@@ -11,8 +11,12 @@ mkdirSync(wasmDir, { recursive: true });
 
 const assets = [
   {
-    src: "node_modules/pdfjs-dist/build/pdf.worker.min.mjs",
+    src: "node_modules/pdfjs-dist/legacy/build/pdf.worker.min.mjs",
     dest: path.join(publicDir, "pdf.worker.min.mjs"),
+  },
+  {
+    src: "node_modules/pdfjs-dist/legacy/build/pdf.min.mjs",
+    dest: path.join(publicDir, "pdf.min.mjs"),
   },
   {
     src: "node_modules/@jsquash/avif/codec/enc/avif_enc.wasm",
