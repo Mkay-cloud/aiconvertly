@@ -7,6 +7,7 @@ import { Alert, Spinner } from "@/components/Alert";
 import { downloadBlob, fileBaseName } from "@/lib/download";
 import { getPdfjs } from "@/lib/pdfjs";
 import { sleep } from "@/lib/sleep";
+import { useHandoffFile } from "@/lib/useHandoffFile";
 
 type PageImage = {
   pageNumber: number;
@@ -39,6 +40,8 @@ export function PdfToJpgClient() {
       urls.forEach((url) => URL.revokeObjectURL(url));
     };
   }, []);
+
+  useHandoffFile((file) => handleFiles([file]));
 
   async function handleFiles(files: File[]) {
     const selected = files[0];

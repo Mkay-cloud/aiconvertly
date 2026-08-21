@@ -9,6 +9,7 @@ import { formatBytes } from "@/lib/format";
 import { downloadBytes, fileBaseName } from "@/lib/download";
 import { parsePageRanges } from "@/lib/pageRanges";
 import { sleep } from "@/lib/sleep";
+import { useHandoffFile } from "@/lib/useHandoffFile";
 
 type Mode = "range" | "each";
 
@@ -20,6 +21,8 @@ export function SplitPdfClient() {
   const [rangeInput, setRangeInput] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useHandoffFile((file) => handleFiles([file]));
 
   async function handleFiles(files: File[]) {
     const selected = files[0];

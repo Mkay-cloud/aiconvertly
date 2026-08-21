@@ -15,6 +15,7 @@ import {
   type ImageFormatId,
 } from "@/lib/imageFormats";
 import { canvasToBlob } from "@/lib/canvasImage";
+import { useHandoffFile } from "@/lib/useHandoffFile";
 
 type Result = { blob: Blob; url: string; name: string };
 
@@ -37,6 +38,8 @@ export function ImageConverterClient() {
       urls.forEach((url) => URL.revokeObjectURL(url));
     };
   }, []);
+
+  useHandoffFile((file) => handleFiles([file]));
 
   async function handleFiles(files: File[]) {
     const selected = files[0];

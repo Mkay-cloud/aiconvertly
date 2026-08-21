@@ -12,8 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
-    // Generated/vendored asset, not source we own.
-    "public/pdf.worker.min.mjs",
+    // Generated/vendored assets copied from node_modules, not source we own.
+    "public/*.mjs",
   ]),
 ]);
 

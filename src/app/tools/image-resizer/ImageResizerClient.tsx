@@ -11,6 +11,7 @@ import { resizeCanvas } from "@/lib/canvasImage";
 import { encodeImage } from "@/lib/encodeImage";
 import { imageFormats, universalConverterAccept } from "@/lib/imageFormats";
 import { guessFormatFromFile } from "@/lib/guessFormat";
+import { useHandoffFile } from "@/lib/useHandoffFile";
 
 type Mode = "pixels" | "percentage";
 
@@ -26,6 +27,8 @@ export function ImageResizerClient() {
   const [isLoading, setIsLoading] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useHandoffFile((file) => handleFiles([file]));
 
   async function handleFiles(files: File[]) {
     const selected = files[0];

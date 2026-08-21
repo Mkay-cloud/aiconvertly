@@ -40,4 +40,5 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 public/pdf.worker.min.mjs
+public/pdf.min.mjs
 public/wasm/
