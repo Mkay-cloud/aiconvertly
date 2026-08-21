@@ -20,12 +20,36 @@ const EXIF_OPTION: RouteOption = {
   actionLabel: "Remove EXIF & location data",
 };
 
+// All video tools accept mp4/webm/mov/mkv, so every video format gets the
+// same option set.
+const VIDEO_OPTIONS: RouteOption[] = [
+  { slug: "mp4-to-mp3", actionLabel: "Extract audio (MP3)" },
+  { slug: "video-converter", actionLabel: "Convert format" },
+  { slug: "trim-video-audio", actionLabel: "Trim" },
+  { slug: "compress-video", actionLabel: "Compress" },
+  { slug: "video-to-gif", actionLabel: "Convert to GIF" },
+  { slug: "remove-audio-from-video", actionLabel: "Remove audio" },
+  { slug: "change-video-speed", actionLabel: "Change speed" },
+  { slug: "video-resolution-converter", actionLabel: "Convert resolution" },
+  { slug: "merge-videos", actionLabel: "Merge with other videos" },
+];
+
+// All audio tools accept mp3/wav/ogg, so every audio format gets the same
+// option set.
+const AUDIO_OPTIONS: RouteOption[] = [
+  { slug: "audio-converter", actionLabel: "Convert format" },
+  { slug: "trim-video-audio", actionLabel: "Trim" },
+  { slug: "merge-audio", actionLabel: "Merge with other audio" },
+];
+
 /**
  * Mirrors each tool's actual accepted formats (see each Dropzone's `accept`
  * prop) so we only ever route a file to a tool that can really open it.
  */
 export function getRouteOptions(kind: DetectedKind): RouteOption[] {
   if (kind.category === "pdf") return PDF_OPTIONS;
+  if (kind.category === "video") return VIDEO_OPTIONS;
+  if (kind.category === "audio") return AUDIO_OPTIONS;
 
   if (kind.category !== "image") return [];
 

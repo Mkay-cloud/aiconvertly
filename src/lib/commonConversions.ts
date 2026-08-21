@@ -11,4 +11,9 @@ export const commonConversions: CommonConversion[] = [
   { label: "Image to AVIF", slug: "image-converter" },
   { label: "TIFF to PNG", slug: "image-converter" },
   { label: "Merge PDF files", slug: "merge-pdf" },
+  { label: "MP4 to MP3", slug: "mp4-to-mp3" },
+  { label: "Video to GIF", slug: "video-to-gif" },
+  { label: "MOV to MP4", slug: "video-converter" },
+  { label: "Trim video", slug: "trim-video-audio" },
+  { label: "Compress video", slug: "compress-video" },
 ];

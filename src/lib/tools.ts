@@ -115,6 +115,105 @@ export const tools: Tool[] = [
     metaDescription:
       "Remove EXIF and GPS location metadata from photos for free. Fast, private, and runs entirely in your browser — no uploads, no sign-up.",
   },
+  {
+    slug: "mp4-to-mp3",
+    name: "MP4 to MP3",
+    shortDescription: "Extract the audio track from a video file.",
+    description:
+      "Extract the audio track from an MP4 (or other video) file and save it as an MP3 — processed entirely in your browser.",
+    metaDescription:
+      "Convert MP4 video to MP3 audio for free. Fast, private, and runs entirely in your browser — no uploads, no sign-up.",
+  },
+  {
+    slug: "video-converter",
+    name: "Video Converter",
+    shortDescription: "Convert between MP4, WebM, and MOV.",
+    description:
+      "Convert a video between MP4, WebM, and MOV formats — encoded entirely on your device.",
+    metaDescription:
+      "Convert video files between MP4, WebM, and MOV for free. Fast, private, and runs entirely in your browser — no uploads, no sign-up.",
+  },
+  {
+    slug: "audio-converter",
+    name: "Audio Converter",
+    shortDescription: "Convert between MP3, WAV, and OGG.",
+    description:
+      "Convert an audio file between MP3, WAV, and OGG formats — encoded entirely on your device.",
+    metaDescription:
+      "Convert audio files between MP3, WAV, and OGG for free. Fast, private, and runs entirely in your browser — no uploads, no sign-up.",
+  },
+  {
+    slug: "video-to-gif",
+    name: "Video to GIF",
+    shortDescription: "Turn a video clip into an animated GIF.",
+    description:
+      "Convert a short video clip into an animated GIF, with control over the start time and duration.",
+    metaDescription:
+      "Convert video to an animated GIF for free. Fast, private, and runs entirely in your browser — no uploads, no sign-up.",
+  },
+  {
+    slug: "trim-video-audio",
+    name: "Trim Video/Audio",
+    shortDescription: "Cut a video or audio file to a start and end time.",
+    description:
+      "Trim a video or audio file down to the exact start and end time you need — no re-uploading, no watermark.",
+    metaDescription:
+      "Trim or cut video and audio files for free. Fast, private, and runs entirely in your browser — no uploads, no sign-up.",
+  },
+  {
+    slug: "compress-video",
+    name: "Compress Video",
+    shortDescription: "Shrink a video's file size while keeping quality reasonable.",
+    description:
+      "Compress a video to a smaller file size with an adjustable quality setting, encoded entirely in your browser.",
+    metaDescription:
+      "Compress video files to reduce size for free. Fast, private, and runs entirely in your browser — no uploads, no sign-up.",
+  },
+  {
+    slug: "remove-audio-from-video",
+    name: "Remove Audio from Video",
+    shortDescription: "Mute a video, keeping only the picture.",
+    description:
+      "Strip the audio track from a video, keeping the picture untouched — processed entirely on your device.",
+    metaDescription:
+      "Remove audio from a video for free. Fast, private, and runs entirely in your browser — no uploads, no sign-up.",
+  },
+  {
+    slug: "merge-videos",
+    name: "Merge Videos",
+    shortDescription: "Combine multiple video clips into one, in order.",
+    description:
+      "Combine multiple video clips into a single video, in the order you choose — clips can be different formats or resolutions.",
+    metaDescription:
+      "Merge multiple video files into one for free. Fast, private, and runs entirely in your browser — no uploads, no sign-up.",
+  },
+  {
+    slug: "change-video-speed",
+    name: "Change Video Speed",
+    shortDescription: "Slow down or speed up a video, audio included.",
+    description:
+      "Speed up or slow down a video from 0.5x to 2x, with audio pitch adjusted to match — processed entirely in your browser.",
+    metaDescription:
+      "Speed up or slow down video files for free. Fast, private, and runs entirely in your browser — no uploads, no sign-up.",
+  },
+  {
+    slug: "merge-audio",
+    name: "Merge Audio Files",
+    shortDescription: "Combine multiple audio clips into one, in order.",
+    description:
+      "Combine multiple audio clips into a single file, in the order you choose — clips can be different formats or sample rates.",
+    metaDescription:
+      "Merge multiple audio files into one for free. Fast, private, and runs entirely in your browser — no uploads, no sign-up.",
+  },
+  {
+    slug: "video-resolution-converter",
+    name: "Video Resolution Converter",
+    shortDescription: "Convert a video to 480p, 720p, or 1080p.",
+    description:
+      "Resize a video to a common resolution — 480p, 720p, or 1080p — while keeping its aspect ratio, entirely in your browser.",
+    metaDescription:
+      "Convert video resolution to 480p, 720p, or 1080p for free. Fast, private, and runs entirely in your browser — no uploads, no sign-up.",
+  },
 ];
 
 export function getTool(slug: string): Tool | undefined {
