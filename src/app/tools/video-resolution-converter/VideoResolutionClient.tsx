@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Dropzone } from "@/components/Dropzone";
 import { Button } from "@/components/Button";
 import { Alert, Spinner } from "@/components/Alert";
-import { ProgressBar } from "@/components/ProgressBar";
+import { ConversionStatus } from "@/components/ConversionStatus";
 import { LargeFileWarning } from "@/components/LargeFileWarning";
 import { formatBytes } from "@/lib/format";
 import { downloadBytes, fileBaseName } from "@/lib/download";
@@ -24,6 +24,7 @@ export function VideoResolutionClient() {
   const [height, setHeight] = useState(720);
   const {
     run,
+    cancel,
     isLoadingCore,
     coreLoadProgress,
     isProcessing,
@@ -106,10 +107,14 @@ export function VideoResolutionClient() {
             </div>
           </div>
 
-          {isLoadingCore && (
-            <ProgressBar label="Loading converter…" percent={coreLoadProgress} />
-          )}
-          {isProcessing && <ProgressBar label="Converting…" percent={processProgress} />}
+          <ConversionStatus
+            isLoadingCore={isLoadingCore}
+            coreLoadProgress={coreLoadProgress}
+            isProcessing={isProcessing}
+            processProgress={processProgress}
+            processingLabel="Converting…"
+            onCancel={cancel}
+          />
 
           <Button onClick={handleConvert} disabled={isBusy} className="self-start">
             {isBusy && <Spinner className="h-4 w-4" />}

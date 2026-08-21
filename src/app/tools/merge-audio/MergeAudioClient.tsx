@@ -5,7 +5,7 @@ import { Dropzone } from "@/components/Dropzone";
 import { FileRow } from "@/components/FileRow";
 import { Button } from "@/components/Button";
 import { Alert, Spinner } from "@/components/Alert";
-import { ProgressBar } from "@/components/ProgressBar";
+import { ConversionStatus } from "@/components/ConversionStatus";
 import { LargeFileWarning } from "@/components/LargeFileWarning";
 import { formatBytes } from "@/lib/format";
 import { downloadBytes } from "@/lib/download";
@@ -19,6 +19,7 @@ export function MergeAudioClient() {
   const [items, setItems] = useState<AudioItem[]>([]);
   const {
     run,
+    cancel,
     isLoadingCore,
     coreLoadProgress,
     isProcessing,
@@ -130,8 +131,14 @@ export function MergeAudioClient() {
         automatically matched before merging.
       </p>
 
-      {isLoadingCore && <ProgressBar label="Loading converter…" percent={coreLoadProgress} />}
-      {isProcessing && <ProgressBar label="Merging…" percent={processProgress} />}
+      <ConversionStatus
+        isLoadingCore={isLoadingCore}
+        coreLoadProgress={coreLoadProgress}
+        isProcessing={isProcessing}
+        processProgress={processProgress}
+        processingLabel="Merging…"
+        onCancel={cancel}
+      />
 
       <Button onClick={handleMerge} disabled={items.length < 2 || isBusy} className="self-start">
         {isBusy && <Spinner className="h-4 w-4" />}

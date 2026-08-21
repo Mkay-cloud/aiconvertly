@@ -14,9 +14,14 @@ export function useFfmpegOperation() {
   const [processProgress, setProcessProgress] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const ffmpegRef = useRef<FFmpeg | null>(null);
+  // Set by cancel() so run()'s catch handler -- which sees the same
+  // termination as any other failure -- knows to stay silent instead of
+  // surfacing an error for what was actually a deliberate stop.
+  const cancelRequestedRef = useRef(false);
 
   const run = useCallback(async (fn: (ffmpeg: FFmpeg) => Promise<void>) => {
     setError(null);
+    cancelRequestedRef.current = false;
     try {
       if (!ffmpegRef.current?.loaded) {
         setIsLoadingCore(true);
@@ -40,6 +45,13 @@ export function useFfmpegOperation() {
         ffmpeg.off("progress", handleProgress);
       }
     } catch (err) {
+      // cancel() already terminated/reset the ffmpeg instance and cleared
+      // busy state itself -- the rejection we're seeing here is just that
+      // termination surfacing through the awaited ffmpeg call. It's not a
+      // real failure, so it must not show an error message.
+      if (cancelRequestedRef.current) {
+        return;
+      }
       // Only errors we've deliberately written with a user-safe message
       // (FriendlyMediaError) are ever shown verbatim. Everything else --
       // raw ffmpeg/WASM failures, hard WASM traps like "RuntimeError:
@@ -63,8 +75,26 @@ export function useFfmpegOperation() {
     }
   }, []);
 
+  // Actually stops processing -- not just hides the progress UI. Terminates
+  // the real ffmpeg worker (the same wasm instance doing the work), which
+  // both kills its CPU usage and rejects whatever load()/exec() call was
+  // in flight, then resets state using the same reset-after-crash pattern
+  // above so the tool is immediately ready for a fresh attempt with no
+  // page refresh needed.
+  const cancel = useCallback(() => {
+    cancelRequestedRef.current = true;
+    resetFFmpeg();
+    ffmpegRef.current = null;
+    setIsLoadingCore(false);
+    setIsProcessing(false);
+    setCoreLoadProgress(0);
+    setProcessProgress(0);
+    setError(null);
+  }, []);
+
   return {
     run,
+    cancel,
     isLoadingCore,
     coreLoadProgress,
     isProcessing,
