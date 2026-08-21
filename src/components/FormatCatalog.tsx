@@ -1,31 +1,9 @@
 import Link from "next/link";
 import { Container } from "./Container";
 import { getTool } from "@/lib/tools";
+import { categoryToolSlugs } from "@/lib/toolCategories";
 import { imageFormatList } from "@/lib/imageFormats";
 import { commonConversions } from "@/lib/commonConversions";
-
-const pdfToolSlugs = ["merge-pdf", "split-pdf", "rotate-pdf", "pdf-to-jpg", "jpg-to-pdf"];
-const imageToolSlugs = [
-  "heic-to-jpg",
-  "webp-to-png",
-  "jpg-png-converter",
-  "image-converter",
-  "image-resizer",
-  "image-compressor",
-  "remove-exif-data",
-];
-const videoToolSlugs = [
-  "mp4-to-mp3",
-  "video-converter",
-  "video-to-gif",
-  "trim-video-audio",
-  "compress-video",
-  "remove-audio-from-video",
-  "merge-videos",
-  "change-video-speed",
-  "video-resolution-converter",
-];
-const audioToolSlugs = ["audio-converter", "trim-video-audio", "merge-audio"];
 
 const imageFormatBadges = [...imageFormatList.map((f) => f.label), "HEIC"];
 const videoFormatBadges = ["MP4", "WebM", "MOV", "MKV"];
@@ -108,25 +86,25 @@ export function FormatCatalog() {
           <CategoryCard
             title="PDF"
             description="Merge, split, rotate, and convert PDF documents."
-            toolSlugs={pdfToolSlugs}
+            toolSlugs={categoryToolSlugs.pdf}
           />
           <CategoryCard
             title="Images"
             description="Convert, resize, compress, and clean up photos and graphics."
             formats={imageFormatBadges}
-            toolSlugs={imageToolSlugs}
+            toolSlugs={categoryToolSlugs.image}
           />
           <CategoryCard
             title="Video"
             description="Convert, trim, compress, and edit video files."
             formats={videoFormatBadges}
-            toolSlugs={videoToolSlugs}
+            toolSlugs={categoryToolSlugs.video}
           />
           <CategoryCard
             title="Audio"
             description="Convert, trim, and merge audio files."
             formats={audioFormatBadges}
-            toolSlugs={audioToolSlugs}
+            toolSlugs={categoryToolSlugs.audio}
           />
         </div>
 

@@ -1,8 +1,8 @@
 import { Container } from "@/components/Container";
-import { ToolCard } from "@/components/ToolCard";
 import { ButtonLink } from "@/components/Button";
 import { SmartFileDetector } from "@/components/SmartFileDetector";
 import { FormatCatalog } from "@/components/FormatCatalog";
+import { ToolsSection } from "@/components/ToolsSection";
 import { tools } from "@/lib/tools";
 
 const steps = [
@@ -56,24 +56,7 @@ export default function Home() {
         </Container>
       </section>
 
-      <section id="tools" className="scroll-mt-20 py-20 sm:py-24">
-        <Container className="flex flex-col gap-12">
-          <div className="flex flex-col gap-4 text-center">
-            <h2 className="font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-              {tools.length} tools. Zero friction.
-            </h2>
-            <p className="mx-auto max-w-2xl text-lg text-secondary">
-              Every tool below runs entirely client-side — your files are
-              processed on your device and never touch a server.
-            </p>
-          </div>
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {tools.map((tool) => (
-              <ToolCard key={tool.slug} tool={tool} />
-            ))}
-          </div>
-        </Container>
-      </section>
+      <ToolsSection />
 
       <FormatCatalog />
 
