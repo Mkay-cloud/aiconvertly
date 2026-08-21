@@ -1,11 +1,18 @@
 import Link from "next/link";
 import type { Tool } from "@/lib/tools";
 import {
+  HeicToJpgIcon,
+  ImageCompressorIcon,
+  ImageResizerIcon,
   JpgToPdfIcon,
   MergeIcon,
   PdfToJpgIcon,
+  RemoveExifIcon,
   RotateIcon,
   SplitIcon,
+  SwapFormatIcon,
+  UniversalConverterIcon,
+  WebpToPngIcon,
 } from "./ToolIcons";
 
 const icons: Record<string, (props: { className?: string }) => React.ReactNode> = {
@@ -14,6 +21,13 @@ const icons: Record<string, (props: { className?: string }) => React.ReactNode> 
   "rotate-pdf": RotateIcon,
   "pdf-to-jpg": PdfToJpgIcon,
   "jpg-to-pdf": JpgToPdfIcon,
+  "heic-to-jpg": HeicToJpgIcon,
+  "webp-to-png": WebpToPngIcon,
+  "jpg-png-converter": SwapFormatIcon,
+  "image-converter": UniversalConverterIcon,
+  "image-resizer": ImageResizerIcon,
+  "image-compressor": ImageCompressorIcon,
+  "remove-exif-data": RemoveExifIcon,
 };
 
 export function ToolCard({ tool }: { tool: Tool }) {

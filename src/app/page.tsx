@@ -18,7 +18,7 @@ const steps = [
   },
 ];
 
-const badges = ["5 free tools", "100% private", "No file limits", "No sign-up"];
+const badges = [`${tools.length} free tools`, "100% private", "No file limits", "No sign-up"];
 
 export default function Home() {
   return (
@@ -60,7 +60,7 @@ export default function Home() {
         <Container className="flex flex-col gap-12">
           <div className="flex flex-col gap-4 text-center">
             <h2 className="font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-              Five tools. Zero friction.
+              {tools.length} tools. Zero friction.
             </h2>
             <p className="mx-auto max-w-2xl text-lg text-secondary">
               Every tool below runs entirely client-side — your files are
