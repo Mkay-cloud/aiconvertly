@@ -10,6 +10,7 @@ import { formatBytes } from "@/lib/format";
 import { downloadBytes, fileBaseName } from "@/lib/download";
 import { useFfmpegOperation } from "@/lib/useFfmpegOperation";
 import { execFfmpeg, fastStartArgs, inputFileName, readAndValidateOutput, writeInputFile } from "@/lib/ffmpegIO";
+import { checkVideoCodecSupport, UnsupportedCodecError } from "@/lib/detectVideoCodec";
 import { useHandoffFile } from "@/lib/useHandoffFile";
 
 export function TrimClient() {
@@ -37,6 +38,11 @@ export function TrimClient() {
     if (!file) return;
     if (endTime <= startTime) {
       setError("End time must be after start time.");
+      return;
+    }
+    const codecCheck = await checkVideoCodecSupport(file);
+    if (!codecCheck.supported) {
+      setError(new UnsupportedCodecError(codecCheck.codecLabel).message);
       return;
     }
     await run(async (ffmpeg) => {

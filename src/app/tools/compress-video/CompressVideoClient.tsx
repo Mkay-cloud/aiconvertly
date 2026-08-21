@@ -10,6 +10,7 @@ import { formatBytes } from "@/lib/format";
 import { downloadBytes, fileBaseName } from "@/lib/download";
 import { useFfmpegOperation } from "@/lib/useFfmpegOperation";
 import { execFfmpeg, fastStartArgs, inputFileName, readAndValidateOutput, writeInputFile } from "@/lib/ffmpegIO";
+import { checkVideoCodecSupport, UnsupportedCodecError } from "@/lib/detectVideoCodec";
 import { useHandoffFile } from "@/lib/useHandoffFile";
 
 type Result = { bytes: Uint8Array; name: string };
@@ -30,6 +31,7 @@ export function CompressVideoClient() {
     isProcessing,
     processProgress,
     error,
+    setError,
   } = useFfmpegOperation();
 
   function handleFiles(files: File[]) {
@@ -45,6 +47,11 @@ export function CompressVideoClient() {
   async function handleCompress() {
     if (!file) return;
     setResult(null);
+    const codecCheck = await checkVideoCodecSupport(file);
+    if (!codecCheck.supported) {
+      setError(new UnsupportedCodecError(codecCheck.codecLabel).message);
+      return;
+    }
     await run(async (ffmpeg) => {
       const inputName = inputFileName(file, "mp4");
       await writeInputFile(ffmpeg, inputName, file);

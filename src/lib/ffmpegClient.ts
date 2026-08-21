@@ -47,3 +47,23 @@ export async function loadFFmpeg(
   await loadPromise;
   return ffmpeg;
 }
+
+/**
+ * A hard WASM trap (e.g. "RuntimeError: memory access out of bounds", which
+ * this ffmpeg-core build is known to throw for a handful of unstable codec
+ * paths) can leave the underlying wasm instance corrupted for any further
+ * operation, not just the one that triggered it. Call this after such a
+ * crash so the *next* attempt gets a genuinely fresh worker/instance
+ * instead of silently reusing a broken one -- otherwise every subsequent
+ * conversion on the page would fail too, even with a perfectly fine file.
+ */
+export function resetFFmpeg(): void {
+  try {
+    ffmpegInstance?.terminate();
+  } catch {
+    // Already dead -- nothing to clean up.
+  }
+  ffmpegInstance = null;
+  loadPromise = null;
+  currentProgressCb = null;
+}

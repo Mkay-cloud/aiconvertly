@@ -12,6 +12,7 @@ import { downloadBytes } from "@/lib/download";
 import { useFfmpegOperation } from "@/lib/useFfmpegOperation";
 import { execFfmpeg, fastStartArgs, readAndValidateOutput, writeInputFile } from "@/lib/ffmpegIO";
 import { probeMedia, type MediaProbe } from "@/lib/ffmpegProbe";
+import { checkVideoCodecSupport, UnsupportedCodecError } from "@/lib/detectVideoCodec";
 import { useHandoffFile } from "@/lib/useHandoffFile";
 
 type VideoItem = { id: string; file: File };
@@ -25,6 +26,7 @@ export function MergeVideosClient() {
     isProcessing,
     processProgress,
     error,
+    setError,
   } = useFfmpegOperation();
 
   function addFiles(files: File[]) {
@@ -52,6 +54,13 @@ export function MergeVideosClient() {
 
   async function handleMerge() {
     if (items.length < 2) return;
+    for (const item of items) {
+      const codecCheck = await checkVideoCodecSupport(item.file);
+      if (!codecCheck.supported) {
+        setError(new UnsupportedCodecError(codecCheck.codecLabel, item.file.name).message);
+        return;
+      }
+    }
     await run(async (ffmpeg) => {
       const names: string[] = [];
       for (let i = 0; i < items.length; i += 1) {

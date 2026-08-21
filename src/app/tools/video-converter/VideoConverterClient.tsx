@@ -10,6 +10,7 @@ import { formatBytes } from "@/lib/format";
 import { downloadBytes, fileBaseName } from "@/lib/download";
 import { useFfmpegOperation } from "@/lib/useFfmpegOperation";
 import { execFfmpeg, fastStartArgs, inputFileName, readAndValidateOutput, writeInputFile } from "@/lib/ffmpegIO";
+import { checkVideoCodecSupport, UnsupportedCodecError } from "@/lib/detectVideoCodec";
 import { useHandoffFile } from "@/lib/useHandoffFile";
 import { videoEncodeArgs, videoFormatList, videoFormats, type VideoFormatId } from "@/lib/mediaFormats";
 
@@ -23,6 +24,7 @@ export function VideoConverterClient() {
     isProcessing,
     processProgress,
     error,
+    setError,
   } = useFfmpegOperation();
 
   function handleFiles(files: File[]) {
@@ -34,6 +36,11 @@ export function VideoConverterClient() {
 
   async function handleConvert() {
     if (!file) return;
+    const codecCheck = await checkVideoCodecSupport(file);
+    if (!codecCheck.supported) {
+      setError(new UnsupportedCodecError(codecCheck.codecLabel).message);
+      return;
+    }
     const target = videoFormats[format];
     await run(async (ffmpeg) => {
       const inputName = inputFileName(file, "mp4");

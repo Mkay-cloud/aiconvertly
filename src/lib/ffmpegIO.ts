@@ -29,7 +29,18 @@ export function fastStartArgs(ext: string): string[] {
   return ext === "mp4" || ext === "mov" || ext === "m4v" ? ["-movflags", "+faststart"] : [];
 }
 
-export class FfmpegOutputError extends Error {
+/**
+ * Base class for errors whose message is safe (and meant) to show a user
+ * verbatim -- as opposed to raw ffmpeg/WASM failures (including hard WASM
+ * traps like "RuntimeError: memory access out of bounds", which this build
+ * is known to throw for a handful of unstable codec paths), which must
+ * never reach the screen. See useFfmpegOperation's catch handler: only
+ * FriendlyMediaError messages are ever shown directly; everything else
+ * collapses to a single generic message.
+ */
+export class FriendlyMediaError extends Error {}
+
+export class FfmpegOutputError extends FriendlyMediaError {
   constructor(
     message = "This conversion failed — try different files or a smaller file size."
   ) {

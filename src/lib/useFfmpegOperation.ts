@@ -2,7 +2,8 @@
 
 import { useCallback, useRef, useState } from "react";
 import type { FFmpeg } from "@ffmpeg/ffmpeg";
-import { loadFFmpeg } from "./ffmpegClient";
+import { loadFFmpeg, resetFFmpeg } from "./ffmpegClient";
+import { FriendlyMediaError } from "./ffmpegIO";
 
 type ProgressEvent = { progress: number };
 
@@ -39,13 +40,23 @@ export function useFfmpegOperation() {
         ffmpeg.off("progress", handleProgress);
       }
     } catch (err) {
-      const message =
-        typeof err === "string"
-          ? err
-          : err instanceof Error
-            ? err.message
-            : "Something went wrong during processing.";
-      setError(message || "Something went wrong during processing.");
+      // Only errors we've deliberately written with a user-safe message
+      // (FriendlyMediaError) are ever shown verbatim. Everything else --
+      // raw ffmpeg/WASM failures, hard WASM traps like "RuntimeError:
+      // memory access out of bounds", arbitrary browser errors -- collapses
+      // to one generic message. Raw technical text must never reach the
+      // screen.
+      if (err instanceof FriendlyMediaError) {
+        setError(err.message);
+      } else {
+        // An unexpected (non-friendly) failure may mean the underlying wasm
+        // instance itself is now corrupted (this is how the hard traps
+        // above actually manifest) -- reset it so the next attempt gets a
+        // fresh instance instead of silently reusing a broken one.
+        resetFFmpeg();
+        ffmpegRef.current = null;
+        setError("This conversion failed — try different files or a smaller file size.");
+      }
     } finally {
       setIsLoadingCore(false);
       setIsProcessing(false);

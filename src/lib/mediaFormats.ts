@@ -29,7 +29,16 @@ export function videoEncodeArgs(format: VideoFormatId): string[] {
     case "mp4":
       return ["-c:v", "libx264", "-preset", "fast", "-c:a", "aac"];
     case "webm":
-      return ["-c:v", "libvpx-vp9", "-b:v", "0", "-crf", "32", "-c:a", "libopus"];
+      // libvpx-vp9 reproducibly crashes this ffmpeg-core.wasm build with a
+      // hard WASM out-of-bounds trap -- even the fastest/cheapest
+      // "-deadline realtime -cpu-used 8" settings didn't avoid it, so
+      // libvpx (VP8) is used instead (proven stable in this build).
+      // Separately, decoding a real AAC audio stream and re-encoding it to
+      // Opus *also* reproducibly crashes this build (isolated and
+      // confirmed: AAC->Opus alone crashes; AAC->Vorbis on the exact same
+      // input does not) -- libvorbis is used instead, still a fully valid,
+      // native WebM audio codec.
+      return ["-c:v", "libvpx", "-b:v", "0", "-crf", "32", "-c:a", "libvorbis", "-q:a", "4"];
     case "mov":
       return ["-c:v", "libx264", "-preset", "fast", "-c:a", "aac"];
   }
