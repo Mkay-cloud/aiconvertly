@@ -3,6 +3,7 @@ import type { Tool } from "@/lib/tools";
 import {
   AudioConverterIcon,
   CompressVideoIcon,
+  EnhanceImageIcon,
   HeicToJpgIcon,
   ImageCompressorIcon,
   ImageResizerIcon,
@@ -39,6 +40,7 @@ const icons: Record<string, (props: { className?: string }) => React.ReactNode> 
   "image-resizer": ImageResizerIcon,
   "image-compressor": ImageCompressorIcon,
   "remove-exif-data": RemoveExifIcon,
+  "enhance-image-quality": EnhanceImageIcon,
   "mp4-to-mp3": Mp4ToMp3Icon,
   "video-converter": VideoConverterIcon,
   "audio-converter": AudioConverterIcon,
