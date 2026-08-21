@@ -9,7 +9,7 @@ import { LargeFileWarning } from "@/components/LargeFileWarning";
 import { formatBytes } from "@/lib/format";
 import { downloadBytes, fileBaseName } from "@/lib/download";
 import { useFfmpegOperation } from "@/lib/useFfmpegOperation";
-import { inputFileName, readOutputFile, writeInputFile } from "@/lib/ffmpegIO";
+import { execFfmpeg, fastStartArgs, inputFileName, readAndValidateOutput, writeInputFile } from "@/lib/ffmpegIO";
 import { useHandoffFile } from "@/lib/useHandoffFile";
 
 export function TrimClient() {
@@ -44,7 +44,7 @@ export function TrimClient() {
       const ext = inputName.split(".").pop()!;
       const outputName = `output.${ext}`;
       await writeInputFile(ffmpeg, inputName, file);
-      await ffmpeg.exec([
+      await execFfmpeg(ffmpeg, [
         "-ss",
         String(startTime),
         "-i",
@@ -53,9 +53,10 @@ export function TrimClient() {
         String(endTime - startTime),
         "-c",
         "copy",
+        ...fastStartArgs(ext),
         outputName,
       ]);
-      const data = await readOutputFile(ffmpeg, outputName);
+      const data = await readAndValidateOutput(ffmpeg, outputName, ext);
       downloadBytes(data, `${fileBaseName(file.name)}-trimmed.${ext}`, file.type || "application/octet-stream");
     });
   }

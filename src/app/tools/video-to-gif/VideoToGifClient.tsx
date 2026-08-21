@@ -9,7 +9,7 @@ import { LargeFileWarning } from "@/components/LargeFileWarning";
 import { formatBytes } from "@/lib/format";
 import { downloadBytes, fileBaseName } from "@/lib/download";
 import { useFfmpegOperation } from "@/lib/useFfmpegOperation";
-import { inputFileName, readOutputFile, writeInputFile } from "@/lib/ffmpegIO";
+import { execFfmpeg, inputFileName, readAndValidateOutput, writeInputFile } from "@/lib/ffmpegIO";
 import { useHandoffFile } from "@/lib/useHandoffFile";
 
 const widthOptions = [320, 480, 640];
@@ -40,7 +40,7 @@ export function VideoToGifClient() {
     await run(async (ffmpeg) => {
       const inputName = inputFileName(file, "mp4");
       await writeInputFile(ffmpeg, inputName, file);
-      await ffmpeg.exec([
+      await execFfmpeg(ffmpeg, [
         "-ss",
         String(startTime),
         "-i",
@@ -51,7 +51,7 @@ export function VideoToGifClient() {
         `fps=10,scale=${width}:-1:flags=lanczos`,
         "output.gif",
       ]);
-      const data = await readOutputFile(ffmpeg, "output.gif");
+      const data = await readAndValidateOutput(ffmpeg, "output.gif", "gif");
       downloadBytes(data, `${fileBaseName(file.name)}.gif`, "image/gif");
     });
   }

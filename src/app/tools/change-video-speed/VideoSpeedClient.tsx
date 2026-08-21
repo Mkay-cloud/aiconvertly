@@ -9,7 +9,8 @@ import { LargeFileWarning } from "@/components/LargeFileWarning";
 import { formatBytes } from "@/lib/format";
 import { downloadBytes, fileBaseName } from "@/lib/download";
 import { useFfmpegOperation } from "@/lib/useFfmpegOperation";
-import { inputFileName, readOutputFile, writeInputFile } from "@/lib/ffmpegIO";
+import { execFfmpeg, fastStartArgs, inputFileName, readAndValidateOutput, writeInputFile } from "@/lib/ffmpegIO";
+import { probeMedia } from "@/lib/ffmpegProbe";
 import { useHandoffFile } from "@/lib/useHandoffFile";
 
 export function VideoSpeedClient() {
@@ -36,18 +37,36 @@ export function VideoSpeedClient() {
     await run(async (ffmpeg) => {
       const inputName = inputFileName(file, "mp4");
       await writeInputFile(ffmpeg, inputName, file);
-      await ffmpeg.exec([
-        "-i",
-        inputName,
-        "-filter_complex",
-        `[0:v]setpts=${(1 / speed).toFixed(4)}*PTS[v];[0:a]atempo=${speed}[a]`,
-        "-map",
-        "[v]",
-        "-map",
-        "[a]",
-        "output.mp4",
-      ]);
-      const data = await readOutputFile(ffmpeg, "output.mp4");
+      // Some real-world clips (screen recordings, muted exports) have no
+      // audio track at all -- mapping "[0:a]" for those fails the whole
+      // command, so only include the audio filter/map when audio exists.
+      const { hasAudio } = await probeMedia(ffmpeg, inputName);
+      const videoFilter = `[0:v]setpts=${(1 / speed).toFixed(4)}*PTS[v]`;
+      const args = hasAudio
+        ? [
+            "-i",
+            inputName,
+            "-filter_complex",
+            `${videoFilter};[0:a]atempo=${speed}[a]`,
+            "-map",
+            "[v]",
+            "-map",
+            "[a]",
+            ...fastStartArgs("mp4"),
+            "output.mp4",
+          ]
+        : [
+            "-i",
+            inputName,
+            "-filter_complex",
+            videoFilter,
+            "-map",
+            "[v]",
+            ...fastStartArgs("mp4"),
+            "output.mp4",
+          ];
+      await execFfmpeg(ffmpeg, args);
+      const data = await readAndValidateOutput(ffmpeg, "output.mp4", "mp4");
       downloadBytes(data, `${fileBaseName(file.name)}-${speed}x.mp4`, "video/mp4");
     });
   }

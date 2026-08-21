@@ -10,7 +10,7 @@ import { LargeFileWarning } from "@/components/LargeFileWarning";
 import { formatBytes } from "@/lib/format";
 import { downloadBytes } from "@/lib/download";
 import { useFfmpegOperation } from "@/lib/useFfmpegOperation";
-import { readOutputFile, writeInputFile } from "@/lib/ffmpegIO";
+import { execFfmpeg, readAndValidateOutput, writeInputFile } from "@/lib/ffmpegIO";
 import { useHandoffFile } from "@/lib/useHandoffFile";
 
 type AudioItem = { id: string; file: File };
@@ -59,22 +59,32 @@ export function MergeAudioClient() {
         await writeInputFile(ffmpeg, name, items[i].file);
         names.push(name);
       }
-      const listContent = names.map((name) => `file '${name}'`).join("\n");
-      await ffmpeg.writeFile("list.txt", new TextEncoder().encode(listContent));
-      await ffmpeg.exec([
-        "-f",
-        "concat",
-        "-safe",
-        "0",
-        "-i",
-        "list.txt",
+      // Clips can arrive at different sample rates, channel counts, or
+      // codecs (mp3/wav/ogg), which the concat demuxer can't reliably
+      // splice -- it expects every input to already match. Normalizing each
+      // clip's audio format before concatenating makes mismatched inputs
+      // merge correctly instead of silently failing.
+      const inputArgs = names.flatMap((name) => ["-i", name]);
+      const normalized = names.map(
+        (_, i) =>
+          `[${i}:a:0]aformat=sample_rates=44100:channel_layouts=stereo,asetpts=PTS-STARTPTS[a${i}]`
+      );
+      const concatInputs = names.map((_, i) => `[a${i}]`).join("");
+      const filterComplex = `${normalized.join(";")};${concatInputs}concat=n=${names.length}:v=0:a=1[a]`;
+
+      await execFfmpeg(ffmpeg, [
+        ...inputArgs,
+        "-filter_complex",
+        filterComplex,
+        "-map",
+        "[a]",
         "-c:a",
         "libmp3lame",
         "-q:a",
         "2",
         "output.mp3",
       ]);
-      const data = await readOutputFile(ffmpeg, "output.mp3");
+      const data = await readAndValidateOutput(ffmpeg, "output.mp3", "mp3");
       downloadBytes(data, "merged.mp3", "audio/mpeg");
     });
   }
@@ -116,7 +126,8 @@ export function MergeAudioClient() {
       )}
 
       <p className="text-sm text-secondary">
-        Works best when all clips use the same format.
+        Clips can be different formats or sample rates — they&rsquo;re
+        automatically matched before merging.
       </p>
 
       {isLoadingCore && <ProgressBar label="Loading converter…" percent={coreLoadProgress} />}

@@ -10,7 +10,8 @@ import { LargeFileWarning } from "@/components/LargeFileWarning";
 import { formatBytes } from "@/lib/format";
 import { downloadBytes } from "@/lib/download";
 import { useFfmpegOperation } from "@/lib/useFfmpegOperation";
-import { readOutputFile, writeInputFile } from "@/lib/ffmpegIO";
+import { execFfmpeg, fastStartArgs, readAndValidateOutput, writeInputFile } from "@/lib/ffmpegIO";
+import { probeMedia, type MediaProbe } from "@/lib/ffmpegProbe";
 import { useHandoffFile } from "@/lib/useHandoffFile";
 
 type VideoItem = { id: string; file: File };
@@ -60,20 +61,63 @@ export function MergeVideosClient() {
         names.push(name);
       }
 
-      // Clips can arrive in different containers/codecs (mp4, webm, mov, mkv),
-      // so a stream-copy concat demuxer can't reliably splice them -- it
-      // requires matching codecs and silently produces an empty/invalid file
-      // when they don't match. The concat filter decodes every clip and
-      // re-encodes to one consistent H.264/AAC MP4 instead, which works
-      // regardless of the source formats.
-      const inputArgs = names.flatMap((name) => ["-i", name]);
-      const filterInputs = names.map((_, i) => `[${i}:v:0][${i}:a:0]`).join("");
-      const filterComplex = `${filterInputs}concat=n=${names.length}:v=1:a=1[v][a]`;
+      // Clips can arrive in different containers/codecs/resolutions/frame
+      // rates (mp4, webm, mov, mkv; H.264, H.265, VP8/9; phone portrait vs.
+      // landscape...), and real-world files often have no audio track at
+      // all (screen recordings, muted exports). A stream-copy concat
+      // demuxer can't splice any of that -- it requires every input to
+      // already match, and silently produces an empty/truncated file when
+      // they don't. So every clip is decoded, probed for an audio track,
+      // and normalized (scaled/padded to a common canvas, resampled to a
+      // common audio format, with silence synthesized for audio-less
+      // clips) before concatenation -- this is what makes merging two real,
+      // differently-encoded phone/screen-recording MP4s actually work
+      // instead of producing a 0-byte file.
+      const probes: MediaProbe[] = [];
+      for (const name of names) {
+        probes.push(await probeMedia(ffmpeg, name));
+      }
 
-      await ffmpeg.exec([
+      const inputArgs = names.flatMap((name) => ["-i", name]);
+      const filterParts: string[] = [];
+      const videoLabels: string[] = [];
+      const audioLabels: string[] = [];
+      let silentIndex = names.length;
+
+      names.forEach((_, i) => {
+        const vLabel = `v${i}`;
+        filterParts.push(
+          `[${i}:v:0]scale=1280:720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,fps=30,format=yuv420p[${vLabel}]`
+        );
+        videoLabels.push(vLabel);
+
+        const aLabel = `a${i}`;
+        if (probes[i].hasAudio) {
+          filterParts.push(
+            `[${i}:a:0]aformat=sample_rates=44100:channel_layouts=stereo,asetpts=PTS-STARTPTS[${aLabel}]`
+          );
+        } else {
+          inputArgs.push(
+            "-f",
+            "lavfi",
+            "-t",
+            String(Math.max(probes[i].duration, 0.1)),
+            "-i",
+            "anullsrc=r=44100:cl=stereo"
+          );
+          filterParts.push(`[${silentIndex}:a]asetpts=PTS-STARTPTS[${aLabel}]`);
+          silentIndex += 1;
+        }
+        audioLabels.push(aLabel);
+      });
+
+      const concatInputs = videoLabels.map((v, i) => `[${v}][${audioLabels[i]}]`).join("");
+      filterParts.push(`${concatInputs}concat=n=${names.length}:v=1:a=1[v][a]`);
+
+      await execFfmpeg(ffmpeg, [
         ...inputArgs,
         "-filter_complex",
-        filterComplex,
+        filterParts.join(";"),
         "-map",
         "[v]",
         "-map",
@@ -84,9 +128,10 @@ export function MergeVideosClient() {
         "fast",
         "-c:a",
         "aac",
+        ...fastStartArgs("mp4"),
         "output.mp4",
       ]);
-      const data = await readOutputFile(ffmpeg, "output.mp4");
+      const data = await readAndValidateOutput(ffmpeg, "output.mp4", "mp4");
       downloadBytes(data, "merged.mp4", "video/mp4");
     });
   }
@@ -128,7 +173,8 @@ export function MergeVideosClient() {
       )}
 
       <p className="text-sm text-secondary">
-        Works best when all clips use the same format and resolution.
+        Clips can be different formats, resolutions, or frame rates — they&rsquo;re
+        automatically resized to match before merging.
       </p>
 
       {isLoadingCore && <ProgressBar label="Loading converter…" percent={coreLoadProgress} />}

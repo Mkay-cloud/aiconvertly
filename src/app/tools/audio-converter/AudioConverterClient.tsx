@@ -9,7 +9,7 @@ import { LargeFileWarning } from "@/components/LargeFileWarning";
 import { formatBytes } from "@/lib/format";
 import { downloadBytes, fileBaseName } from "@/lib/download";
 import { useFfmpegOperation } from "@/lib/useFfmpegOperation";
-import { inputFileName, readOutputFile, writeInputFile } from "@/lib/ffmpegIO";
+import { execFfmpeg, inputFileName, readAndValidateOutput, writeInputFile } from "@/lib/ffmpegIO";
 import { useHandoffFile } from "@/lib/useHandoffFile";
 import { audioEncodeArgs, audioFormatList, audioFormats, type AudioFormatId } from "@/lib/mediaFormats";
 
@@ -39,13 +39,13 @@ export function AudioConverterClient() {
       const inputName = inputFileName(file, "mp3");
       const outputName = `output.${target.extension}`;
       await writeInputFile(ffmpeg, inputName, file);
-      await ffmpeg.exec([
+      await execFfmpeg(ffmpeg, [
         "-i",
         inputName,
         ...audioEncodeArgs(format),
         outputName,
       ]);
-      const data = await readOutputFile(ffmpeg, outputName);
+      const data = await readAndValidateOutput(ffmpeg, outputName, target.id);
       downloadBytes(data, `${fileBaseName(file.name)}.${target.extension}`, target.mime);
     });
   }

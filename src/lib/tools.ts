@@ -183,7 +183,7 @@ export const tools: Tool[] = [
     name: "Merge Videos",
     shortDescription: "Combine multiple video clips into one, in order.",
     description:
-      "Combine multiple video clips into a single video, in the order you choose — works best when clips share the same format.",
+      "Combine multiple video clips into a single video, in the order you choose — clips can be different formats or resolutions.",
     metaDescription:
       "Merge multiple video files into one for free. Fast, private, and runs entirely in your browser — no uploads, no sign-up.",
   },
@@ -201,7 +201,7 @@ export const tools: Tool[] = [
     name: "Merge Audio Files",
     shortDescription: "Combine multiple audio clips into one, in order.",
     description:
-      "Combine multiple audio clips into a single file, in the order you choose — works best when clips share the same format.",
+      "Combine multiple audio clips into a single file, in the order you choose — clips can be different formats or sample rates.",
     metaDescription:
       "Merge multiple audio files into one for free. Fast, private, and runs entirely in your browser — no uploads, no sign-up.",
   },

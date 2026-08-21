@@ -9,7 +9,7 @@ import { LargeFileWarning } from "@/components/LargeFileWarning";
 import { formatBytes } from "@/lib/format";
 import { downloadBytes, fileBaseName } from "@/lib/download";
 import { useFfmpegOperation } from "@/lib/useFfmpegOperation";
-import { inputFileName, readOutputFile, writeInputFile } from "@/lib/ffmpegIO";
+import { execFfmpeg, fastStartArgs, inputFileName, readAndValidateOutput, writeInputFile } from "@/lib/ffmpegIO";
 import { useHandoffFile } from "@/lib/useHandoffFile";
 import { videoEncodeArgs, videoFormatList, videoFormats, type VideoFormatId } from "@/lib/mediaFormats";
 
@@ -39,13 +39,14 @@ export function VideoConverterClient() {
       const inputName = inputFileName(file, "mp4");
       const outputName = `output.${target.extension}`;
       await writeInputFile(ffmpeg, inputName, file);
-      await ffmpeg.exec([
+      await execFfmpeg(ffmpeg, [
         "-i",
         inputName,
         ...videoEncodeArgs(format),
+        ...fastStartArgs(target.extension),
         outputName,
       ]);
-      const data = await readOutputFile(ffmpeg, outputName);
+      const data = await readAndValidateOutput(ffmpeg, outputName, target.id);
       downloadBytes(data, `${fileBaseName(file.name)}.${target.extension}`, target.mime);
     });
   }

@@ -9,7 +9,7 @@ import { LargeFileWarning } from "@/components/LargeFileWarning";
 import { formatBytes } from "@/lib/format";
 import { downloadBytes, fileBaseName } from "@/lib/download";
 import { useFfmpegOperation } from "@/lib/useFfmpegOperation";
-import { inputFileName, readOutputFile, writeInputFile } from "@/lib/ffmpegIO";
+import { execFfmpeg, inputFileName, readAndValidateOutput, writeInputFile } from "@/lib/ffmpegIO";
 import { useHandoffFile } from "@/lib/useHandoffFile";
 
 export function Mp4ToMp3Client() {
@@ -35,8 +35,8 @@ export function Mp4ToMp3Client() {
     await run(async (ffmpeg) => {
       const inputName = inputFileName(file, "mp4");
       await writeInputFile(ffmpeg, inputName, file);
-      await ffmpeg.exec(["-i", inputName, "-vn", "-c:a", "libmp3lame", "-q:a", "2", "output.mp3"]);
-      const data = await readOutputFile(ffmpeg, "output.mp3");
+      await execFfmpeg(ffmpeg, ["-i", inputName, "-vn", "-c:a", "libmp3lame", "-q:a", "2", "output.mp3"]);
+      const data = await readAndValidateOutput(ffmpeg, "output.mp3", "mp3");
       downloadBytes(data, `${fileBaseName(file.name)}.mp3`, "audio/mpeg");
     });
   }

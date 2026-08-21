@@ -9,7 +9,7 @@ import { LargeFileWarning } from "@/components/LargeFileWarning";
 import { formatBytes } from "@/lib/format";
 import { downloadBytes, fileBaseName } from "@/lib/download";
 import { useFfmpegOperation } from "@/lib/useFfmpegOperation";
-import { inputFileName, readOutputFile, writeInputFile } from "@/lib/ffmpegIO";
+import { execFfmpeg, fastStartArgs, inputFileName, readAndValidateOutput, writeInputFile } from "@/lib/ffmpegIO";
 import { useHandoffFile } from "@/lib/useHandoffFile";
 
 const resolutions = [
@@ -42,7 +42,7 @@ export function VideoResolutionClient() {
     await run(async (ffmpeg) => {
       const inputName = inputFileName(file, "mp4");
       await writeInputFile(ffmpeg, inputName, file);
-      await ffmpeg.exec([
+      await execFfmpeg(ffmpeg, [
         "-i",
         inputName,
         "-vf",
@@ -53,9 +53,10 @@ export function VideoResolutionClient() {
         "fast",
         "-c:a",
         "copy",
+        ...fastStartArgs("mp4"),
         "output.mp4",
       ]);
-      const data = await readOutputFile(ffmpeg, "output.mp4");
+      const data = await readAndValidateOutput(ffmpeg, "output.mp4", "mp4");
       downloadBytes(data, `${fileBaseName(file.name)}-${height}p.mp4`, "video/mp4");
     });
   }
