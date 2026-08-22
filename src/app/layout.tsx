@@ -3,7 +3,7 @@ import { Geist, Inter } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import { SITE_URL } from "@/lib/site";
+import { SITE_URL, SITE_NAME, SITE_DESCRIPTION } from "@/lib/site";
 
 const geist = Geist({
   variable: "--font-geist",
@@ -21,8 +21,7 @@ export const metadata: Metadata = {
     default: "AI convertly — Free PDF & image tools, right in your browser",
     template: "%s | AI convertly",
   },
-  description:
-    "Merge, split, rotate, and convert PDFs and images for free. Every tool runs entirely in your browser — no uploads, no sign-up, no limits.",
+  description: SITE_DESCRIPTION,
   keywords: [
     "pdf tools",
     "merge pdf",
@@ -39,16 +38,14 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     url: SITE_URL,
-    siteName: "AI convertly",
+    siteName: SITE_NAME,
     title: "AI convertly — Free PDF & image tools, right in your browser",
-    description:
-      "Merge, split, rotate, and convert PDFs and images for free. Every tool runs entirely in your browser — no uploads, no sign-up, no limits.",
+    description: SITE_DESCRIPTION,
   },
   twitter: {
     card: "summary_large_image",
     title: "AI convertly — Free PDF & image tools, right in your browser",
-    description:
-      "Merge, split, rotate, and convert PDFs and images for free. Every tool runs entirely in your browser — no uploads, no sign-up, no limits.",
+    description: SITE_DESCRIPTION,
   },
   robots: {
     index: true,
