@@ -75,7 +75,14 @@ export async function loadEnhanceSession(
 ): Promise<LoadedSession> {
   if (sessionPromise) return sessionPromise;
 
-  sessionPromise = (async () => {
+  // Captured so the cleanup below can tell whether it's still cleaning up
+  // *this* attempt by the time it runs, rather than a newer one --
+  // resetEnhanceSession() (called by Cancel) can null out sessionPromise and
+  // a fresh attempt can start while this attempt's own rejection is still in
+  // flight; without this guard, this attempt's delayed cleanup would clobber
+  // that fresh, unrelated session load. Same race, same fix as loadFFmpeg's
+  // loadPromise in ffmpegClient.ts.
+  const attempt: Promise<LoadedSession> = (async () => {
     const ort = await loadOrtModule();
     const wantWebGPU = await hasWorkingWebGPUAdapter();
     const assets = ortAssetNames(wantWebGPU);
@@ -159,9 +166,10 @@ export async function loadEnhanceSession(
     }
     return { session: await createSession(["wasm"]), usedWebGPU: false, ort };
   })().catch((err) => {
-    sessionPromise = null;
+    if (sessionPromise === attempt) sessionPromise = null;
     throw err;
   });
+  sessionPromise = attempt;
 
   return sessionPromise;
 }

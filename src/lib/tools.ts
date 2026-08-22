@@ -223,6 +223,15 @@ export const tools: Tool[] = [
     metaDescription:
       "Convert video resolution to 480p, 720p, or 1080p for free. Fast, private, and runs entirely in your browser — no uploads, no sign-up.",
   },
+  {
+    slug: "enhance-video-quality",
+    name: "Enhance Video Quality",
+    shortDescription: "Upscale every frame of a short clip 4x using an on-device AI model.",
+    description:
+      "Enhance a short video clip with an AI super-resolution model — every frame is upscaled 4x and sharpened, with the original audio preserved, entirely on your device.",
+    metaDescription:
+      "Enhance and upscale video quality 4x for free using AI, entirely in your browser. Fast, private — no uploads, no sign-up.",
+  },
 ];
 
 export function getTool(slug: string): Tool | undefined {
