@@ -116,6 +116,15 @@ export const tools: Tool[] = [
       "Remove EXIF and GPS location metadata from photos for free. Fast, private, and runs entirely in your browser — no uploads, no sign-up.",
   },
   {
+    slug: "enhance-image-quality",
+    name: "Enhance Image Quality",
+    shortDescription: "Upscale and sharpen a photo 4x using an on-device AI model.",
+    description:
+      "Enhance a photo's quality with an AI super-resolution model — upscales 4x and restores fine detail, running entirely on your device.",
+    metaDescription:
+      "Enhance and upscale image quality 4x for free using AI, entirely in your browser. Fast, private — no uploads, no sign-up.",
+  },
+  {
     slug: "mp4-to-mp3",
     name: "MP4 to MP3",
     shortDescription: "Extract the audio track from a video file.",

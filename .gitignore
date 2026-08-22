@@ -43,3 +43,4 @@ public/pdf.worker.min.mjs
 public/pdf.min.mjs
 public/wasm/
 public/ffmpeg/
+public/ort/

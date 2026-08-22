@@ -18,6 +18,7 @@ export const categoryToolSlugs: Record<CategoryId, string[]> = {
     "image-resizer",
     "image-compressor",
     "remove-exif-data",
+    "enhance-image-quality",
   ],
   video: [
     "mp4-to-mp3",

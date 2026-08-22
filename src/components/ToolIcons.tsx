@@ -368,3 +368,22 @@ export function VideoResolutionIcon({ className = "" }: IconProps) {
     </svg>
   );
 }
+
+export function EnhanceImageIcon({ className = "" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" className={className}>
+      <path
+        d="M5 3v4M3 5h4M19 13v4M17 15h4"
+        stroke="currentColor"
+        strokeWidth="1.75"
+        strokeLinecap="round"
+      />
+      <path
+        d="M13.5 4.5 15 8l3.5 1.5L15 11l-1.5 3.5L12 11l-3.5-1.5L12 8l1.5-3.5Z"
+        stroke="currentColor"
+        strokeWidth="1.75"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
