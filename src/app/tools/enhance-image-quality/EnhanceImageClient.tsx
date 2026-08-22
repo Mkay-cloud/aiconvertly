@@ -29,7 +29,7 @@ export function EnhanceImageClient() {
   const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState<Result | null>(null);
-  const { run, phase, downloadPercent, enhancePercent, usedWebGPU, error, setError } =
+  const { run, cancel, phase, downloadPercent, enhancePercent, usedWebGPU, error, setError } =
     useEnhanceImageOperation();
 
   useHandoffFile((f) => handleFiles([f]));
@@ -114,6 +114,17 @@ export function EnhanceImageClient() {
           )}
           {phase === "enhancing" && (
             <ProgressBar label="Enhancing your image…" percent={enhancePercent} />
+          )}
+          {isBusy && (
+            <Button
+              type="button"
+              variant="secondary"
+              size="sm"
+              onClick={cancel}
+              className="self-start"
+            >
+              Cancel
+            </Button>
           )}
 
           <Button onClick={handleEnhance} disabled={isBusy} className="self-start">

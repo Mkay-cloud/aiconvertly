@@ -18,9 +18,16 @@ async function openCache(): Promise<Cache | null> {
 
 async function readWithProgress(
   response: Response,
-  onProgress?: (loadedBytes: number, totalBytes: number) => void
+  onProgress?: (loadedBytes: number, totalBytes: number) => void,
+  fallbackTotalBytes = 0
 ): Promise<ArrayBuffer> {
-  const totalBytes = Number(response.headers.get("content-length") ?? 0);
+  // Chrome's fetch() doesn't expose a Content-Length for `application/wasm`
+  // responses at all (confirmed directly -- header.get() returns null even
+  // though the server sends it; curl sees it fine), so callers fetching a
+  // known static asset can pass its real size as a fallback rather than
+  // this collapsing to 0 and corrupting the combined progress percentage.
+  const headerTotal = Number(response.headers.get("content-length") ?? 0);
+  const totalBytes = headerTotal > 0 ? headerTotal : fallbackTotalBytes;
   if (!response.body || !onProgress) {
     return response.arrayBuffer();
   }
@@ -48,7 +55,9 @@ async function readWithProgress(
 
 export async function cachedFetchArrayBuffer(
   url: string,
-  onProgress?: (loadedBytes: number, totalBytes: number) => void
+  onProgress?: (loadedBytes: number, totalBytes: number) => void,
+  signal?: AbortSignal,
+  fallbackTotalBytes = 0
 ): Promise<ArrayBuffer> {
   const cache = await openCache();
 
@@ -57,23 +66,33 @@ export async function cachedFetchArrayBuffer(
     if (cached) return cached.arrayBuffer();
   }
 
-  const response = await fetch(url);
+  // A cancelled fetch rejects `fetch()` itself if aborted before the
+  // response arrives, or rejects the in-progress body read below if
+  // aborted mid-stream -- either way this genuinely stops the network
+  // transfer, not just the UI that was showing its progress.
+  const response = await fetch(url, { signal });
   if (!response.ok) {
     throw new Error(`Failed to download ${url} (${response.status})`);
   }
 
-  // Cache the untouched response body before consuming the original for
-  // progress-tracked reading -- a Response body can only be read once.
+  const buffer = await readWithProgress(response, onProgress, fallbackTotalBytes);
+
+  // Cache only after a full, successful read -- caching a `.clone()` of
+  // the live response here (reading it concurrently with the loop above)
+  // would leave a second, unawaited reader on the same stream that an
+  // abort() tears down independently of this function's own try/catch,
+  // which surfaced as a spurious "BodyStreamBuffer was aborted" console
+  // error on a cancelled download even though nothing was actually wrong.
   if (cache) {
     try {
-      await cache.put(url, response.clone());
+      await cache.put(url, new Response(buffer, { headers: response.headers }));
     } catch {
       // Best-effort: e.g. storage quota exceeded. Enhancement still works,
       // it just won't be cached for next time.
     }
   }
 
-  return readWithProgress(response, onProgress);
+  return buffer;
 }
 
 export async function isModelCached(urls: string[]): Promise<boolean> {

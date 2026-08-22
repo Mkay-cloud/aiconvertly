@@ -8,10 +8,16 @@ const ORT_DIR = "/ort";
 // wasm-CPU kernels the plain binary has, so it's strictly a superset -- but
 // it's roughly 2x the download, so devices without WebGPU get the smaller
 // plain one instead of paying for capability they can't use.
+// Chrome's fetch() never exposes Content-Length for `application/wasm`
+// responses (confirmed directly: curl sees the header, the browser's own
+// Headers.get() returns null for the exact same response) -- these known
+// sizes stand in for it so download progress doesn't collapse to "total
+// unknown" for by far the two largest files this tool fetches. Update if
+// the onnxruntime-web version changes and these binaries are rebuilt.
 function ortAssetNames(useWebGPU: boolean) {
   return useWebGPU
-    ? { mjs: "ort-wasm-simd-threaded.jsep.mjs", wasm: "ort-wasm-simd-threaded.jsep.wasm" }
-    : { mjs: "ort-wasm-simd-threaded.mjs", wasm: "ort-wasm-simd-threaded.wasm" };
+    ? { mjs: "ort-wasm-simd-threaded.jsep.mjs", wasm: "ort-wasm-simd-threaded.jsep.wasm", wasmSize: 26_827_543 }
+    : { mjs: "ort-wasm-simd-threaded.mjs", wasm: "ort-wasm-simd-threaded.wasm", wasmSize: 13_479_978 };
 }
 
 /**
@@ -63,7 +69,10 @@ let sessionPromise: Promise<LoadedSession> | null = null;
  * fails for any reason, this falls back to the wasm execution provider
  * automatically rather than failing the whole tool.
  */
-export async function loadEnhanceSession(onProgress?: DownloadProgress): Promise<LoadedSession> {
+export async function loadEnhanceSession(
+  onProgress?: DownloadProgress,
+  signal?: AbortSignal
+): Promise<LoadedSession> {
   if (sessionPromise) return sessionPromise;
 
   sessionPromise = (async () => {
@@ -78,20 +87,47 @@ export async function loadEnhanceSession(onProgress?: DownloadProgress): Promise
     let modelTotal = 0;
     let wasmLoaded = 0;
     let modelLoaded = 0;
-    const report = () => onProgress?.(wasmLoaded + modelLoaded, wasmTotal + modelTotal || 1);
+    const report = () => {
+      const combinedTotal = wasmTotal + modelTotal;
+      if (combinedTotal > 0) onProgress?.(wasmLoaded + modelLoaded, combinedTotal);
+    };
 
-    const [wasmBinary, modelBuffer] = await Promise.all([
-      cachedFetchArrayBuffer(`${ORT_DIR}/${assets.wasm}`, (loaded, total) => {
-        wasmLoaded = loaded;
-        wasmTotal = total;
-        report();
-      }),
-      cachedFetchArrayBuffer(MODEL_URL, (loaded, total) => {
-        modelLoaded = loaded;
-        modelTotal = total;
-        report();
-      }),
+    // Promise.all would leave whichever of these two settles *second*
+    // unobserved once the first one rejects (both share the same abort
+    // signal, so cancelling reliably rejects both) -- an unhandled
+    // rejection that surfaced as a real console/pageerror even though the
+    // cancellation itself was handled correctly. allSettled keeps both
+    // promises properly awaited no matter which one rejects first.
+    const [wasmResult, modelResult] = await Promise.allSettled([
+      cachedFetchArrayBuffer(
+        `${ORT_DIR}/${assets.wasm}`,
+        (loaded, total) => {
+          wasmLoaded = loaded;
+          wasmTotal = total;
+          report();
+        },
+        signal,
+        assets.wasmSize
+      ),
+      cachedFetchArrayBuffer(
+        MODEL_URL,
+        (loaded, total) => {
+          modelLoaded = loaded;
+          modelTotal = total;
+          report();
+        },
+        signal
+      ),
     ]);
+    if (wasmResult.status === "rejected") throw wasmResult.reason;
+    if (modelResult.status === "rejected") throw modelResult.reason;
+    const wasmBinary = wasmResult.value;
+    const modelBuffer = modelResult.value;
+
+    // A cancellation that lands in the gap between the downloads settling
+    // and session creation starting would otherwise go unnoticed here --
+    // creating a session nobody wants is wasted work at best.
+    if (signal?.aborted) throw new DOMException("Aborted", "AbortError");
 
     ort.env.wasm.numThreads = 1; // no SharedArrayBuffer/COOP+COEP needed
     ort.env.wasm.wasmPaths = { mjs: `${ORT_DIR}/${assets.mjs}` };
@@ -113,7 +149,12 @@ export async function loadEnhanceSession(onProgress?: DownloadProgress): Promise
         // fall back cleanly instead of failing the tool.
         const plain = ortAssetNames(false);
         ort.env.wasm.wasmPaths = { mjs: `${ORT_DIR}/${plain.mjs}` };
-        ort.env.wasm.wasmBinary = await cachedFetchArrayBuffer(`${ORT_DIR}/${plain.wasm}`);
+        ort.env.wasm.wasmBinary = await cachedFetchArrayBuffer(
+          `${ORT_DIR}/${plain.wasm}`,
+          undefined,
+          signal,
+          plain.wasmSize
+        );
       }
     }
     return { session: await createSession(["wasm"]), usedWebGPU: false, ort };
@@ -126,7 +167,14 @@ export async function loadEnhanceSession(onProgress?: DownloadProgress): Promise
 }
 
 export function resetEnhanceSession(): void {
-  sessionPromise?.then(({ session }) => session.release().catch(() => {}));
+  // cancel() calls this on a sessionPromise that may currently be
+  // *rejecting* (that's exactly what aborting the in-flight download it's
+  // awaiting does) -- a bare `.then()` with no rejection handler on that
+  // promise is an unhandled rejection waiting to happen, not a hypothetical
+  // one; it reliably fired as a real console/pageerror on every cancel.
+  sessionPromise
+    ?.then(({ session }) => session.release())
+    .catch(() => {});
   sessionPromise = null;
 }
 

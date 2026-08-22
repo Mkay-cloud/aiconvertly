@@ -71,11 +71,21 @@ function extractTensorRegion(
  * Runs `runTile` over the source canvas in overlapping tiles and returns a
  * new canvas at UPSCALE-x resolution. `onProgress` is called after every
  * tile so the UI can show real (not simulated) progress.
+ *
+ * `isCancelled` is checked before *starting* each tile, not during one --
+ * a single tile's model inference runs on the main thread with no
+ * mid-computation abort hook (onnxruntime-web's wasm/WebGPU execution
+ * providers don't expose one when running outside a proxy worker, which
+ * this tool intentionally doesn't use -- see onnxRuntime.ts for why).
+ * That still genuinely stops the operation: no further tile computation
+ * is ever started once cancelled, bounded by at most one already-in-
+ * flight tile's short remaining runtime.
  */
 export async function enhanceImageTiled(
   source: HTMLCanvasElement,
   runTile: TileRunner,
-  onProgress?: EnhanceProgress
+  onProgress?: EnhanceProgress,
+  isCancelled?: () => boolean
 ): Promise<HTMLCanvasElement> {
   const { width, height } = source;
   const srcCtx = source.getContext("2d");
@@ -96,6 +106,8 @@ export async function enhanceImageTiled(
 
   for (let ty = 0; ty < tilesY; ty += 1) {
     for (let tx = 0; tx < tilesX; tx += 1) {
+      if (isCancelled?.()) throw new DOMException("Aborted", "AbortError");
+
       const inStartX = tx * TILE_SIZE;
       const inEndX = Math.min(inStartX + TILE_SIZE, width);
       const inStartY = ty * TILE_SIZE;
