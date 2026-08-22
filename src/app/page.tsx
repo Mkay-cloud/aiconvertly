@@ -3,7 +3,9 @@ import { ButtonLink } from "@/components/Button";
 import { SmartFileDetector } from "@/components/SmartFileDetector";
 import { FormatCatalog } from "@/components/FormatCatalog";
 import { ToolsSection } from "@/components/ToolsSection";
+import { JsonLd } from "@/components/JsonLd";
 import { tools } from "@/lib/tools";
+import { siteStructuredData } from "@/lib/structuredData";
 
 const steps = [
   {
@@ -25,6 +27,7 @@ const badges = [`${tools.length} free tools`, "100% private", "No file limits", 
 export default function Home() {
   return (
     <>
+      <JsonLd data={siteStructuredData()} />
       <section>
         <Container className="flex flex-col items-center gap-8 py-24 text-center sm:py-32">
           <div className="flex flex-wrap items-center justify-center gap-2">
