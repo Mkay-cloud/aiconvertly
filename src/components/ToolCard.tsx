@@ -4,6 +4,7 @@ import {
   AudioConverterIcon,
   CompressVideoIcon,
   EnhanceImageIcon,
+  EnhanceVideoIcon,
   HeicToJpgIcon,
   ImageCompressorIcon,
   ImageResizerIcon,
@@ -52,6 +53,7 @@ const icons: Record<string, (props: { className?: string }) => React.ReactNode> 
   "change-video-speed": VideoSpeedIcon,
   "merge-audio": MergeAudioIcon,
   "video-resolution-converter": VideoResolutionIcon,
+  "enhance-video-quality": EnhanceVideoIcon,
 };
 
 export function ToolCard({ tool }: { tool: Tool }) {

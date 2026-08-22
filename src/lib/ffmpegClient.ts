@@ -70,9 +70,16 @@ export async function loadFFmpeg(
   currentProgressCb = onLoadProgress ?? null;
 
   if (!loadPromise) {
-    loadPromise = (async () => {
+    // Captured so the cleanup below can tell whether it's still cleaning up
+    // *this* attempt by the time it runs, rather than a newer one -- resetFFmpeg()
+    // (called by every tool's Cancel) can null out the module-level
+    // ffmpegInstance/loadPromise and start a fresh load while this attempt's
+    // own rejection is still in flight; without this guard, this attempt's
+    // delayed cleanup would then clobber that fresh, unrelated load.
+    const instance = ffmpegInstance!;
+    const attempt: Promise<void> = (async () => {
       try {
-        await withTimeout(attemptLoad(ffmpegInstance!), LOAD_TIMEOUT_MS);
+        await withTimeout(attemptLoad(instance), LOAD_TIMEOUT_MS);
       } catch {
         throw new FfmpegOutputError(
           "The converter is taking too long to load. Check your connection and try again."
@@ -84,15 +91,16 @@ export async function loadFFmpeg(
       // instead of forever re-awaiting this same rejected promise --
       // otherwise one failed load would permanently break the tool for
       // the rest of the page's lifetime.
-      loadPromise = null;
+      if (loadPromise === attempt) loadPromise = null;
+      if (ffmpegInstance === instance) ffmpegInstance = null;
       try {
-        ffmpegInstance?.terminate();
+        instance.terminate();
       } catch {
         // Already dead -- nothing to clean up.
       }
-      ffmpegInstance = null;
       throw err;
     });
+    loadPromise = attempt;
   }
 
   await loadPromise;

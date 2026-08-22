@@ -23,11 +23,30 @@ export const audioFormats: Record<AudioFormatId, MediaFormat> = {
 export const videoFormatList = Object.values(videoFormats);
 export const audioFormatList = Object.values(audioFormats);
 
+/**
+ * Just the video codec portion of videoEncodeArgs below, for callers that
+ * need to encode video without also specifying an audio codec (e.g.
+ * enhance-video-quality re-muxes the *original* audio back in with
+ * `-c:a copy` rather than re-encoding it). Kept in sync with
+ * videoEncodeArgs rather than duplicating the codec choice -- both share
+ * the same hard-won stability fixes documented there.
+ */
+export function videoCodecOnlyArgs(format: VideoFormatId): string[] {
+  switch (format) {
+    case "mp4":
+    case "mov":
+      return ["-c:v", "libx264", "-preset", "fast"];
+    case "webm":
+      return ["-c:v", "libvpx", "-b:v", "0", "-crf", "32"];
+  }
+}
+
 /** ffmpeg output codec args for converting *to* each video format. */
 export function videoEncodeArgs(format: VideoFormatId): string[] {
   switch (format) {
     case "mp4":
-      return ["-c:v", "libx264", "-preset", "fast", "-c:a", "aac"];
+    case "mov":
+      return [...videoCodecOnlyArgs(format), "-c:a", "aac"];
     case "webm":
       // libvpx-vp9 reproducibly crashes this ffmpeg-core.wasm build with a
       // hard WASM out-of-bounds trap -- even the fastest/cheapest
@@ -38,9 +57,7 @@ export function videoEncodeArgs(format: VideoFormatId): string[] {
       // confirmed: AAC->Opus alone crashes; AAC->Vorbis on the exact same
       // input does not) -- libvorbis is used instead, still a fully valid,
       // native WebM audio codec.
-      return ["-c:v", "libvpx", "-b:v", "0", "-crf", "32", "-c:a", "libvorbis", "-q:a", "4"];
-    case "mov":
-      return ["-c:v", "libx264", "-preset", "fast", "-c:a", "aac"];
+      return [...videoCodecOnlyArgs("webm"), "-c:a", "libvorbis", "-q:a", "4"];
   }
 }
 

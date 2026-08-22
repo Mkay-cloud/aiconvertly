@@ -387,3 +387,18 @@ export function EnhanceImageIcon({ className = "" }: IconProps) {
     </svg>
   );
 }
+
+export function EnhanceVideoIcon({ className = "" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" className={className}>
+      <rect x="2.5" y="6" width="12" height="9" rx="1.5" stroke="currentColor" strokeWidth="1.75" />
+      <path d="m6.5 8.5 4 2-4 2v-4Z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
+      <path
+        d="M18.5 4.5 19.6 7l2.5 1.1-2.5 1.1-1.1 2.5-1.1-2.5-2.5-1.1 2.5-1.1 1.1-2.5Z"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}

@@ -30,6 +30,7 @@ export const categoryToolSlugs: Record<CategoryId, string[]> = {
     "merge-videos",
     "change-video-speed",
     "video-resolution-converter",
+    "enhance-video-quality",
   ],
   // trim-video-audio works on both video and audio, so it's intentionally
   // listed under both.
