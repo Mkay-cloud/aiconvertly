@@ -1,4 +1,5 @@
 import type { Tool } from "./tools";
+import type { BlogPostMeta } from "./blog";
 import { SITE_URL, SITE_NAME, SITE_DESCRIPTION } from "./site";
 
 /**
@@ -25,6 +26,40 @@ export function toolSoftwareApplicationSchema(tool: Tool) {
       "@type": "Offer",
       price: "0",
       priceCurrency: "USD",
+    },
+  };
+}
+
+/**
+ * schema.org BlogPosting for a single article page, built entirely from
+ * that article's own frontmatter (blog.ts) -- the same "one source of
+ * truth" approach as toolSoftwareApplicationSchema above. No author
+ * byline field: articles are published under the site itself, not an
+ * individual, so both author and publisher point at the same Organization.
+ */
+export function blogPostingSchema(post: BlogPostMeta) {
+  const url = `${SITE_URL}/blog/${post.slug}`;
+  return {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: post.title,
+    description: post.description,
+    url,
+    datePublished: post.publishDate,
+    dateModified: post.publishDate,
+    author: {
+      "@type": "Organization",
+      name: SITE_NAME,
+      url: SITE_URL,
+    },
+    publisher: {
+      "@type": "Organization",
+      name: SITE_NAME,
+      url: SITE_URL,
+    },
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": url,
     },
   };
 }

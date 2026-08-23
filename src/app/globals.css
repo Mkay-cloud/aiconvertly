@@ -55,3 +55,103 @@ body {
 .animate-fade-in-up {
   animation: fade-in-up 0.5s ease-out both;
 }
+
+/*
+ * Long-form article typography for blog posts. Hand-styled with the
+ * site's own tokens (not a generic Tailwind Typography plugin) so it
+ * matches the rest of the brand exactly -- Geist headings, lime accent
+ * links, the same card/border colors used everywhere else -- rather than
+ * a plugin's default look. max-width caps line length for readability;
+ * everything else is spacing and color only, no layout, so it composes
+ * with whatever width the caller wraps it in.
+ */
+.blog-prose {
+  max-width: 68ch;
+  color: var(--color-secondary);
+  font-size: 1.0625rem;
+  line-height: 1.75;
+}
+
+.blog-prose > * + * {
+  margin-top: 1.25em;
+}
+
+.blog-prose h2 {
+  margin-top: 2em;
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--color-foreground);
+}
+
+.blog-prose h3 {
+  margin-top: 1.75em;
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--color-foreground);
+}
+
+.blog-prose p {
+  margin-top: 1.25em;
+}
+
+.blog-prose a {
+  color: var(--color-accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: color-mix(in srgb, var(--color-accent) 40%, transparent);
+}
+
+.blog-prose a:hover {
+  text-decoration-color: var(--color-accent);
+}
+
+.blog-prose strong {
+  color: var(--color-foreground);
+  font-weight: 600;
+}
+
+.blog-prose ul,
+.blog-prose ol {
+  margin-top: 1.25em;
+  padding-left: 1.375em;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+}
+
+.blog-prose ul {
+  list-style: disc;
+}
+
+.blog-prose ol {
+  list-style: decimal;
+}
+
+.blog-prose li::marker {
+  color: var(--color-accent);
+}
+
+.blog-prose code {
+  border-radius: 0.375rem;
+  border: 1px solid var(--color-card-border);
+  background: var(--color-card);
+  padding: 0.15em 0.4em;
+  font-size: 0.875em;
+  color: var(--color-foreground);
+}
+
+.blog-prose blockquote {
+  border-left: 2px solid var(--color-accent);
+  padding-left: 1.25em;
+  font-style: italic;
+}
+
+.blog-prose hr {
+  margin: 2em 0;
+  border: none;
+  border-top: 1px solid var(--color-card-border);
+}
