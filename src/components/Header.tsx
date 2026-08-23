@@ -99,6 +99,12 @@ export function Header() {
             )}
           </div>
           <Link
+            href="/blog"
+            className="text-sm font-medium text-secondary transition-colors hover:text-foreground"
+          >
+            Blog
+          </Link>
+          <Link
             href="/#tools"
             className="rounded-full bg-accent px-4 py-2 text-sm font-semibold text-accent-foreground transition-transform hover:scale-[1.03] active:scale-[0.98]"
           >
