@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { Container } from "@/components/Container";
 import { JsonLd } from "@/components/JsonLd";
 import { RelatedToolCta } from "@/components/RelatedToolCta";
-import { getBlogPost, getBlogSlugs, formatPublishDate } from "@/lib/blog";
+import { getBlogPost, getBlogSlugs, formatPublishDate, featuredImageUrl } from "@/lib/blog";
 import { getTool } from "@/lib/tools";
 import { blogPostingSchema } from "@/lib/structuredData";
 
@@ -67,6 +67,16 @@ export default async function BlogPostPage({ params }: { params: Promise<Params>
         </h1>
         <p className="max-w-2xl text-lg leading-relaxed text-secondary">{post.description}</p>
       </div>
+
+      {/* eslint-disable-next-line @next/next/no-img-element -- generated
+          at request time by a Next route handler, not a static asset. */}
+      <img
+        src={featuredImageUrl(post.slug)}
+        alt=""
+        width={1200}
+        height={630}
+        className="aspect-[1200/630] w-full rounded-2xl border border-card-border object-cover"
+      />
 
       <div className="blog-prose" dangerouslySetInnerHTML={{ __html: post.contentHtml }} />
 

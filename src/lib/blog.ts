@@ -88,6 +88,17 @@ export function getBlogPost(slug: string): BlogPost | undefined {
   return { ...meta, contentHtml };
 }
 
+/**
+ * URL for a post's generated featured image -- a stable, un-hashed route
+ * (src/app/blog/[slug]/featured-image/route.ts) shared by both the
+ * visible <img> usages (blog index cards, article banner) and, via
+ * src/app/blog/[slug]/opengraph-image.tsx, the article's OG/Twitter
+ * image. One generator, two thin routes -- see blogImage.tsx.
+ */
+export function featuredImageUrl(slug: string): string {
+  return `/blog/${slug}/featured-image`;
+}
+
 export function formatPublishDate(isoDate: string): string {
   return new Date(`${isoDate}T00:00:00Z`).toLocaleDateString("en-US", {
     year: "numeric",
