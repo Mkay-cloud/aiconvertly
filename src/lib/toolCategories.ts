@@ -34,7 +34,7 @@ export const categoryToolSlugs: Record<CategoryId, string[]> = {
   ],
   // trim-video-audio works on both video and audio, so it's intentionally
   // listed under both.
-  audio: ["audio-converter", "trim-video-audio", "merge-audio"],
+  audio: ["audio-converter", "trim-video-audio", "merge-audio", "remove-background-noise"],
 };
 
 /**

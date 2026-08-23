@@ -388,6 +388,26 @@ export function EnhanceImageIcon({ className = "" }: IconProps) {
   );
 }
 
+export function RemoveNoiseIcon({ className = "" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" className={className}>
+      <path
+        d="M4 13v-2M7.5 15v-6M11 17V7M14.5 15v-6M18 13v-2"
+        stroke="currentColor"
+        strokeWidth="1.75"
+        strokeLinecap="round"
+      />
+      <path
+        d="m17.5 5.5 4 4m0-4-4 4"
+        stroke="currentColor"
+        strokeWidth="1.75"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
 export function EnhanceVideoIcon({ className = "" }: IconProps) {
   return (
     <svg viewBox="0 0 24 24" fill="none" className={className}>
