@@ -67,6 +67,15 @@ const FIXTURES_DIR = path.join(__dirname, "fixtures");
 const DEV_SERVER_PORT = 3900;
 const DEV_SERVER_BASE_URL = `http://localhost:${DEV_SERVER_PORT}`;
 const CHROMIUM_FALLBACK_PATH = "/opt/pw-browsers/chromium";
+// Only sets the layout width and initial viewport height -- every
+// screenshot goes through screenshotFullPage() below (fullPage: true), so
+// this height doesn't cap what gets captured. It matters because it
+// doesn't: a "result" state
+// (a compressed-file summary, a Download button) routinely renders further
+// down the page than the upload form that was already on screen, past this
+// height -- a viewport-only screenshot would silently crop it out and show
+// the pre-result state instead, which is exactly what happened here before
+// fullPage was added (see the PR description for how that was tracked down).
 const VIEWPORT = { width: 1280, height: 800 };
 
 const MARKER_RE = /\[SCREENSHOT:\s*([^\]]+)\]/g;
@@ -83,7 +92,15 @@ const PRIMARY_ACTION_WORD_RE =
 // to PNG"), which would otherwise satisfy PRIMARY_ACTION_WORD_RE below and
 // get treated as the tool's primary action button instead of the dropzone
 // it actually is.
-const SKIP_BUTTON_RE = /cancel|download|remove file|move up|move down|click to browse/i;
+const SKIP_BUTTON_SUBSTRING_RE = /remove file|move up|move down|click to browse/i;
+// Exact-label skips, not substring: several tools' real primary action
+// button is labeled e.g. "Resize & download" or "Convert & download" --
+// a plain substring match on "download" here would exclude those too,
+// which is exactly what happened during this tool's own verification pass
+// (see the PR description) before this was split out. Only the standalone
+// "Download" button (the post-result download action, not something that
+// advances the tool's own state) should be excluded.
+const SKIP_BUTTON_EXACT = new Set(["cancel", "download"]);
 const MAX_EXTERNAL_SHOTS_PER_TOOL_PER_RUN = 6;
 
 // What kind of test file each tool needs -- a script-owned concern (which
@@ -122,17 +139,48 @@ function fixturePathForSlug(slug) {
   return path.join(FIXTURES_DIR, FIXTURE_BY_SLUG[slug] ?? "test-image.jpg");
 }
 
-/** Does this marker's description name one of AI Convertly's own tools? */
-function findInternalTool(description, frontmatterRelatedTool) {
-  const lower = description.toLowerCase();
+/**
+ * Does this marker name (or, failing that, does its surrounding section so
+ * far name) one of AI Convertly's own tools? `searchText` is the current
+ * H2 section's text up to and including the marker's own description --
+ * a step-by-step article typically names the tool once (in the section
+ * heading or its first step) and every later step in that section just
+ * describes the resulting UI state without repeating the name, so relying
+ * on the marker's own text alone would leave those later markers
+ * unresolved. Whichever tool name's LAST occurrence in that combined text
+ * is closest to the marker wins, so a marker that does explicitly name a
+ * different tool always overrides the section's general context, and nothing
+ * bleeds across a "## " section boundary (searchText is scoped to the
+ * current section only, so an unrelated later section -- e.g. a
+ * non-AI-Convertly desktop app's own steps -- won't inherit an earlier
+ * section's tool by mistake).
+ */
+function findInternalTool(searchText, frontmatterRelatedTool) {
+  const lower = searchText.toLowerCase();
   if (/\bai convertly\b|\bthis tool\b|\bthis site\b|\bthe site\b/.test(lower) && frontmatterRelatedTool) {
     const tool = getTool(frontmatterRelatedTool);
     if (tool) return tool;
   }
-  return (
-    tools.find((t) => lower.includes(t.name.toLowerCase())) ??
-    tools.find((t) => lower.includes(t.slug.replace(/-/g, " ")))
-  );
+  let bestTool = null;
+  let bestIndex = -1;
+  for (const t of tools) {
+    for (const needle of [t.name.toLowerCase(), t.slug.replace(/-/g, " ")]) {
+      const idx = lower.lastIndexOf(needle);
+      if (idx > bestIndex) {
+        bestIndex = idx;
+        bestTool = t;
+      }
+    }
+  }
+  return bestTool;
+}
+
+/** Text of the current "## " section up to (and not including) `markerIndex`, or from the top of the file if there's no preceding heading. */
+function sectionTextBeforeMarker(content, markerIndex) {
+  const before = content.slice(0, markerIndex);
+  const headings = [...before.matchAll(/^##\s.*$/gm)];
+  const sectionStart = headings.length > 0 ? headings[headings.length - 1].index : 0;
+  return content.slice(sectionStart, markerIndex);
 }
 
 function isReferenceFile(fileSlug) {
@@ -174,6 +222,35 @@ function startDevServer() {
   return child;
 }
 
+/**
+ * A full-page screenshot with a `position: sticky` header (this site's own
+ * <Header>, and potentially any external site's) renders it duplicated --
+ * once at its natural flow position, once "stuck" -- because
+ * Chromium's full-page capture repaints the whole scrollable area rather
+ * than a single scrolled viewport, and a sticky element's position is
+ * resolved per-repaint. Neutralizing position:sticky site-wide just for
+ * the screenshot (harmless -- nothing here needs real scroll interaction)
+ * avoids that, at the cost of not being a *perfectly* untouched capture of
+ * the live page; that tradeoff is worth it for what actually ships in an
+ * article.
+ */
+async function screenshotFullPage(page) {
+  // Targets only elements actually using CSS sticky positioning -- not
+  // position:absolute/relative generally, which plenty of this site's own
+  // (and any external site's) decorative/layout elements legitimately rely
+  // on and would visibly break if flattened to static too.
+  await page
+    .evaluate(() => {
+      for (const el of document.querySelectorAll("*")) {
+        if (getComputedStyle(el).position === "sticky") {
+          el.style.setProperty("position", "static", "important");
+        }
+      }
+    })
+    .catch(() => {});
+  return page.screenshot({ fullPage: true });
+}
+
 async function launchBrowser() {
   try {
     return await chromium.launch();
@@ -190,15 +267,84 @@ async function launchBrowser() {
   }
 }
 
-async function clickPrimaryAction(page) {
-  const buttons = await page.getByRole("button").all();
-  for (const btn of buttons) {
-    const text = (await btn.innerText().catch(() => "")).trim();
-    if (!text || SKIP_BUTTON_RE.test(text) || !PRIMARY_ACTION_WORD_RE.test(text)) continue;
-    const disabled = await btn.isDisabled().catch(() => true);
-    if (disabled) continue;
-    await btn.click().catch(() => {});
-    return true;
+/**
+ * Polls for the tool's primary action button rather than taking one
+ * snapshot right after the upload: a freshly-uploaded file (especially an
+ * image, which still has to decode to a canvas before React re-renders the
+ * button in) doesn't always have it on screen within a fixed short delay,
+ * and a one-shot check right after that delay was seen to intermittently
+ * miss a button that reliably existed a moment later -- this genuinely
+ * happened during this article's own verification pass (see the PR
+ * description), not a hypothetical race.
+ */
+/**
+ * Best-effort attempt to make the page actually match what the marker's
+ * description says, for the two adjustment shapes these articles
+ * routinely describe: switching to a "Percentage" mode/tab, and dragging
+ * a slider to a specific numeric value. Without this, a marker like
+ * "the quality slider set to around 70" or "the percentage slider set to
+ * around 50%" would just capture whatever the tool's default control
+ * state happens to be -- which for several sibling markers in the same
+ * article is the *same* default state every time, silently showing the
+ * wrong thing while still being reported as a successful capture. This
+ * is deliberately narrow (a named percentage mode, a slider matched to a
+ * number in the text) rather than a general UI-command interpreter --
+ * anything more specific than that isn't something a generic script can
+ * safely infer from prose alone.
+ */
+async function applyDescribedAdjustments(page, description) {
+  if (/percentage/i.test(description)) {
+    const tab = page.getByRole("button", { name: "Percentage", exact: true });
+    if ((await tab.count().catch(() => 0)) > 0) {
+      await tab.click().catch(() => {});
+    }
+  }
+  if (/slider/i.test(description)) {
+    const match = description.match(/\b(\d{1,3})\s*%?/);
+    if (match) {
+      const value = match[1];
+      const range = page.locator('input[type="range"]').first();
+      if ((await range.count().catch(() => 0)) > 0) {
+        await range
+          .evaluate((el, val) => {
+            // Setting .value directly wouldn't fire React's onChange (React
+            // tracks the native setter, not just the DOM attribute) -- this
+            // is the standard workaround: call the real native setter, then
+            // dispatch the events React's listener actually reacts to.
+            const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value").set;
+            setter.call(el, val);
+            el.dispatchEvent(new Event("input", { bubbles: true }));
+            el.dispatchEvent(new Event("change", { bubbles: true }));
+          }, value)
+          .catch(() => {});
+      }
+    }
+  }
+}
+
+async function clickPrimaryAction(page, timeoutMs = 8000) {
+  const deadline = Date.now() + timeoutMs;
+  while (Date.now() < deadline) {
+    const buttons = await page.getByRole("button").all();
+    for (const btn of buttons) {
+      const text = (await btn.innerText().catch(() => "")).trim();
+      if (
+        !text ||
+        SKIP_BUTTON_EXACT.has(text.toLowerCase()) ||
+        SKIP_BUTTON_SUBSTRING_RE.test(text) ||
+        !PRIMARY_ACTION_WORD_RE.test(text)
+      )
+        continue;
+      const disabled = await btn.isDisabled().catch(() => true);
+      if (disabled) continue;
+      // A real timeout (not a silently-swallowed error) -- returning
+      // `true` when the click itself never actually landed would be worse
+      // than returning `false`, since the caller takes `true` as a signal
+      // the primary action genuinely ran.
+      await btn.click({ timeout: 5000 });
+      return true;
+    }
+    await page.waitForTimeout(300);
   }
   return false;
 }
@@ -213,25 +359,102 @@ async function waitForDownloadButton(page, timeoutMs) {
 }
 
 /** Drives one of our own tool pages and returns { screenshot, note }. */
-async function captureInternal(page, tool, description) {
-  await page.setViewportSize(VIEWPORT);
-  await page.goto(`${DEV_SERVER_BASE_URL}/tools/${tool.slug}`, { waitUntil: "networkidle", timeout: 30000 });
-  const fixture = fixturePathForSlug(tool.slug);
-  await page.setInputFiles('input[type="file"]', fixture);
-  await page.waitForTimeout(600);
-
-  let note = `AI Convertly tool: ${tool.name}`;
-  if (RESULT_STATE_RE.test(description)) {
-    const clicked = await clickPrimaryAction(page);
-    if (clicked) {
-      const ready = await waitForDownloadButton(page, 30000);
-      note += ready ? " (result state)" : " (result state requested, but no Download button appeared in time -- captured whatever state was reached)";
-    } else {
-      note += " (result state requested, but no matching action button was found -- captured the upload state)";
+/**
+ * Uploads the fixture and confirms the page actually reacted to it before
+ * moving on, retrying the upload if not -- this is what actually caught
+ * and fixed a real, intermittent bug during this tool's own verification
+ * pass (see the PR description): `networkidle` after page.goto() doesn't
+ * guarantee React has finished hydrating and attached its change-handler
+ * yet, so a setInputFiles() that lands in that gap can silently no-op --
+ * the DOM input's .files does get set, but nothing about the rendered
+ * page changes, and every following step (finding buttons, capturing a
+ * "loaded" state) then operates on the un-uploaded dropzone instead.
+ * Comparing rendered body text before/after is a signal that works
+ * generically across every tool's differently-shaped post-upload UI,
+ * without needing to know each one's specific markup.
+ */
+async function uploadFixtureAndVerify(page, fixture, attempts = 3) {
+  const before = await page.locator("body").innerText().catch(() => "");
+  for (let attempt = 0; attempt < attempts; attempt++) {
+    await page.setInputFiles('input[type="file"]', fixture);
+    for (let i = 0; i < 6; i++) {
+      await page.waitForTimeout(300);
+      const after = await page.locator("body").innerText().catch(() => "");
+      if (after !== before) return true;
     }
   }
-  const screenshot = await page.screenshot();
-  return { screenshot, note };
+  return false;
+}
+
+/**
+ * Drives one internal tool page and returns { screenshot, note }. Owns its
+ * own page lifecycle (creates and closes a fresh page per *attempt*, not
+ * just per marker) and retries the entire navigation-through-upload
+ * sequence on failure, up to `maxAttempts` times, rather than trying to
+ * fix a single attempt's timing. This is deliberately the "just try the
+ * whole thing again, fresh" approach rather than one more targeted fix:
+ * during this tool's own verification pass (see the PR description), the
+ * concrete failure mode kept shifting under targeted fixes -- first a
+ * hydration race after upload, then (once that was fixed) the file input
+ * itself intermittently timing out to even appear, both against the same
+ * Next.js dev server under real script load. A full fresh retry is
+ * robust to whatever the underlying transient cause turns out to be,
+ * without needing to keep chasing a new symptom each time.
+ */
+async function captureInternal(browser, tool, description, maxAttempts = 3) {
+  const fixture = fixturePathForSlug(tool.slug);
+  let lastError;
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    const page = await browser.newPage();
+    try {
+      await page.setViewportSize(VIEWPORT);
+      await page.goto(`${DEV_SERVER_BASE_URL}/tools/${tool.slug}`, { waitUntil: "networkidle", timeout: 30000 });
+      // A small settle buffer before the first upload attempt -- networkidle
+      // reflects network activity, not whether React has hydrated and
+      // attached its event listeners yet, which is the actual gap
+      // uploadFixtureAndVerify below is guarding against.
+      await page.waitForTimeout(300);
+      await page.locator('input[type="file"]').waitFor({ state: "attached", timeout: 15000 });
+      const uploaded = await uploadFixtureAndVerify(page, fixture);
+
+      let note = `AI Convertly tool: ${tool.name}`;
+      if (!uploaded) {
+        if (attempt < maxAttempts) {
+          await page.close();
+          continue;
+        }
+        note += " (the page never visibly reacted to the upload after retrying -- captured whatever state was reached)";
+        const screenshot = await screenshotFullPage(page);
+        await page.close();
+        return { screenshot, note };
+      }
+      await applyDescribedAdjustments(page, description);
+      if (RESULT_STATE_RE.test(description)) {
+        const clicked = await clickPrimaryAction(page);
+        if (clicked) {
+          // Not every tool shows a persistent post-result "Download"
+          // button -- some (e.g. Image Resizer) trigger the browser
+          // download immediately as a side effect of the primary action,
+          // with no separate button to wait for at all. A short timeout is
+          // enough to let real client-side processing (compression,
+          // resizing, etc. on the small fixture files) finish either way,
+          // without blocking for a button some tools will simply never show.
+          const ready = await waitForDownloadButton(page, 8000);
+          note += ready ? " (result state)" : " (result state requested; captured the state shortly after clicking the primary action)";
+        } else {
+          note += " (result state requested, but no matching action button was found -- captured the upload state)";
+        }
+      }
+      const screenshot = await screenshotFullPage(page);
+      await page.close();
+      return { screenshot, note };
+    } catch (err) {
+      await page.close().catch(() => {});
+      lastError = err;
+      // loop for another attempt with a fresh page, unless this was the last one
+    }
+  }
+  throw lastError;
 }
 
 /**
@@ -303,7 +526,7 @@ async function captureExternal(page, externalTool) {
         logNote: `${externalTool.name} ${reason} while trying to reach the described state`,
       };
     }
-    const screenshot = await page.screenshot();
+    const screenshot = await screenshotFullPage(page);
     return {
       screenshot,
       note: hasFileInput
@@ -314,7 +537,7 @@ async function captureExternal(page, externalTool) {
 
   // homepage-only (desktop app, or a web app with no unauthenticated
   // interactive state, e.g. Canva's real editor)
-  const screenshot = await page.screenshot();
+  const screenshot = await screenshotFullPage(page);
   return { screenshot, note: `External tool: ${externalTool.name} (desktop app or account-gated -- homepage/marketing page only)` };
 }
 
@@ -325,24 +548,40 @@ async function processDraft(browser, filePath, summary, externalShotCounts) {
   const markers = [...content.matchAll(MARKER_RE)];
   if (markers.length === 0) return;
 
-  const page = await browser.newPage();
   let updated = content;
   let shotIndex = 0;
+  // Buffered and only flushed to disk after every marker in this draft is
+  // done, rather than written incrementally mid-loop -- writing into
+  // public/blog/ while later markers are still being captured against the
+  // *same running dev server* was found (during this tool's own
+  // verification pass -- see the PR description) to be a real source of
+  // capturing the wrong page state: Next dev's file watcher covers
+  // public/ too, and a screenshot landing there mid-run could trigger a
+  // reload that wiped out a just-clicked result state on whichever page
+  // was mid-capture at that moment, before its own screenshot was taken.
+  const pendingWrites = [];
 
   for (const match of markers) {
     const [fullMatch, description] = match;
     const trimmedDescription = description.trim();
     let replacement;
 
-    const internalTool = findInternalTool(trimmedDescription, data.relatedTool);
+    // The marker's own text is appended last so an explicit tool name
+    // there always wins over -- rather than getting shadowed by -- an
+    // earlier mention in the section (findInternalTool takes whichever
+    // name's last/rightmost occurrence in the combined text it's given).
+    const sectionContext = `${sectionTextBeforeMarker(content, match.index)} ${trimmedDescription}`;
+    const internalTool = findInternalTool(sectionContext, data.relatedTool);
     const externalTool = !internalTool ? findExternalTool(trimmedDescription) : null;
 
     try {
       if (internalTool) {
-        const { screenshot, note } = await captureInternal(page, internalTool, trimmedDescription);
+        // captureInternal owns its own page(s) -- see its own comment for
+        // why a fresh page per attempt, not one shared across markers.
+        const { screenshot, note } = await captureInternal(browser, internalTool, trimmedDescription);
         shotIndex += 1;
         const filename = `${slug}-shot-${String(shotIndex).padStart(2, "0")}.png`;
-        fs.writeFileSync(path.join(PUBLIC_BLOG_IMAGES_DIR, filename), screenshot);
+        pendingWrites.push({ filename, data: screenshot });
         replacement = `![${trimmedDescription}](${PUBLIC_BLOG_IMAGES_URL_PREFIX}/${filename})`;
         summary.captured.push({ file: slug, description: trimmedDescription, note });
       } else if (externalTool) {
@@ -351,7 +590,13 @@ async function processDraft(browser, filePath, summary, externalShotCounts) {
           replacement = `*(Screenshot unavailable: reached this run's screenshot limit for ${externalTool.name}.)*`;
           summary.skipped.push({ file: slug, description: trimmedDescription, reason: "per-tool run limit reached" });
         } else {
-          const result = await captureExternal(page, externalTool);
+          const page = await browser.newPage();
+          let result;
+          try {
+            result = await captureExternal(page, externalTool);
+          } finally {
+            await page.close();
+          }
           if (result.skipped) {
             replacement = `*(${result.publicNote})*`;
             summary.skipped.push({ file: slug, description: trimmedDescription, reason: result.logNote });
@@ -359,7 +604,7 @@ async function processDraft(browser, filePath, summary, externalShotCounts) {
             externalShotCounts.set(externalTool.name, count + 1);
             shotIndex += 1;
             const filename = `${slug}-shot-${String(shotIndex).padStart(2, "0")}.png`;
-            fs.writeFileSync(path.join(PUBLIC_BLOG_IMAGES_DIR, filename), result.screenshot);
+            pendingWrites.push({ filename, data: result.screenshot });
             replacement = `![${trimmedDescription}](${PUBLIC_BLOG_IMAGES_URL_PREFIX}/${filename})`;
             summary.captured.push({ file: slug, description: trimmedDescription, note: result.note });
             summary.externalToolsVisited.add(`${externalTool.name} (${externalTool.kind})`);
@@ -380,7 +625,9 @@ async function processDraft(browser, filePath, summary, externalShotCounts) {
     updated = updated.replace(fullMatch, replacement);
   }
 
-  await page.close();
+  for (const { filename, data: pngData } of pendingWrites) {
+    fs.writeFileSync(path.join(PUBLIC_BLOG_IMAGES_DIR, filename), pngData);
+  }
   fs.writeFileSync(filePath, matter.stringify(updated, data));
 }
 
