@@ -232,6 +232,15 @@ export const tools: Tool[] = [
     metaDescription:
       "Enhance and upscale video quality 4x for free using AI, entirely in your browser. Fast, private — no uploads, no sign-up.",
   },
+  {
+    slug: "remove-background-noise",
+    name: "Remove Background Noise from Audio",
+    shortDescription: "Clean up hum, fan noise, or voices from an audio clip.",
+    description:
+      "Remove background noise from an audio file — pick a fast filter-based Standard engine for steady hum and hiss, or an AI-Powered engine that better separates voice from complex noise, entirely in your browser.",
+    metaDescription:
+      "Remove background noise from audio for free — choose a fast standard filter or an AI-powered voice-isolating engine. Runs entirely in your browser, no uploads, no sign-up.",
+  },
 ];
 
 export function getTool(slug: string): Tool | undefined {

@@ -16,6 +16,7 @@ import {
   PdfToJpgIcon,
   RemoveAudioIcon,
   RemoveExifIcon,
+  RemoveNoiseIcon,
   RotateIcon,
   SplitIcon,
   SwapFormatIcon,
@@ -54,6 +55,7 @@ const icons: Record<string, (props: { className?: string }) => React.ReactNode> 
   "merge-audio": MergeAudioIcon,
   "video-resolution-converter": VideoResolutionIcon,
   "enhance-video-quality": EnhanceVideoIcon,
+  "remove-background-noise": RemoveNoiseIcon,
 };
 
 export function ToolCard({ tool }: { tool: Tool }) {
