@@ -15,8 +15,9 @@
  *      interactive attempt (upload a fixture file, wait for the resulting
  *      state); desktop-only tools get their homepage/marketing page, since
  *      there's no browser-drivable interactive state to capture for those.
- *   4. Save the screenshot into content/blog/ next to the article, and
- *      replace the marker in the Markdown with the embedded image.
+ *   4. Save the screenshot under public/blog/ (the only directory Next.js
+ *      serves automatically -- content/blog/ is server-side-only) and
+ *      replace the marker in the Markdown with an absolute-path embed.
  *
  * Hard limits (scripts/lib/safety.mjs), enforced in code on every external
  * page before any interaction beyond a plain screenshot: never fill in a
@@ -49,6 +50,19 @@ import { unsafeReason } from "./lib/safety.mjs";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = path.join(__dirname, "..");
 const BLOG_DIR = path.join(REPO_ROOT, "content", "blog");
+// Screenshots must be written under public/, not content/blog/: content/ is
+// a server-side-only source directory blog.ts reads via fs at request time
+// (see BLOG_DIR above) -- it's never registered as a route or copied into
+// the build's static output, so anything written there is unreachable by
+// URL no matter what path a markdown image tag points at. public/ is the
+// only directory Next.js serves automatically (same reason
+// public/models/remove-noise/gtcrn.onnx, public/ffmpeg/, etc. all live
+// there rather than under content/ or src/). Referenced in Markdown via the
+// absolute path PUBLIC_BLOG_IMAGES_URL_PREFIX, not a relative "./..." one
+// (a relative path would resolve against the *article's* URL,
+// /blog/<slug>, not this directory).
+const PUBLIC_BLOG_IMAGES_DIR = path.join(REPO_ROOT, "public", "blog");
+const PUBLIC_BLOG_IMAGES_URL_PREFIX = "/blog";
 const FIXTURES_DIR = path.join(__dirname, "fixtures");
 const DEV_SERVER_PORT = 3900;
 const DEV_SERVER_BASE_URL = `http://localhost:${DEV_SERVER_PORT}`;
@@ -328,8 +342,8 @@ async function processDraft(browser, filePath, summary, externalShotCounts) {
         const { screenshot, note } = await captureInternal(page, internalTool, trimmedDescription);
         shotIndex += 1;
         const filename = `${slug}-shot-${String(shotIndex).padStart(2, "0")}.png`;
-        fs.writeFileSync(path.join(BLOG_DIR, filename), screenshot);
-        replacement = `![${trimmedDescription}](./${filename})`;
+        fs.writeFileSync(path.join(PUBLIC_BLOG_IMAGES_DIR, filename), screenshot);
+        replacement = `![${trimmedDescription}](${PUBLIC_BLOG_IMAGES_URL_PREFIX}/${filename})`;
         summary.captured.push({ file: slug, description: trimmedDescription, note });
       } else if (externalTool) {
         const count = externalShotCounts.get(externalTool.name) ?? 0;
@@ -345,8 +359,8 @@ async function processDraft(browser, filePath, summary, externalShotCounts) {
             externalShotCounts.set(externalTool.name, count + 1);
             shotIndex += 1;
             const filename = `${slug}-shot-${String(shotIndex).padStart(2, "0")}.png`;
-            fs.writeFileSync(path.join(BLOG_DIR, filename), result.screenshot);
-            replacement = `![${trimmedDescription}](./${filename})`;
+            fs.writeFileSync(path.join(PUBLIC_BLOG_IMAGES_DIR, filename), result.screenshot);
+            replacement = `![${trimmedDescription}](${PUBLIC_BLOG_IMAGES_URL_PREFIX}/${filename})`;
             summary.captured.push({ file: slug, description: trimmedDescription, note: result.note });
             summary.externalToolsVisited.add(`${externalTool.name} (${externalTool.kind})`);
           }
@@ -371,6 +385,7 @@ async function processDraft(browser, filePath, summary, externalShotCounts) {
 }
 
 async function main() {
+  fs.mkdirSync(PUBLIC_BLOG_IMAGES_DIR, { recursive: true });
   const explicitFiles = process.argv.slice(2);
   const drafts = findDrafts(explicitFiles);
   if (drafts.length === 0) {

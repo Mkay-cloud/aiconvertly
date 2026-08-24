@@ -41,11 +41,11 @@ regardless of which group it's in.
 | 15 | Image | How to make a photo a smaller file size (for exam/visa/form uploads) | resize image in kb, image resizer in kb, jpg size reducer | image-resizer, image-compressor | Sharpest trend spike in the whole dataset (8.76x) — write honestly using existing pixel/%/quality controls, don't claim an exact-KB target since that mode doesn't exist yet | Pending |
 | 16 | Image | How to resize an image by exact pixels or percentage | resize image, resize photo, resize jpg | image-resizer | | Pending |
 | 17 | Image | How to reduce image file size without changing dimensions | reduce image size, image size reducer | image-compressor | | Pending |
-| 18 | Image | iLoveIMG alternatives: free browser-based image tools | iloveimg, i love image resizer | image-resizer, image-compressor, image-converter | Published as `iloveimg-alternatives-browser-image-tools` -- pulled forward out of order as one of the two real drafts verifying the screenshot-capture workflow (needs both an internal and an external marker) | Published |
+| 18 | Image | iLoveIMG alternatives: free browser-based image tools | iloveimg, i love image resizer | image-resizer, image-compressor, image-converter | | Pending |
 | 19 | Image | PowerToys Image Resizer alternative (for Mac/browser users) | powertoys image resizer | image-resizer | | Pending |
 | 20 | Image | How to resize images for Canva, Instagram & other social platforms | canva image resizer | image-resizer | | Pending |
 | 21 | Image | How to crop an image online | crop image online, crop photos | image-resizer | Honest informational piece; no cropping tool exists (mention the resizer resizes, it doesn't crop) | Pending |
-| 22 | Image | WebP won't open? How to convert WebP to PNG | convert webp to png, webp to png converter | webp-to-png | Published as `webp-wont-open-convert-to-png` -- pulled forward out of order as one of the two real drafts verifying the screenshot-capture workflow (internal-marker path) | Published |
+| 22 | Image | WebP won't open? How to convert WebP to PNG | convert webp to png, webp to png converter | webp-to-png | | Pending |
 | 23 | Image | How to convert WebP to JPG | webp to jpg, webp a jpg | image-converter | Dedicated tool only outputs PNG — routes to the universal converter | Pending |
 | 24 | Image | How to convert PNG to WebP (for smaller, web-optimized images) | png to webp | image-converter | Different intent from #22 — developer/webmaster angle | Pending |
 | 25 | Image | CloudConvert alternative: convert images privately in your browser | cloud converter | webp-to-png, image-converter | | Pending |
