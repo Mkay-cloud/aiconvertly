@@ -25,11 +25,17 @@ export type BlogPost = BlogPostMeta & {
   contentHtml: string;
 };
 
+// Editorial planning doc, not a published post -- lives alongside the
+// article files (content/blog/CALENDAR.md) for editors to find easily, but
+// has no frontmatter and must never be picked up by readSlugs() the way a
+// real article would be.
+const CALENDAR_FILE = "CALENDAR.md";
+
 function readSlugs(): string[] {
   if (!fs.existsSync(BLOG_DIR)) return [];
   return fs
     .readdirSync(BLOG_DIR)
-    .filter((file) => file.endsWith(".md"))
+    .filter((file) => file.endsWith(".md") && file !== CALENDAR_FILE)
     .map((file) => file.replace(/\.md$/, ""));
 }
 
