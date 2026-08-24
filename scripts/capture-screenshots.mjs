@@ -67,16 +67,26 @@ const FIXTURES_DIR = path.join(__dirname, "fixtures");
 const DEV_SERVER_PORT = 3900;
 const DEV_SERVER_BASE_URL = `http://localhost:${DEV_SERVER_PORT}`;
 const CHROMIUM_FALLBACK_PATH = "/opt/pw-browsers/chromium";
-// Only sets the layout width and initial viewport height -- every
-// screenshot goes through screenshotFullPage() below (fullPage: true), so
-// this height doesn't cap what gets captured. It matters because it
-// doesn't: a "result" state
-// (a compressed-file summary, a Download button) routinely renders further
-// down the page than the upload form that was already on screen, past this
-// height -- a viewport-only screenshot would silently crop it out and show
-// the pre-result state instead, which is exactly what happened here before
-// fullPage was added (see the PR description for how that was tracked down).
+// Only sets the layout width and initial viewport height -- it doesn't cap
+// what gets captured. Both screenshot paths below (screenshotToolContent's
+// locator.screenshot() for internal tools, screenshotFullPage's
+// page.screenshot({ fullPage: true }) for external sites) capture their
+// full target regardless of this height. That matters because a "result"
+// state (a compressed-file summary, a Download button) routinely renders
+// further down the page than the upload form that was already on screen,
+// past this height -- a viewport-only screenshot would silently crop it out
+// and show the pre-result state instead, which is exactly what happened
+// here before that was accounted for (see the PR description for how that
+// was tracked down).
 const VIEWPORT = { width: 1280, height: 800 };
+// The element ToolPageShell wraps every tool's client component in --
+// see its own comment. Scoping internal-tool screenshots to this element
+// (rather than a full-page or plain viewport capture) keeps the site's own
+// Header, Footer (which includes a full list of every tool -- see
+// src/components/Footer.tsx), and the page's breadcrumb/title out of a
+// screenshot meant to illustrate one specific UI step, not the page it
+// lives on.
+const TOOL_CONTENT_SELECTOR = "[data-tool-content]";
 
 const MARKER_RE = /\[SCREENSHOT:\s*([^\]]+)\]/g;
 
@@ -223,22 +233,23 @@ function startDevServer() {
 }
 
 /**
- * A full-page screenshot with a `position: sticky` header (this site's own
- * <Header>, and potentially any external site's) renders it duplicated --
- * once at its natural flow position, once "stuck" -- because
- * Chromium's full-page capture repaints the whole scrollable area rather
- * than a single scrolled viewport, and a sticky element's position is
- * resolved per-repaint. Neutralizing position:sticky site-wide just for
- * the screenshot (harmless -- nothing here needs real scroll interaction)
- * avoids that, at the cost of not being a *perfectly* untouched capture of
- * the live page; that tradeoff is worth it for what actually ships in an
- * article.
+ * A full-page (or, for screenshotToolContent below, a tall single-element)
+ * screenshot with a `position: sticky` ancestor (this site's own <Header>,
+ * and potentially any external site's) can render it duplicated -- once at
+ * its natural flow position, once "stuck" -- because Chromium's full-page
+ * capture repaints the whole scrollable area rather than a single scrolled
+ * viewport, and a sticky element's position is resolved per-repaint.
+ * Neutralizing position:sticky site-wide just for the screenshot (harmless
+ * -- nothing here needs real scroll interaction) avoids that, at the cost
+ * of not being a *perfectly* untouched capture of the live page; that
+ * tradeoff is worth it for what actually ships in an article.
+ *
+ * Targets only elements actually using CSS sticky positioning -- not
+ * position:absolute/relative generally, which plenty of this site's own
+ * (and any external site's) decorative/layout elements legitimately rely
+ * on and would visibly break if flattened to static too.
  */
-async function screenshotFullPage(page) {
-  // Targets only elements actually using CSS sticky positioning -- not
-  // position:absolute/relative generally, which plenty of this site's own
-  // (and any external site's) decorative/layout elements legitimately rely
-  // on and would visibly break if flattened to static too.
+async function neutralizeStickyPositioning(page) {
   await page
     .evaluate(() => {
       for (const el of document.querySelectorAll("*")) {
@@ -248,7 +259,31 @@ async function screenshotFullPage(page) {
       }
     })
     .catch(() => {});
+}
+
+async function screenshotFullPage(page) {
+  await neutralizeStickyPositioning(page);
   return page.screenshot({ fullPage: true });
+}
+
+/**
+ * Screenshots only the bounded tool-content element (see
+ * TOOL_CONTENT_SELECTOR's own comment) rather than the whole page: a
+ * full-page capture of one of our own tool pages includes the site Header,
+ * Footer (which lists every tool on the site), and the page's own
+ * breadcrumb/title above the tool -- all irrelevant to, and distracting
+ * from, the one specific UI step a given marker is illustrating. Like
+ * screenshotFullPage, Playwright's locator.screenshot() captures the
+ * element's full height regardless of what's currently in the viewport, so
+ * a result panel rendering below the initial viewport height is still
+ * captured in full, not cropped -- the earlier full-page approach's fix for
+ * that same problem (see VIEWPORT's comment) carries over here.
+ */
+async function screenshotToolContent(page) {
+  await neutralizeStickyPositioning(page);
+  const content = page.locator(TOOL_CONTENT_SELECTOR);
+  await content.waitFor({ state: "visible", timeout: 10000 });
+  return content.screenshot();
 }
 
 async function launchBrowser() {
@@ -424,7 +459,7 @@ async function captureInternal(browser, tool, description, maxAttempts = 3) {
           continue;
         }
         note += " (the page never visibly reacted to the upload after retrying -- captured whatever state was reached)";
-        const screenshot = await screenshotFullPage(page);
+        const screenshot = await screenshotToolContent(page);
         await page.close();
         return { screenshot, note };
       }
@@ -445,7 +480,7 @@ async function captureInternal(browser, tool, description, maxAttempts = 3) {
           note += " (result state requested, but no matching action button was found -- captured the upload state)";
         }
       }
-      const screenshot = await screenshotFullPage(page);
+      const screenshot = await screenshotToolContent(page);
       await page.close();
       return { screenshot, note };
     } catch (err) {

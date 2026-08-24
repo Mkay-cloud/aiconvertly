@@ -28,7 +28,15 @@ export function ToolPageShell({
           {tool.description}
         </p>
       </div>
-      {children}
+      {/*
+        data-tool-content marks the bounded region scripts/capture-screenshots.mjs
+        screenshots for an internal tool -- the dropzone/controls/result card a
+        tool's own client component renders, deliberately excluding the
+        breadcrumb/title above and the site Header/Footer around this whole
+        page. Not used by any application code; safe to rename/remove here as
+        long as the script's selector is updated to match.
+      */}
+      <div data-tool-content>{children}</div>
     </Container>
   );
 }
