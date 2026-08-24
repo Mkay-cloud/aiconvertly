@@ -35,6 +35,7 @@ Every one of these reads as generated, not written. Check for them before anythi
 - Meta description: one genuine, specific sentence describing what the article delivers, roughly 150-160 characters — not a restated title, not clickbait.
 - Headers (H2/H3) should be real questions or specific steps, not generic labels like "Overview."
 - Internal links matter: link to the specific relevant tool page with natural anchor text, and to other genuinely related articles as they exist — reinforcing the site's dedicated-page-per-search-term strategy, not working against it with vague, unlinked prose.
+- When an article names a direct competitor (another file-conversion/media tool), describe it honestly but don't hyperlink it — name-only mention, keeping visitors on-site. Genuinely non-competing reference sources (official OS/software documentation, not a rival converter) may still be linked when they support a factual claim. The site's own tools are a separate case and should always be linked normally.
 - Title and description also populate the BlogPosting structured data built into every article page — a vague title/description weakens the machine-readable layer too, not just the human-facing one.
 
 ## 5. Content Depth and Comprehensiveness
