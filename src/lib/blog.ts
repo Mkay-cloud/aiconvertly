@@ -25,18 +25,29 @@ export type BlogPost = BlogPostMeta & {
   contentHtml: string;
 };
 
-// Editorial planning doc, not a published post -- lives alongside the
-// article files (content/blog/CALENDAR.md) for editors to find easily, but
-// has no frontmatter and must never be picked up by readSlugs() the way a
-// real article would be.
-const CALENDAR_FILE = "CALENDAR.md";
+/**
+ * True for a plain editorial reference doc (e.g. content/blog/CALENDAR.md,
+ * content/blog/WRITING-GUIDE.md) -- content that lives alongside the real
+ * article files for editors to find easily, but isn't itself a published
+ * post. Distinguished by having no frontmatter at all, rather than by an
+ * ever-growing list of specific filenames: a post with *some* frontmatter
+ * but a missing required field is still a real content bug and must keep
+ * failing loudly in readPostFile below, not get silently swept into this
+ * bucket.
+ */
+function isReferenceFile(fileSlug: string): boolean {
+  const raw = fs.readFileSync(path.join(BLOG_DIR, `${fileSlug}.md`), "utf8");
+  const { data } = matter(raw);
+  return Object.keys(data).length === 0;
+}
 
 function readSlugs(): string[] {
   if (!fs.existsSync(BLOG_DIR)) return [];
   return fs
     .readdirSync(BLOG_DIR)
-    .filter((file) => file.endsWith(".md") && file !== CALENDAR_FILE)
-    .map((file) => file.replace(/\.md$/, ""));
+    .filter((file) => file.endsWith(".md"))
+    .map((file) => file.replace(/\.md$/, ""))
+    .filter((slug) => !isReferenceFile(slug));
 }
 
 function readPostFile(fileSlug: string): { meta: BlogPostMeta; content: string } {
