@@ -18,9 +18,28 @@ A JPEG's file size comes from how much the compression algorithm throws away, no
 
 ## Fastest Fix: A Dedicated "Compress to KB" Tool
 
-If you just need this done once and don't care how, the quickest route is a tool built specifically for this job. Several free sites (Passport Photo Snap's KB compressor and iLoveIMG's compression tool are two examples) let you pick a target size, then run a binary search behind the scenes: they try a JPEG quality level, check the resulting size, and adjust up or down until it lands under your target. Some fall back to shrinking pixel dimensions too if the quality alone can't reach a very small target like 20 KB.
+If you just need this done once and don't care how, the quickest route is a tool built specifically for this job: you type a number, it hands back a file close to that number. Two free ones actually do this well.
 
-That's the honest fastest option, and it's worth using if you genuinely just want this handled in one click. AI Convertly doesn't have a one-click "target KB" mode yet, but its [Image Compressor](/tools/image-compressor) does the same underlying thing (quality-based compression, watching the resulting size) manually, which usually takes two or three tries and gives you more control over how the photo actually looks.
+### Passport Photo Snap's Compress Image to KB tool
+
+1. Go to passportphotosnap.com and open the **Compress Image to KB** tool.
+2. Upload your photo. It accepts JPEG, PNG, or WebP. *(Screenshot unavailable: couldn't determine whether "uploading a photo to the Compress Image to KB tool" refers to an AI Convertly tool or a known external tool.)*
+3. Pick a preset target size, common ones are 240 KB (US DS-160), 120 KB (several EU visa services), 100 KB, 50 KB, or 20 KB (common on Indian government forms), or type your own custom number if your form's limit falls somewhere else. *(Screenshot unavailable: couldn't determine whether "the target size presets, with a custom KB value entered" refers to an AI Convertly tool or a known external tool.)*
+4. Run the compression. It's not just one quality pass. The tool runs a binary search: it tries a quality level, checks how big the result is, and keeps adjusting up or down until it lands under your target. If your target is very small, like 20 KB, and quality reduction alone can't reach it, it'll shrink the pixel dimensions too. *(Screenshot unavailable: couldn't determine whether "the tool finishing, showing the resulting file size next to your target" refers to an AI Convertly tool or a known external tool.)*
+5. Download the result, then open its properties in File Explorer or Finder and confirm the actual size matches before you upload it to the actual form. *(Screenshot unavailable: couldn't determine whether "the downloaded file's size shown in File Explorer or Finder" refers to an AI Convertly tool or a known external tool.)*
+
+### Imagera's Compress Image tool
+
+1. Go to imagera.ai and open the free **Compress Image** tool.
+2. Pick a JPG, PNG, or WebP photo from your device (on a phone, this also accepts HEIC straight from the camera roll). *(Screenshot unavailable: couldn't determine whether "picking a photo file in Imagera's compress tool" refers to an AI Convertly tool or a known external tool.)*
+3. Type the exact size you want into the target field, for example 100 KB. *(Screenshot unavailable: couldn't determine whether "typing a target KB value into the size field" refers to an AI Convertly tool or a known external tool.)*
+4. Choose your output format. JPG is the safest default for a photo like this. *(Screenshot unavailable: couldn't determine whether "the output format selector set to JPG" refers to an AI Convertly tool or a known external tool.)*
+5. Run it. The tool trims the photo to land as close to the number you typed as possible and downloads the result automatically. *(Screenshot unavailable: couldn't determine whether "the finished file downloading, with its reported size" refers to an AI Convertly tool or a known external tool.)*
+6. As with the step above, double check the downloaded file's real size afterward rather than trusting the on-screen number blindly.
+
+Both skip the guesswork entirely. You type a number and get a file close to it back. What you're trading away is control over exactly how much quality gets sacrificed to hit that number, which is where doing it manually gives you more of a say.
+
+AI Convertly doesn't have a one-click "target KB" mode yet, but its [Image Compressor](/tools/image-compressor) does the same underlying thing (quality-based compression, watching the resulting size) manually, which usually takes two or three tries and lets you see and control exactly how the photo looks at each step.
 
 ## Get There Yourself With the Image Compressor
 
