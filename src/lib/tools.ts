@@ -100,11 +100,11 @@ export const tools: Tool[] = [
   {
     slug: "image-compressor",
     name: "Image Compressor",
-    shortDescription: "Shrink file size while keeping reasonable quality.",
+    shortDescription: "Shrink file size by quality, or to an exact KB target.",
     description:
-      "Compress a photo to a smaller file size with an adjustable quality slider — see the size saved before you download.",
+      "Compress a photo with an adjustable quality slider, or set an exact target file size in KB and let the tool search for settings that reach it — see the size saved before you download.",
     metaDescription:
-      "Compress images to reduce file size for free. Fast, private, and runs entirely in your browser — no uploads, no sign-up.",
+      "Compress images to reduce file size, or target an exact size in KB, for free. Fast, private, and runs entirely in your browser — no uploads, no sign-up.",
   },
   {
     slug: "remove-exif-data",
