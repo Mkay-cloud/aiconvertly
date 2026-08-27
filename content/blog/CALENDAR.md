@@ -38,7 +38,7 @@ regardless of which group it's in.
 |---|----------|-------|------------------|--------------------|---------------|--------|
 | 13 | Audio | How to extract audio from a video file (MP4 to MP3) | mp4 to mp3 converter, video to mp3, video to audio converter | mp4-to-mp3 | Flagship — largest single keyword cluster found | Pending |
 | 14 | Audio | How to convert audio between MP3, WAV, and OGG | mp3 converter, mp3, mp3 converter free | audio-converter | | Pending |
-| 15 | Image | How to make a photo a smaller file size (for exam/visa/form uploads) | resize image in kb, image resizer in kb, jpg size reducer | image-resizer, image-compressor | Sharpest trend spike in the whole dataset (8.76x) — write honestly using existing pixel/%/quality controls, don't claim an exact-KB target since that mode doesn't exist yet | Pending |
+| 15 | Image | How to make a photo a smaller file size (for exam/visa/form uploads) | resize image in kb, image resizer in kb, jpg size reducer | image-resizer, image-compressor | Published as `how-to-resize-a-photo-to-an-exact-kb-size` -- Sharpest trend spike in the whole dataset (8.76x); written honestly using existing pixel/%/quality controls, doesn't claim an exact-KB target since that mode doesn't exist yet | Published |
 | 16 | Image | How to resize an image by exact pixels or percentage | resize image, resize photo, resize jpg | image-resizer | | Pending |
 | 17 | Image | How to reduce image file size without changing dimensions | reduce image size, image size reducer | image-compressor | | Pending |
 | 18 | Image | iLoveIMG alternatives: free browser-based image tools | iloveimg, i love image resizer | image-resizer, image-compressor, image-converter | | Pending |
