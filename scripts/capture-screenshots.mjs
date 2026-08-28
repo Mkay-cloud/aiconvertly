@@ -15,7 +15,13 @@
  *      interactive attempt (upload a fixture file, wait for the resulting
  *      state); desktop-only tools get their homepage/marketing page, since
  *      there's no browser-drivable interactive state to capture for those.
- *   4. Save the screenshot under public/blog/ (the only directory Next.js
+ *   4. If it names a native OS app instead of a website (e.g. "On a Mac,
+ *      Using Preview" -- see scripts/lib/fallbackIllustration.mjs's
+ *      findPlatform), there's no URL to ever visit, so it's illustrated
+ *      directly in that platform's own known style -- no capture attempt
+ *      at all, since one could never succeed here or anywhere else this
+ *      pipeline might run.
+ *   5. Save the screenshot under public/blog/ (the only directory Next.js
  *      serves automatically -- content/blog/ is server-side-only) and
  *      replace the marker in the Markdown with an absolute-path embed.
  *
@@ -29,11 +35,12 @@
  *
  * When a known external tool's real site genuinely can't be reached this
  * pass (a network failure, not a deliberate policy skip -- see
- * captureExternal's skipKind), a generic, tool-colored fallback
+ * captureExternal's skipKind), a real-colored, tool-styled fallback
  * illustration is drawn in its place instead of a bare text note (see
- * scripts/lib/fallbackIllustration.mjs) -- an abstract "app window" made
- * of plain shapes, never an attempt to fake the real screenshot, with an
- * honest caption underneath saying it's a stand-in.
+ * scripts/lib/fallbackIllustration.mjs) -- a generic browser-window
+ * illustration made of plain shapes and ordinary UI copy, never an
+ * attempt to fake the real screenshot. No caption is added alongside it
+ * -- it's embedded exactly like any other successful capture.
  *
  * Usage:
  *   node --experimental-strip-types scripts/capture-screenshots.mjs [file ...]
@@ -54,7 +61,8 @@ import { chromium } from "playwright";
 import { tools, getTool } from "../src/lib/tools.ts";
 import { findExternalTool } from "./lib/externalTools.mjs";
 import { unsafeReason } from "./lib/safety.mjs";
-import { renderFallbackIllustrationSVG } from "./lib/fallbackIllustration.mjs";
+import { renderFallbackIllustrationSVG, findPlatform } from "./lib/fallbackIllustration.mjs";
+import { researchToolColor } from "./lib/colorResearch.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = path.join(__dirname, "..");
@@ -173,15 +181,43 @@ function fixturePathForSlug(slug) {
  * current section only, so an unrelated later section -- e.g. a
  * non-AI-Convertly desktop app's own steps -- won't inherit an earlier
  * section's tool by mistake).
+ *
+ * Returns { tool, index } (the match's position, for the caller to weigh
+ * against findExternalTool's own match position) or null. The
+ * self-reference phrases ("AI Convertly", "this tool", ...) are folded
+ * into the same rightmost-wins scan as every other candidate below, not
+ * checked as an unconditional shortcut first -- a real bug caught during
+ * this feature's own verification pass: a section comparing AI Convertly
+ * to a competitor ("AI Convertly isn't the only site that... iLoveIMG's
+ * tool does the same job") mentions "AI Convertly" once, early, purely as
+ * a comparison, while the marker itself is squarely about the competitor
+ * named right next to it -- treating that early, incidental mention as an
+ * unconditional match resolved every marker in the section to AI
+ * Convertly's own tool instead of the competitor's, and (worse) drove
+ * that tool for a real screenshot captioned as if it showed the
+ * competitor.
  */
 function findInternalTool(searchText, frontmatterRelatedTool) {
   const lower = searchText.toLowerCase();
-  if (/\bai convertly\b|\bthis tool\b|\bthis site\b|\bthe site\b/.test(lower) && frontmatterRelatedTool) {
-    const tool = getTool(frontmatterRelatedTool);
-    if (tool) return tool;
-  }
   let bestTool = null;
   let bestIndex = -1;
+
+  if (frontmatterRelatedTool) {
+    const selfReferenceRe = /\bai convertly\b|\bthis tool\b|\bthis site\b|\bthe site\b/g;
+    let lastSelfRefIndex = -1;
+    let match;
+    while ((match = selfReferenceRe.exec(lower))) {
+      lastSelfRefIndex = match.index;
+    }
+    if (lastSelfRefIndex > bestIndex) {
+      const tool = getTool(frontmatterRelatedTool);
+      if (tool) {
+        bestTool = tool;
+        bestIndex = lastSelfRefIndex;
+      }
+    }
+  }
+
   for (const t of tools) {
     for (const needle of [t.name.toLowerCase(), t.slug.replace(/-/g, " ")]) {
       const idx = lower.lastIndexOf(needle);
@@ -191,7 +227,7 @@ function findInternalTool(searchText, frontmatterRelatedTool) {
       }
     }
   }
-  return bestTool;
+  return bestTool ? { tool: bestTool, index: bestIndex } : null;
 }
 
 /** Text of the current "## " section up to (and not including) `markerIndex`, or from the top of the file if there's no preceding heading. */
@@ -598,7 +634,15 @@ async function captureExternal(page, externalTool) {
   return { screenshot, note: `External tool: ${externalTool.name} (desktop app or account-gated -- homepage/marketing page only)` };
 }
 
-async function processDraft(browser, filePath, summary, externalShotCounts) {
+/** Caches researchToolColor()'s result per tool name so a tool with several markers only ever gets researched once per run, not once per marker. */
+async function getToolColor(browser, externalTool, toolColorCache) {
+  if (toolColorCache.has(externalTool.name)) return toolColorCache.get(externalTool.name);
+  const color = await researchToolColor(browser, externalTool.url);
+  toolColorCache.set(externalTool.name, color);
+  return color;
+}
+
+async function processDraft(browser, filePath, summary, externalShotCounts, toolColorCache) {
   const raw = fs.readFileSync(filePath, "utf8");
   const { data, content } = matter(raw);
   const slug = path.basename(filePath, ".md");
@@ -628,8 +672,24 @@ async function processDraft(browser, filePath, summary, externalShotCounts) {
     // earlier mention in the section (findInternalTool takes whichever
     // name's last/rightmost occurrence in the combined text it's given).
     const sectionContext = `${sectionTextBeforeMarker(content, match.index)} ${trimmedDescription}`;
-    const internalTool = findInternalTool(sectionContext, data.relatedTool);
-    const externalTool = !internalTool ? findExternalTool(sectionContext) : null;
+    const internalMatch = findInternalTool(sectionContext, data.relatedTool);
+    const externalMatch = findExternalTool(sectionContext);
+    // Both resolvers report where in the text their match sits; whichever
+    // is closer to the marker wins, the same rightmost-wins principle each
+    // resolver already applies internally, just extended across the
+    // internal/external boundary too -- checking internal unconditionally
+    // first (the previous behavior) let an early, incidental "AI
+    // Convertly" mention beat a competitor named right next to the marker
+    // itself. See findInternalTool's own comment for the real case this
+    // was caught against.
+    const internalWins = internalMatch && (!externalMatch || internalMatch.index >= externalMatch.index);
+    const internalTool = internalWins ? internalMatch.tool : null;
+    const externalTool = !internalWins && externalMatch ? externalMatch.tool : null;
+    // Checked last, only once neither an AI Convertly tool nor a
+    // registered website matched -- a native-OS-app marker (e.g. "On a
+    // Mac, Using Preview") is a distinct, final-fallback category, not a
+    // named competitor that should ever out-rank an actual tool match.
+    const platformTool = !internalTool && !externalTool ? findPlatform(sectionContext)?.tool ?? null : null;
 
     try {
       if (internalTool) {
@@ -657,20 +717,29 @@ async function processDraft(browser, filePath, summary, externalShotCounts) {
           if (result.skipped && result.skipKind === "unreachable") {
             // A genuine capture failure (the site just couldn't be
             // reached this pass), not a deliberate policy skip -- draw a
-            // generic, tool-colored illustration instead of leaving a
-            // bare text note in its place. See fallbackIllustration.mjs
+            // real-colored, tool-styled illustration instead of leaving
+            // a bare text note in its place. See fallbackIllustration.mjs
             // for what this deliberately does and doesn't draw.
+            //
+            // getToolColor makes one genuine researchToolColor() attempt
+            // per tool per run (cached -- never once per marker), even
+            // though captureExternal's own navigation to this exact URL
+            // just failed moments ago: in an environment where that
+            // domain really is reachable, this call succeeds and the
+            // illustration gets the tool's real color; in an environment
+            // like this sandbox where the domain is blocked outright, it
+            // fails fast (its own bounded timeout) and correctly falls
+            // through to the neutral style. Either way it's a single,
+            // deduplicated attempt, not a retry loop against a denial.
             shotIndex += 1;
             const filename = `${slug}-shot-${String(shotIndex).padStart(2, "0")}.svg`;
-            const svg = renderFallbackIllustrationSVG(externalTool.name);
+            const researchedAccent = await getToolColor(browser, externalTool, toolColorCache);
+            const svg = renderFallbackIllustrationSVG(externalTool.name, trimmedDescription, researchedAccent);
             pendingWrites.push({ filename, data: svg });
-            // Stays on one line, no blank line before the caption -- a
-            // blank line here would break out of whatever list item the
-            // marker was inside (verified against a real markdown-list
-            // marker during this feature's own verification pass: the
-            // rest of the numbered list silently stopped rendering as a
-            // list after the first blank-line caption).
-            replacement = `![${trimmedDescription}](${PUBLIC_BLOG_IMAGES_URL_PREFIX}/${filename}) *(Illustration — a live screenshot of ${externalTool.name} couldn't be captured during this pass.)*`;
+            // No caption -- just the embed, like every other successful
+            // capture in this file. Per explicit instruction: never add
+            // one alongside a fallback illustration.
+            replacement = `![${trimmedDescription}](${PUBLIC_BLOG_IMAGES_URL_PREFIX}/${filename})`;
             summary.illustrated.push({ file: slug, description: trimmedDescription, reason: result.logNote });
           } else if (result.skipped) {
             replacement = `*(${result.publicNote})*`;
@@ -685,6 +754,22 @@ async function processDraft(browser, filePath, summary, externalShotCounts) {
             summary.externalToolsVisited.add(`${externalTool.name} (${externalTool.kind})`);
           }
         }
+      } else if (platformTool) {
+        // No URL to visit at all -- a native OS app, not a website, so
+        // there's no capture attempt to make here (successful or
+        // otherwise). This is the one case where "the real screenshot
+        // can't be captured" is permanent, not just this pass: no server-
+        // side pipeline will ever be able to open Preview on macOS. Style
+        // comes from fallbackIllustration.mjs's own knowledge-based
+        // PLATFORM_STYLES entry (no color research call -- there's no
+        // site to research a color from), never neutral for a platform
+        // this confidently, publicly known.
+        shotIndex += 1;
+        const filename = `${slug}-shot-${String(shotIndex).padStart(2, "0")}.svg`;
+        const svg = renderFallbackIllustrationSVG(platformTool.name, trimmedDescription, null);
+        pendingWrites.push({ filename, data: svg });
+        replacement = `![${trimmedDescription}](${PUBLIC_BLOG_IMAGES_URL_PREFIX}/${filename})`;
+        summary.illustrated.push({ file: slug, description: trimmedDescription, reason: `${platformTool.name}: native app, no browser-drivable target -- illustrated directly` });
       } else {
         replacement = `*(Screenshot unavailable: couldn't determine whether "${trimmedDescription}" refers to an AI Convertly tool or a known external tool.)*`;
         summary.skipped.push({ file: slug, description: trimmedDescription, reason: "unresolved target" });
@@ -717,6 +802,7 @@ async function main() {
 
   const summary = { captured: [], illustrated: [], skipped: [], externalToolsVisited: new Set() };
   const externalShotCounts = new Map();
+  const toolColorCache = new Map();
 
   const needsInternal = drafts.some((f) => MARKER_RE.test(fs.readFileSync(f, "utf8")));
   MARKER_RE.lastIndex = 0;
@@ -732,7 +818,7 @@ async function main() {
   try {
     for (const filePath of drafts) {
       console.log(`Processing ${path.relative(REPO_ROOT, filePath)}...`);
-      await processDraft(browser, filePath, summary, externalShotCounts);
+      await processDraft(browser, filePath, summary, externalShotCounts, toolColorCache);
     }
   } finally {
     await browser.close();

@@ -1,11 +1,14 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540">
-  <rect width="960" height="540" fill="#E7E9EE" />
-  <rect x="0" y="0" width="960" height="10" fill="#8B93A1" />
-  <rect x="140" y="110" width="680" height="300" rx="20" fill="#FFFFFF" stroke="#E7E9EE" stroke-width="2" />
-  <circle cx="230" cy="260" r="34" fill="none" stroke="#8B93A1" stroke-width="6" />
-  <path d="M 230 274 L 230 246 M 216 258 L 230 244 L 244 258" fill="none" stroke="#8B93A1" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" />
-  <rect x="300" y="222" width="480" height="14" rx="7" fill="#E7E9EE" />
-  <rect x="300" y="250" width="336" height="14" rx="7" fill="#E7E9EE" />
-  <rect x="300" y="284" width="150" height="36" rx="18" fill="#8B93A1" />
-  <text x="480" y="466" text-anchor="middle" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="24" fill="#3A4150">Imagera</text>
+  <rect width="960" height="540" fill="#EEF0F3" />
+  <rect x="90" y="78" width="780" height="372" rx="16" fill="#FFFFFF" />
+  <path d="M 90 94 A 16 16 0 0 1 106 78 L 854 78 A 16 16 0 0 1 870 94 L 870 112 L 90 112 Z" fill="#E2E5EA" />
+  <circle cx="114" cy="95" r="6" fill="#ED6A5E" />
+  <circle cx="136" cy="95" r="6" fill="#F4BF4F" />
+  <circle cx="158" cy="95" r="6" fill="#61C454" />
+  <circle cx="172" cy="281" r="42" fill="#8B93A1" />
+  <rect x="156" y="269" width="32" height="24" rx="6" fill="none" stroke="#FFFFFF" stroke-width="3" />
+  <path d="M 166 279 L 172 286 L 178 279" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+  <text x="238" y="269" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="24" font-weight="700" fill="#3A4150">Choose an option</text>
+  <text x="238" y="301" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="16" font-weight="400" fill="#3A4150">50 KB · 100 KB · 200 KB</text>
+  <text x="480" y="494" text-anchor="middle" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="22" fill="#5A6070">Imagera</text>
 </svg>
