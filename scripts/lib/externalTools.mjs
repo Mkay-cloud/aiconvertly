@@ -26,6 +26,11 @@ export const EXTERNAL_TOOLS = [
   { match: ["powertoys"], name: "PowerToys Image Resizer", url: "https://learn.microsoft.com/en-us/windows/powertoys/image-resizer", kind: "homepage-only" },
   { match: ["canva"], name: "Canva", url: "https://www.canva.com", kind: "homepage-only" },
   { match: ["cloudconvert", "cloud convert"], name: "CloudConvert", url: "https://cloudconvert.com", kind: "web-interactive" },
+  // URL is the exact one the how-to-open-heic-file article itself already
+  // links to as the store listing -- not a guessed/constructed one. It's
+  // a plain listing/marketing page (a Get/Install button, no file upload
+  // of any kind), so homepage-only.
+  { match: ["microsoft store", "heif image extensions"], name: "Microsoft Store", url: "https://apps.microsoft.com/detail/9pmmsr1cgpwg", kind: "homepage-only" },
   // Only the bare domain the article itself names -- these two aren't
   // reachable from this sandbox (blocked by its own network policy, same
   // as iLoveIMG below), so there's no way to confirm a specific tool-page
@@ -48,6 +53,16 @@ export const EXTERNAL_TOOLS = [
  * the given text wins, mirroring findInternalTool exactly, so an explicit
  * name later in the text always overrides an earlier one.
  */
+/**
+ * Returns { tool, index } for whichever registered tool matched last/
+ * rightmost, or null if none did. Exposing the match's position (not just
+ * the tool) lets the caller compare it against findInternalTool's own
+ * match position -- see that function's comment for why that comparison
+ * matters (a section that mentions AI Convertly only in passing, while
+ * naming an external tool much closer to the marker, must not resolve to
+ * AI Convertly just because internal resolution used to be checked
+ * unconditionally first).
+ */
 export function findExternalTool(searchText) {
   const lower = searchText.toLowerCase();
   let bestTool = null;
@@ -61,5 +76,5 @@ export function findExternalTool(searchText) {
       }
     }
   }
-  return bestTool;
+  return bestTool ? { tool: bestTool, index: bestIndex } : null;
 }

@@ -55,6 +55,7 @@ import { tools, getTool } from "../src/lib/tools.ts";
 import { findExternalTool } from "./lib/externalTools.mjs";
 import { unsafeReason } from "./lib/safety.mjs";
 import { renderFallbackIllustrationSVG } from "./lib/fallbackIllustration.mjs";
+import { researchToolColor } from "./lib/colorResearch.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = path.join(__dirname, "..");
@@ -173,15 +174,43 @@ function fixturePathForSlug(slug) {
  * current section only, so an unrelated later section -- e.g. a
  * non-AI-Convertly desktop app's own steps -- won't inherit an earlier
  * section's tool by mistake).
+ *
+ * Returns { tool, index } (the match's position, for the caller to weigh
+ * against findExternalTool's own match position) or null. The
+ * self-reference phrases ("AI Convertly", "this tool", ...) are folded
+ * into the same rightmost-wins scan as every other candidate below, not
+ * checked as an unconditional shortcut first -- a real bug caught during
+ * this feature's own verification pass: a section comparing AI Convertly
+ * to a competitor ("AI Convertly isn't the only site that... iLoveIMG's
+ * tool does the same job") mentions "AI Convertly" once, early, purely as
+ * a comparison, while the marker itself is squarely about the competitor
+ * named right next to it -- treating that early, incidental mention as an
+ * unconditional match resolved every marker in the section to AI
+ * Convertly's own tool instead of the competitor's, and (worse) drove
+ * that tool for a real screenshot captioned as if it showed the
+ * competitor.
  */
 function findInternalTool(searchText, frontmatterRelatedTool) {
   const lower = searchText.toLowerCase();
-  if (/\bai convertly\b|\bthis tool\b|\bthis site\b|\bthe site\b/.test(lower) && frontmatterRelatedTool) {
-    const tool = getTool(frontmatterRelatedTool);
-    if (tool) return tool;
-  }
   let bestTool = null;
   let bestIndex = -1;
+
+  if (frontmatterRelatedTool) {
+    const selfReferenceRe = /\bai convertly\b|\bthis tool\b|\bthis site\b|\bthe site\b/g;
+    let lastSelfRefIndex = -1;
+    let match;
+    while ((match = selfReferenceRe.exec(lower))) {
+      lastSelfRefIndex = match.index;
+    }
+    if (lastSelfRefIndex > bestIndex) {
+      const tool = getTool(frontmatterRelatedTool);
+      if (tool) {
+        bestTool = tool;
+        bestIndex = lastSelfRefIndex;
+      }
+    }
+  }
+
   for (const t of tools) {
     for (const needle of [t.name.toLowerCase(), t.slug.replace(/-/g, " ")]) {
       const idx = lower.lastIndexOf(needle);
@@ -191,7 +220,7 @@ function findInternalTool(searchText, frontmatterRelatedTool) {
       }
     }
   }
-  return bestTool;
+  return bestTool ? { tool: bestTool, index: bestIndex } : null;
 }
 
 /** Text of the current "## " section up to (and not including) `markerIndex`, or from the top of the file if there's no preceding heading. */
@@ -598,7 +627,15 @@ async function captureExternal(page, externalTool) {
   return { screenshot, note: `External tool: ${externalTool.name} (desktop app or account-gated -- homepage/marketing page only)` };
 }
 
-async function processDraft(browser, filePath, summary, externalShotCounts) {
+/** Caches researchToolColor()'s result per tool name so a tool with several markers only ever gets researched once per run, not once per marker. */
+async function getToolColor(browser, externalTool, toolColorCache) {
+  if (toolColorCache.has(externalTool.name)) return toolColorCache.get(externalTool.name);
+  const color = await researchToolColor(browser, externalTool.url);
+  toolColorCache.set(externalTool.name, color);
+  return color;
+}
+
+async function processDraft(browser, filePath, summary, externalShotCounts, toolColorCache) {
   const raw = fs.readFileSync(filePath, "utf8");
   const { data, content } = matter(raw);
   const slug = path.basename(filePath, ".md");
@@ -628,8 +665,19 @@ async function processDraft(browser, filePath, summary, externalShotCounts) {
     // earlier mention in the section (findInternalTool takes whichever
     // name's last/rightmost occurrence in the combined text it's given).
     const sectionContext = `${sectionTextBeforeMarker(content, match.index)} ${trimmedDescription}`;
-    const internalTool = findInternalTool(sectionContext, data.relatedTool);
-    const externalTool = !internalTool ? findExternalTool(sectionContext) : null;
+    const internalMatch = findInternalTool(sectionContext, data.relatedTool);
+    const externalMatch = findExternalTool(sectionContext);
+    // Both resolvers report where in the text their match sits; whichever
+    // is closer to the marker wins, the same rightmost-wins principle each
+    // resolver already applies internally, just extended across the
+    // internal/external boundary too -- checking internal unconditionally
+    // first (the previous behavior) let an early, incidental "AI
+    // Convertly" mention beat a competitor named right next to the marker
+    // itself. See findInternalTool's own comment for the real case this
+    // was caught against.
+    const internalWins = internalMatch && (!externalMatch || internalMatch.index >= externalMatch.index);
+    const internalTool = internalWins ? internalMatch.tool : null;
+    const externalTool = !internalWins && externalMatch ? externalMatch.tool : null;
 
     try {
       if (internalTool) {
@@ -657,12 +705,24 @@ async function processDraft(browser, filePath, summary, externalShotCounts) {
           if (result.skipped && result.skipKind === "unreachable") {
             // A genuine capture failure (the site just couldn't be
             // reached this pass), not a deliberate policy skip -- draw a
-            // generic, tool-colored illustration instead of leaving a
-            // bare text note in its place. See fallbackIllustration.mjs
+            // real-colored, tool-styled illustration instead of leaving
+            // a bare text note in its place. See fallbackIllustration.mjs
             // for what this deliberately does and doesn't draw.
+            //
+            // getToolColor makes one genuine researchToolColor() attempt
+            // per tool per run (cached -- never once per marker), even
+            // though captureExternal's own navigation to this exact URL
+            // just failed moments ago: in an environment where that
+            // domain really is reachable, this call succeeds and the
+            // illustration gets the tool's real color; in an environment
+            // like this sandbox where the domain is blocked outright, it
+            // fails fast (its own bounded timeout) and correctly falls
+            // through to the neutral style. Either way it's a single,
+            // deduplicated attempt, not a retry loop against a denial.
             shotIndex += 1;
             const filename = `${slug}-shot-${String(shotIndex).padStart(2, "0")}.svg`;
-            const svg = renderFallbackIllustrationSVG(externalTool.name, trimmedDescription);
+            const researchedAccent = await getToolColor(browser, externalTool, toolColorCache);
+            const svg = renderFallbackIllustrationSVG(externalTool.name, trimmedDescription, researchedAccent);
             pendingWrites.push({ filename, data: svg });
             // Stays on one line, no blank line before the caption -- a
             // blank line here would break out of whatever list item the
@@ -717,6 +777,7 @@ async function main() {
 
   const summary = { captured: [], illustrated: [], skipped: [], externalToolsVisited: new Set() };
   const externalShotCounts = new Map();
+  const toolColorCache = new Map();
 
   const needsInternal = drafts.some((f) => MARKER_RE.test(fs.readFileSync(f, "utf8")));
   MARKER_RE.lastIndex = 0;
@@ -732,7 +793,7 @@ async function main() {
   try {
     for (const filePath of drafts) {
       console.log(`Processing ${path.relative(REPO_ROOT, filePath)}...`);
-      await processDraft(browser, filePath, summary, externalShotCounts);
+      await processDraft(browser, filePath, summary, externalShotCounts, toolColorCache);
     }
   } finally {
     await browser.close();
