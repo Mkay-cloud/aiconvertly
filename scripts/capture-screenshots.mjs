@@ -27,6 +27,14 @@
  * broken image, and never something that silently blocks the rest of the
  * article.
  *
+ * When a known external tool's real site genuinely can't be reached this
+ * pass (a network failure, not a deliberate policy skip -- see
+ * captureExternal's skipKind), a generic, tool-colored fallback
+ * illustration is drawn in its place instead of a bare text note (see
+ * scripts/lib/fallbackIllustration.mjs) -- an abstract "app window" made
+ * of plain shapes, never an attempt to fake the real screenshot, with an
+ * honest caption underneath saying it's a stand-in.
+ *
  * Usage:
  *   node --experimental-strip-types scripts/capture-screenshots.mjs [file ...]
  * With no arguments, every real article in content/blog/ (anything with
@@ -46,6 +54,7 @@ import { chromium } from "playwright";
 import { tools, getTool } from "../src/lib/tools.ts";
 import { findExternalTool } from "./lib/externalTools.mjs";
 import { unsafeReason } from "./lib/safety.mjs";
+import { renderFallbackIllustrationSVG } from "./lib/fallbackIllustration.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = path.join(__dirname, "..");
@@ -509,6 +518,12 @@ async function captureExternal(page, externalTool) {
     const message = err instanceof Error ? err.message.split("\n")[0] : String(err);
     return {
       skipped: true,
+      // "unreachable" (this case and the bad-response case below) is what
+      // makes processDraft generate a fallback illustration instead of a
+      // bare text note -- unlike "unsafe" below, this is a genuine capture
+      // failure (the site might load fine on a future run), not a
+      // deliberate policy skip.
+      skipKind: "unreachable",
       publicNote: `Screenshot pending: ${externalTool.name}'s site couldn't be reached during this pass.`,
       logNote: `couldn't reach ${externalTool.name} (${message})`,
     };
@@ -526,6 +541,7 @@ async function captureExternal(page, externalTool) {
     const status = response ? response.status() : "no response";
     return {
       skipped: true,
+      skipKind: "unreachable",
       publicNote: `Screenshot pending: ${externalTool.name}'s site didn't load correctly during this pass.`,
       logNote: `${externalTool.name} didn't load correctly (status: ${status})`,
     };
@@ -536,6 +552,11 @@ async function captureExternal(page, externalTool) {
   if (reason) {
     return {
       skipped: true,
+      // Deliberate policy skip, not a capture failure -- the page loaded
+      // fine, we're choosing not to proceed past a CAPTCHA/payment/signup
+      // wall. No fallback illustration for this one: an illustration would
+      // wrongly suggest we assessed what's behind that wall.
+      skipKind: "unsafe",
       publicNote: `Screenshot skipped: reaching this state on ${externalTool.name} isn't something this workflow does automatically.`,
       logNote: `${externalTool.name} ${reason} before any content could be safely captured`,
     };
@@ -557,6 +578,7 @@ async function captureExternal(page, externalTool) {
     if (reason) {
       return {
         skipped: true,
+        skipKind: "unsafe",
         publicNote: `Screenshot skipped: reaching this state on ${externalTool.name} isn't something this workflow does automatically.`,
         logNote: `${externalTool.name} ${reason} while trying to reach the described state`,
       };
@@ -632,7 +654,25 @@ async function processDraft(browser, filePath, summary, externalShotCounts) {
           } finally {
             await page.close();
           }
-          if (result.skipped) {
+          if (result.skipped && result.skipKind === "unreachable") {
+            // A genuine capture failure (the site just couldn't be
+            // reached this pass), not a deliberate policy skip -- draw a
+            // generic, tool-colored illustration instead of leaving a
+            // bare text note in its place. See fallbackIllustration.mjs
+            // for what this deliberately does and doesn't draw.
+            shotIndex += 1;
+            const filename = `${slug}-shot-${String(shotIndex).padStart(2, "0")}.svg`;
+            const svg = renderFallbackIllustrationSVG(externalTool.name);
+            pendingWrites.push({ filename, data: svg });
+            // Stays on one line, no blank line before the caption -- a
+            // blank line here would break out of whatever list item the
+            // marker was inside (verified against a real markdown-list
+            // marker during this feature's own verification pass: the
+            // rest of the numbered list silently stopped rendering as a
+            // list after the first blank-line caption).
+            replacement = `![${trimmedDescription}](${PUBLIC_BLOG_IMAGES_URL_PREFIX}/${filename}) *(Illustration — a live screenshot of ${externalTool.name} couldn't be captured during this pass.)*`;
+            summary.illustrated.push({ file: slug, description: trimmedDescription, reason: result.logNote });
+          } else if (result.skipped) {
             replacement = `*(${result.publicNote})*`;
             summary.skipped.push({ file: slug, description: trimmedDescription, reason: result.logNote });
           } else {
@@ -675,7 +715,7 @@ async function main() {
     return;
   }
 
-  const summary = { captured: [], skipped: [], externalToolsVisited: new Set() };
+  const summary = { captured: [], illustrated: [], skipped: [], externalToolsVisited: new Set() };
   const externalShotCounts = new Map();
 
   const needsInternal = drafts.some((f) => MARKER_RE.test(fs.readFileSync(f, "utf8")));
@@ -708,6 +748,8 @@ async function main() {
   console.log("\n=== Screenshot capture summary ===");
   console.log(`Captured: ${summary.captured.length}`);
   for (const c of summary.captured) console.log(`  [${c.file}] ${c.description} -- ${c.note}`);
+  console.log(`Illustrated (fallback, real capture unreachable): ${summary.illustrated.length}`);
+  for (const i of summary.illustrated) console.log(`  [${i.file}] ${i.description} -- ${i.reason}`);
   console.log(`Skipped: ${summary.skipped.length}`);
   for (const s of summary.skipped) console.log(`  [${s.file}] ${s.description} -- ${s.reason}`);
   console.log(`External tools visited: ${summary.externalToolsVisited.size ? [...summary.externalToolsVisited].join(", ") : "(none)"}`);
