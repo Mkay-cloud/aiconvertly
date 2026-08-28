@@ -607,7 +607,7 @@ async function processDraft(browser, filePath, summary, externalShotCounts) {
     // name's last/rightmost occurrence in the combined text it's given).
     const sectionContext = `${sectionTextBeforeMarker(content, match.index)} ${trimmedDescription}`;
     const internalTool = findInternalTool(sectionContext, data.relatedTool);
-    const externalTool = !internalTool ? findExternalTool(trimmedDescription) : null;
+    const externalTool = !internalTool ? findExternalTool(sectionContext) : null;
 
     try {
       if (internalTool) {
