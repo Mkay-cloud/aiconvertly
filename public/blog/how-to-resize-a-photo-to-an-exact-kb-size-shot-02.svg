@@ -2,10 +2,11 @@
   <rect width="960" height="540" fill="#E7E9EE" />
   <rect x="0" y="0" width="960" height="10" fill="#8B93A1" />
   <rect x="140" y="110" width="680" height="300" rx="20" fill="#FFFFFF" stroke="#E7E9EE" stroke-width="2" />
-  <circle cx="230" cy="260" r="34" fill="none" stroke="#8B93A1" stroke-width="6" />
-  <path d="M 230 274 L 230 246 M 216 258 L 230 244 L 244 258" fill="none" stroke="#8B93A1" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" />
-  <rect x="300" y="222" width="480" height="14" rx="7" fill="#E7E9EE" />
-  <rect x="300" y="250" width="336" height="14" rx="7" fill="#E7E9EE" />
-  <rect x="300" y="284" width="150" height="36" rx="18" fill="#8B93A1" />
+  <rect x="184" y="238" width="92" height="44" rx="10" fill="none" stroke="#8B93A1" stroke-width="5" />
+  <path d="M 251 256 L 258 264 L 265 256" fill="none" stroke="#8B93A1" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+  <rect x="300" y="304" width="56" height="26" rx="13" fill="#8B93A1" stroke="#8B93A1" stroke-width="2" />
+  <rect x="366" y="304" width="56" height="26" rx="13" fill="none" stroke="#E7E9EE" stroke-width="2" />
+  <rect x="432" y="304" width="56" height="26" rx="13" fill="none" stroke="#E7E9EE" stroke-width="2" />
+  
   <text x="480" y="466" text-anchor="middle" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="24" fill="#3A4150">Passport Photo Snap</text>
 </svg>

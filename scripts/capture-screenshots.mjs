@@ -662,7 +662,7 @@ async function processDraft(browser, filePath, summary, externalShotCounts) {
             // for what this deliberately does and doesn't draw.
             shotIndex += 1;
             const filename = `${slug}-shot-${String(shotIndex).padStart(2, "0")}.svg`;
-            const svg = renderFallbackIllustrationSVG(externalTool.name);
+            const svg = renderFallbackIllustrationSVG(externalTool.name, trimmedDescription);
             pendingWrites.push({ filename, data: svg });
             // Stays on one line, no blank line before the caption -- a
             // blank line here would break out of whatever list item the
