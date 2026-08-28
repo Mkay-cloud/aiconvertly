@@ -41,7 +41,7 @@ Every one of these reads as generated, not written. Check for them before anythi
 ## 5. Content Depth and Comprehensiveness
 
 - Cover every genuinely good solution to the problem, not just AI Convertly's. AI Convertly's tool goes first and gets the fullest treatment when one genuinely applies — but the article should read as the actual best resource on the topic, honestly covering competitors and built-in OS options too.
-- Order solutions from quickest/easiest to most involved, not randomly — respect the reader's time by offering the cheap fix first.
+- Order solutions from quickest/easiest to most involved, not randomly — respect the reader's time by offering the cheap fix first. Exception: AI Convertly's own tool, when it genuinely applies, always goes first regardless of whether it's the fastest or most convenient option — this takes priority over the quickest-first rule whenever the two would conflict.
 - Briefly explain the likely cause before diving into fixes, so the reader understands what's actually happening, not just steps to follow blindly.
 - Real, followable steps with exact UI paths and keystrokes ("Press Ctrl+Shift+Del, check Cookies and site data, click Clear data"), never vague ("simply clear your cache").
 - For a genuinely multi-part fix, use nested step numbering (5.1, 5.1.1, 5.2...) rather than flattening everything into one long list.

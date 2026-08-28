@@ -26,10 +26,40 @@ export const EXTERNAL_TOOLS = [
   { match: ["powertoys"], name: "PowerToys Image Resizer", url: "https://learn.microsoft.com/en-us/windows/powertoys/image-resizer", kind: "homepage-only" },
   { match: ["canva"], name: "Canva", url: "https://www.canva.com", kind: "homepage-only" },
   { match: ["cloudconvert", "cloud convert"], name: "CloudConvert", url: "https://cloudconvert.com", kind: "web-interactive" },
+  // Only the bare domain the article itself names -- these two aren't
+  // reachable from this sandbox (blocked by its own network policy, same
+  // as iLoveIMG below), so there's no way to confirm a specific tool-page
+  // sub-path the way iLoveIMG's or FreeConvert's URL was confirmed. The
+  // homepage is the honest choice: not a guessed sub-path, just what the
+  // article's own "go to x.com" instruction gives.
+  { match: ["passport photo snap", "passportphotosnap"], name: "Passport Photo Snap", url: "https://passportphotosnap.com", kind: "web-interactive" },
+  { match: ["imagera"], name: "Imagera", url: "https://imagera.ai", kind: "web-interactive" },
 ];
 
-/** Case-insensitive match of a marker's description against the registry above. */
-export function findExternalTool(description) {
-  const lower = description.toLowerCase();
-  return EXTERNAL_TOOLS.find((tool) => tool.match.some((m) => lower.includes(m)));
+/**
+ * Matches a marker's tool against the registry above, searching the whole
+ * combined text the caller gives it (typically the current section's text
+ * up through the marker, same as findInternalTool in capture-screenshots.mjs)
+ * rather than just the marker's own isolated description -- a marker like
+ * "uploading a photo to the Compress Image to KB tool" doesn't re-state
+ * "Passport Photo Snap" itself, relying on an earlier line in the same
+ * section ("Go to passportphotosnap.com...") to establish which tool it's
+ * about. Whichever registered tool's match string occurs LAST/rightmost in
+ * the given text wins, mirroring findInternalTool exactly, so an explicit
+ * name later in the text always overrides an earlier one.
+ */
+export function findExternalTool(searchText) {
+  const lower = searchText.toLowerCase();
+  let bestTool = null;
+  let bestIndex = -1;
+  for (const tool of EXTERNAL_TOOLS) {
+    for (const needle of tool.match) {
+      const idx = lower.lastIndexOf(needle);
+      if (idx > bestIndex) {
+        bestIndex = idx;
+        bestTool = tool;
+      }
+    }
+  }
+  return bestTool;
 }
