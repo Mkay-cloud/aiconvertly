@@ -29,11 +29,12 @@
  *
  * When a known external tool's real site genuinely can't be reached this
  * pass (a network failure, not a deliberate policy skip -- see
- * captureExternal's skipKind), a generic, tool-colored fallback
+ * captureExternal's skipKind), a real-colored, tool-styled fallback
  * illustration is drawn in its place instead of a bare text note (see
- * scripts/lib/fallbackIllustration.mjs) -- an abstract "app window" made
- * of plain shapes, never an attempt to fake the real screenshot, with an
- * honest caption underneath saying it's a stand-in.
+ * scripts/lib/fallbackIllustration.mjs) -- a generic browser-window
+ * illustration made of plain shapes and ordinary UI copy, never an
+ * attempt to fake the real screenshot. No caption is added alongside it
+ * -- it's embedded exactly like any other successful capture.
  *
  * Usage:
  *   node --experimental-strip-types scripts/capture-screenshots.mjs [file ...]
@@ -724,13 +725,10 @@ async function processDraft(browser, filePath, summary, externalShotCounts, tool
             const researchedAccent = await getToolColor(browser, externalTool, toolColorCache);
             const svg = renderFallbackIllustrationSVG(externalTool.name, trimmedDescription, researchedAccent);
             pendingWrites.push({ filename, data: svg });
-            // Stays on one line, no blank line before the caption -- a
-            // blank line here would break out of whatever list item the
-            // marker was inside (verified against a real markdown-list
-            // marker during this feature's own verification pass: the
-            // rest of the numbered list silently stopped rendering as a
-            // list after the first blank-line caption).
-            replacement = `![${trimmedDescription}](${PUBLIC_BLOG_IMAGES_URL_PREFIX}/${filename}) *(Illustration — a live screenshot of ${externalTool.name} couldn't be captured during this pass.)*`;
+            // No caption -- just the embed, like every other successful
+            // capture in this file. Per explicit instruction: never add
+            // one alongside a fallback illustration.
+            replacement = `![${trimmedDescription}](${PUBLIC_BLOG_IMAGES_URL_PREFIX}/${filename})`;
             summary.illustrated.push({ file: slug, description: trimmedDescription, reason: result.logNote });
           } else if (result.skipped) {
             replacement = `*(${result.publicNote})*`;

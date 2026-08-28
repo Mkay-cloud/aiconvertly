@@ -36,7 +36,7 @@ If you're opening the file on a Mac, iPad, or another iPhone, HEIC just works. I
 
 If you're on Windows 10 or 11 and you get HEIC photos regularly, it's worth teaching your PC to understand the format permanently instead of converting files one at a time.
 
-1. Open the Microsoft Store and search for **HEIF Image Extensions**, or go straight to its [store listing](https://apps.microsoft.com/detail/9pmmsr1cgpwg). ![the Microsoft Store's HEIF Image Extensions listing page, with the Get option visible](/blog/how-to-open-heic-file-shot-01.svg) *(Illustration — a live screenshot of Microsoft Store couldn't be captured during this pass.)*
+1. Open the Microsoft Store and search for **HEIF Image Extensions**, or go straight to its [store listing](https://apps.microsoft.com/detail/9pmmsr1cgpwg). ![the Microsoft Store's HEIF Image Extensions listing page, with the Get option visible](/blog/how-to-open-heic-file-shot-01.svg)
 2. Click **Get** (or **Install**) to add it. It's a free download from Microsoft.
 3. If Windows also offers the companion **HEVC Video Extensions** at the same time, install that too. Some HEIC files use HEVC-based encoding internally, and without it you can end up with a generic file icon instead of a real thumbnail.
 4. Once both are installed, HEIC photos will show real thumbnails in File Explorer and open directly in the Photos app, the same as a JPEG would, with no further steps.
@@ -47,10 +47,10 @@ This is the better option if HEIC keeps showing up in your downloads and email a
 
 AI Convertly isn't the only site that converts HEIC to JPG in the browser. iLoveIMG's Convert to JPG tool does the same basic job and is worth knowing about as a backup.
 
-1. Go to iloveimg.com and open its **Convert to JPG** tool. ![iLoveIMG's Convert to JPG tool page](/blog/how-to-open-heic-file-shot-02.svg) *(Illustration — a live screenshot of iLoveIMG couldn't be captured during this pass.)*
-2. Click **Select images** (or drag your HEIC photo into the drop zone). ![clicking Select images or dragging a HEIC photo into iLoveIMG's drop zone](/blog/how-to-open-heic-file-shot-03.svg) *(Illustration — a live screenshot of iLoveIMG couldn't be captured during this pass.)*
-3. Choose a conversion quality. "Recommended Quality" is free and covers most photos fine; the "High Quality" option that keeps the original pixel dimensions is marked **Premium**, meaning it sits behind a paid plan. ![choosing a conversion quality in iLoveIMG, with Recommended Quality free and High Quality marked Premium](/blog/how-to-open-heic-file-shot-04.svg) *(Illustration — a live screenshot of iLoveIMG couldn't be captured during this pass.)*
-4. Click **Convert**, wait for it to process, then download the result. ![clicking Convert in iLoveIMG and downloading the result](/blog/how-to-open-heic-file-shot-05.svg) *(Illustration — a live screenshot of iLoveIMG couldn't be captured during this pass.)*
+1. Go to iloveimg.com and open its **Convert to JPG** tool. ![iLoveIMG's Convert to JPG tool page](/blog/how-to-open-heic-file-shot-02.svg)
+2. Click **Select images** (or drag your HEIC photo into the drop zone). ![clicking Select images or dragging a HEIC photo into iLoveIMG's drop zone](/blog/how-to-open-heic-file-shot-03.svg)
+3. Choose a conversion quality. "Recommended Quality" is free and covers most photos fine; the "High Quality" option that keeps the original pixel dimensions is marked **Premium**, meaning it sits behind a paid plan. ![choosing a conversion quality in iLoveIMG, with Recommended Quality free and High Quality marked Premium](/blog/how-to-open-heic-file-shot-04.svg)
+4. Click **Convert**, wait for it to process, then download the result. ![clicking Convert in iLoveIMG and downloading the result](/blog/how-to-open-heic-file-shot-05.svg)
 
 The honest difference between this and AI Convertly's tool: iLoveIMG uploads your photo to its servers to do the conversion, and its best quality setting is paywalled. AI Convertly's HEIC to JPG tool runs the whole conversion locally in your browser at full quality, for free, which is the simpler choice if either of those matters to you.
 
