@@ -75,9 +75,9 @@ If you're on a Mac and don't want to leave the built-in apps, Preview can do thi
 
 1. Open the photo in Preview.
 2. Go to **File → Export**.
-3. Set the format dropdown to **JPEG**. *(Screenshot unavailable: couldn't determine whether "the Export dialog with format set to JPEG" refers to an AI Convertly tool or a known external tool.)*
-4. Drag the **Quality** slider and click **Save**. *(Screenshot unavailable: couldn't determine whether "the JPEG quality slider in the Export dialog" refers to an AI Convertly tool or a known external tool.)*
-5. In Finder, select the saved file and press **Cmd+I** to check its size. *(Screenshot unavailable: couldn't determine whether "the Get Info panel showing the exported file's size" refers to an AI Convertly tool or a known external tool.)*
+3. Set the format dropdown to **JPEG**. ![the Export dialog with format set to JPEG](/blog/how-to-resize-a-photo-to-an-exact-kb-size-shot-18.svg)
+4. Drag the **Quality** slider and click **Save**. ![the JPEG quality slider in the Export dialog](/blog/how-to-resize-a-photo-to-an-exact-kb-size-shot-19.svg)
+5. In Finder, select the saved file and press **Cmd+I** to check its size. ![the Get Info panel showing the exported file's size](/blog/how-to-resize-a-photo-to-an-exact-kb-size-shot-20.svg)
 6. If it's still too big, export again at a lower quality. If Preview's quality range alone won't get you low enough, use **Tools → Adjust Size** first to shrink the pixel dimensions, then export again.
 
 ## On Windows

@@ -25,14 +25,50 @@ const NEUTRAL_STYLE = { accent: "#8B93A1", chrome: "#EEF0F3", titlebar: "#E2E5EA
  * color from ("Windows" and "macOS" aren't URLs), so these stay as
  * knowledge-based entries: Microsoft's Fluent blue and Apple's
  * systemBlue-and-light chrome are about as broadly, confidently public
- * as a color association gets. capture-screenshots.mjs doesn't
- * auto-route a marker to these yet (see its own comment), but the style
- * profiles are ready for it.
+ * as a color association gets. Routed to directly by findPlatform below,
+ * for a marker naming a native OS app rather than a website.
  */
 const PLATFORM_STYLES = {
   Windows: { accent: "#0078D4", chrome: "#F3F3F3", titlebar: "#E8E8E8", card: "#FFFFFF", ink: "#1B1B1B", confidence: "known" },
   macOS: { accent: "#0A84FF", chrome: "#ECECEC", titlebar: "#E3E3E3", card: "#FFFFFF", ink: "#1D1D1F", confidence: "known" },
 };
+
+/**
+ * Marker text that names a native OS app rather than a website -- there's
+ * no URL to ever navigate to (unlike scripts/lib/externalTools.mjs's
+ * registry), so a marker resolved here skips network capture entirely and
+ * goes straight to an illustration in this platform's own style. This is
+ * the one case where "the real screenshot can't be captured" is
+ * permanent, not just this-pass -- e.g. a "using Preview" step on macOS
+ * has no browser-drivable target this sandbox (or any server-side
+ * pipeline) could ever reach, not merely one currently blocked.
+ */
+const PLATFORMS = [
+  { match: ["on a mac", "using preview", "mac's preview", "in preview", "preview app"], name: "macOS" },
+  { match: ["on windows", "in paint", "windows photos app"], name: "Windows" },
+];
+
+/**
+ * Same { tool, index } shape as findExternalTool in externalTools.mjs
+ * (see that function's own comment on why the position matters), so a
+ * caller can weigh a platform match against internal/external matches
+ * using the identical rightmost-wins comparison.
+ */
+export function findPlatform(searchText) {
+  const lower = searchText.toLowerCase();
+  let bestName = null;
+  let bestIndex = -1;
+  for (const platform of PLATFORMS) {
+    for (const needle of platform.match) {
+      const idx = lower.lastIndexOf(needle);
+      if (idx > bestIndex) {
+        bestIndex = idx;
+        bestName = platform.name;
+      }
+    }
+  }
+  return bestName ? { tool: { name: bestName }, index: bestIndex } : null;
+}
 
 function hexToRgb(hex) {
   const h = hex.replace("#", "");

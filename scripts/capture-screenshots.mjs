@@ -15,7 +15,13 @@
  *      interactive attempt (upload a fixture file, wait for the resulting
  *      state); desktop-only tools get their homepage/marketing page, since
  *      there's no browser-drivable interactive state to capture for those.
- *   4. Save the screenshot under public/blog/ (the only directory Next.js
+ *   4. If it names a native OS app instead of a website (e.g. "On a Mac,
+ *      Using Preview" -- see scripts/lib/fallbackIllustration.mjs's
+ *      findPlatform), there's no URL to ever visit, so it's illustrated
+ *      directly in that platform's own known style -- no capture attempt
+ *      at all, since one could never succeed here or anywhere else this
+ *      pipeline might run.
+ *   5. Save the screenshot under public/blog/ (the only directory Next.js
  *      serves automatically -- content/blog/ is server-side-only) and
  *      replace the marker in the Markdown with an absolute-path embed.
  *
@@ -55,7 +61,7 @@ import { chromium } from "playwright";
 import { tools, getTool } from "../src/lib/tools.ts";
 import { findExternalTool } from "./lib/externalTools.mjs";
 import { unsafeReason } from "./lib/safety.mjs";
-import { renderFallbackIllustrationSVG } from "./lib/fallbackIllustration.mjs";
+import { renderFallbackIllustrationSVG, findPlatform } from "./lib/fallbackIllustration.mjs";
 import { researchToolColor } from "./lib/colorResearch.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -679,6 +685,11 @@ async function processDraft(browser, filePath, summary, externalShotCounts, tool
     const internalWins = internalMatch && (!externalMatch || internalMatch.index >= externalMatch.index);
     const internalTool = internalWins ? internalMatch.tool : null;
     const externalTool = !internalWins && externalMatch ? externalMatch.tool : null;
+    // Checked last, only once neither an AI Convertly tool nor a
+    // registered website matched -- a native-OS-app marker (e.g. "On a
+    // Mac, Using Preview") is a distinct, final-fallback category, not a
+    // named competitor that should ever out-rank an actual tool match.
+    const platformTool = !internalTool && !externalTool ? findPlatform(sectionContext)?.tool ?? null : null;
 
     try {
       if (internalTool) {
@@ -743,6 +754,22 @@ async function processDraft(browser, filePath, summary, externalShotCounts, tool
             summary.externalToolsVisited.add(`${externalTool.name} (${externalTool.kind})`);
           }
         }
+      } else if (platformTool) {
+        // No URL to visit at all -- a native OS app, not a website, so
+        // there's no capture attempt to make here (successful or
+        // otherwise). This is the one case where "the real screenshot
+        // can't be captured" is permanent, not just this pass: no server-
+        // side pipeline will ever be able to open Preview on macOS. Style
+        // comes from fallbackIllustration.mjs's own knowledge-based
+        // PLATFORM_STYLES entry (no color research call -- there's no
+        // site to research a color from), never neutral for a platform
+        // this confidently, publicly known.
+        shotIndex += 1;
+        const filename = `${slug}-shot-${String(shotIndex).padStart(2, "0")}.svg`;
+        const svg = renderFallbackIllustrationSVG(platformTool.name, trimmedDescription, null);
+        pendingWrites.push({ filename, data: svg });
+        replacement = `![${trimmedDescription}](${PUBLIC_BLOG_IMAGES_URL_PREFIX}/${filename})`;
+        summary.illustrated.push({ file: slug, description: trimmedDescription, reason: `${platformTool.name}: native app, no browser-drivable target -- illustrated directly` });
       } else {
         replacement = `*(Screenshot unavailable: couldn't determine whether "${trimmedDescription}" refers to an AI Convertly tool or a known external tool.)*`;
         summary.skipped.push({ file: slug, description: trimmedDescription, reason: "unresolved target" });
