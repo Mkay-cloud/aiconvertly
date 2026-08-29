@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { Container } from "./Container";
 import { Logo } from "./Logo";
+import { ThemeToggle } from "./ThemeToggle";
 import { homeCategories, TOOL_CATEGORY_NAV_EVENT } from "@/lib/toolCategories";
 
 export function Header() {
@@ -98,6 +99,7 @@ export function Header() {
               </div>
             )}
           </div>
+          <ThemeToggle />
           <Link
             href="/blog"
             className="text-sm font-medium text-secondary transition-colors hover:text-foreground"

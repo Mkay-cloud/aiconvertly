@@ -112,9 +112,10 @@ export function MergePdfClient() {
           {items.map((item, index) => (
             <FileRow
               key={item.id}
+              // Same light-mode contrast fix as Alert.tsx's own comment.
               leading={
                 item.error ? (
-                  <span className="text-red-400">!</span>
+                  <span className="text-red-700 dark:text-red-400">!</span>
                 ) : item.pageCount === null ? (
                   <Spinner className="h-4 w-4" />
                 ) : (

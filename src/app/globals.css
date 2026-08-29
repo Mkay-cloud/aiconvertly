@@ -1,6 +1,63 @@
 @import "tailwindcss";
 
+/*
+ * Tailwind v4's dark-mode variant, retargeted at this site's own
+ * data-theme attribute (set by src/lib/theme.ts's blocking script and
+ * ThemeToggle) instead of the framework default of prefers-color-scheme.
+ * Used sparingly -- only where a fixed, non-token color (Tailwind's red-*
+ * error palette; see Alert.tsx and FileRow.tsx) needs a different shade
+ * per theme to stay legible. Every other color in the site swaps via the
+ * --color-* custom properties below, which need no variant at all.
+ */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
 :root {
+  /* Dark (this site's original/default look). */
+  --color-bg: #08090b;
+  --color-card: #111318;
+  --color-card-border: #1e2128;
+  --color-foreground: #ffffff;
+  --color-secondary: #a7abb4;
+  --color-accent: #a8ff2a;
+  --color-accent-foreground: #08090b;
+  --color-teal: #2ee6c8;
+}
+
+/*
+ * Pure-CSS fallback for the narrow pre-hydration window on a browser
+ * whose OS is set to light mode (or if the blocking inline script in
+ * src/app/layout.tsx never runs at all, e.g. JS disabled) -- overridden
+ * immediately once that script sets data-theme explicitly. Scoped to
+ * :not([data-theme]) so it never fights the attribute-based rules below
+ * once JS has run.
+ */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme]) {
+    --color-bg: #f7f7f5;
+    --color-card: #ffffff;
+    --color-card-border: #e5e5e2;
+    --color-foreground: #14140f;
+    --color-secondary: #6b6b66;
+    --color-accent: #4d7c0f;
+    --color-accent-foreground: #ffffff;
+    --color-teal: #0f6e56;
+  }
+}
+
+/* Explicit theme, set on <html> once the visitor has a resolved theme
+   (system-derived or manually chosen) -- see src/lib/theme.ts. */
+:root[data-theme="light"] {
+  --color-bg: #f7f7f5;
+  --color-card: #ffffff;
+  --color-card-border: #e5e5e2;
+  --color-foreground: #14140f;
+  --color-secondary: #6b6b66;
+  --color-accent: #4d7c0f;
+  --color-accent-foreground: #ffffff;
+  --color-teal: #0f6e56;
+}
+
+:root[data-theme="dark"] {
   --color-bg: #08090b;
   --color-card: #111318;
   --color-card-border: #1e2128;
@@ -22,6 +79,45 @@
   --color-teal: var(--color-teal);
   --font-sans: var(--font-inter);
   --font-display: var(--font-geist);
+}
+
+/*
+ * ThemeToggle (src/components/ThemeToggle.tsx) renders both icons
+ * unconditionally and lets pure CSS pick the right one via the same
+ * data-theme attribute the color tokens above key off -- deliberately
+ * not React state, so server and client render identical markup and
+ * there's nothing for hydration to mismatch on. Sun = "click to go
+ * light" (shown in dark mode); moon = "click to go dark" (shown in
+ * light mode). Mirrors the same prefers-color-scheme fallback as the
+ * color tokens above for the pre-hydration/no-JS window.
+ */
+.theme-icon-moon {
+  display: none;
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme]) .theme-icon-sun {
+    display: none;
+  }
+  :root:not([data-theme]) .theme-icon-moon {
+    display: block;
+  }
+}
+
+:root[data-theme="light"] .theme-icon-sun {
+  display: none;
+}
+
+:root[data-theme="light"] .theme-icon-moon {
+  display: block;
+}
+
+:root[data-theme="dark"] .theme-icon-sun {
+  display: block;
+}
+
+:root[data-theme="dark"] .theme-icon-moon {
+  display: none;
 }
 
 body {
