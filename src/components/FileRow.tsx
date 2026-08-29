@@ -48,11 +48,14 @@ export function FileRow({
           </button>
         </div>
       )}
+      {/* Same light-mode contrast fix as Alert.tsx's own comment: Tailwind's
+          fixed red-* palette needs an explicit dark: variant since it
+          isn't one of this site's swapping --color-* tokens. */}
       <button
         type="button"
         aria-label="Remove file"
         onClick={onRemove}
-        className="flex h-7 w-7 items-center justify-center rounded-md text-secondary transition-colors hover:bg-red-500/10 hover:text-red-400"
+        className="flex h-7 w-7 items-center justify-center rounded-md text-secondary transition-colors hover:bg-red-600/10 hover:text-red-600 dark:hover:bg-red-500/10 dark:hover:text-red-400"
       >
         &times;
       </button>

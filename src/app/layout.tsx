@@ -4,6 +4,7 @@ import "./globals.css";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { SITE_URL, SITE_NAME, SITE_DESCRIPTION } from "@/lib/site";
+import { themeInitScript } from "@/lib/theme";
 
 const geist = Geist({
   variable: "--font-geist",
@@ -63,8 +64,21 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html
       lang="en"
       className={`${geist.variable} ${inter.variable} h-full antialiased`}
+      // The theme-init script below sets data-theme on this element via
+      // direct DOM manipulation before React hydrates -- an attribute
+      // React's own server render never included, so hydration would
+      // otherwise (correctly, but harmlessly) warn about a mismatch it
+      // didn't cause and can't control. Standard, necessary pairing with
+      // that no-flash technique (used by next-themes and equivalents).
+      suppressHydrationWarning
     >
       <body className="flex min-h-full flex-col bg-bg font-sans text-foreground">
+        {/* Runs synchronously before first paint, so the correct theme's
+            colors apply immediately -- no flash of the wrong theme while
+            waiting for React to hydrate. See src/lib/theme.ts for the
+            exact logic (kept in one shared string so this can't drift
+            from ThemeToggle's own reads/writes of the same storage key). */}
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript() }} />
         <Header />
         <main className="flex flex-1 flex-col">{children}</main>
         <Footer />

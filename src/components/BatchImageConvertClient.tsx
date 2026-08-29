@@ -122,8 +122,11 @@ export function BatchImageConvertClient({
                 key={item.id}
                 className="flex flex-col gap-2 rounded-xl border border-card-border bg-card p-3"
               >
+                {/* text-red-400 alone measures ~2.6:1 against this site's light-mode
+                    background, well under the 4.5:1 AA text minimum -- see Alert.tsx's
+                    own comment for why Tailwind's fixed red-* needs an explicit dark:. */}
                 {item.error ? (
-                  <div className="flex aspect-square items-center justify-center rounded-lg bg-bg p-3 text-center text-xs text-red-400">
+                  <div className="flex aspect-square items-center justify-center rounded-lg bg-bg p-3 text-center text-xs text-red-700 dark:text-red-400">
                     {item.error}
                   </div>
                 ) : (

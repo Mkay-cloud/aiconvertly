@@ -132,8 +132,9 @@ export function RemoveExifDataClient() {
             >
               <div className="flex flex-col gap-2">
                 <p className="text-sm font-medium text-foreground">{item.originalName}</p>
+                {/* Same light-mode contrast fix as Alert.tsx's own comment. */}
                 {item.error ? (
-                  <p className="text-xs text-red-400">{item.error}</p>
+                  <p className="text-xs text-red-700 dark:text-red-400">{item.error}</p>
                 ) : item.tags.length > 0 ? (
                   <div className="flex flex-wrap gap-1.5">
                     {item.tags.map((tag) => (
