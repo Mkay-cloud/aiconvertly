@@ -197,7 +197,7 @@ function fixturePathForSlug(slug) {
  * that tool for a real screenshot captioned as if it showed the
  * competitor.
  */
-function findInternalTool(searchText, frontmatterRelatedTool) {
+export function findInternalTool(searchText, frontmatterRelatedTool) {
   const lower = searchText.toLowerCase();
   let bestTool = null;
   let bestIndex = -1;
@@ -231,7 +231,7 @@ function findInternalTool(searchText, frontmatterRelatedTool) {
 }
 
 /** Text of the current "## " section up to (and not including) `markerIndex`, or from the top of the file if there's no preceding heading. */
-function sectionTextBeforeMarker(content, markerIndex) {
+export function sectionTextBeforeMarker(content, markerIndex) {
   const before = content.slice(0, markerIndex);
   const headings = [...before.matchAll(/^##\s.*$/gm)];
   const sectionStart = headings.length > 0 ? headings[headings.length - 1].index : 0;
@@ -642,6 +642,49 @@ async function getToolColor(browser, externalTool, toolColorCache) {
   return color;
 }
 
+/**
+ * Decides which of the three resolver categories -- an internal AI
+ * Convertly tool, a registered external tool, or a native-OS platform --
+ * a marker's own section context refers to. This is the exact
+ * rightmost-wins comparison across all three categories that fixed two
+ * real, previously-shipped mislabeling bugs: iLoveIMG resolving to AI
+ * Convertly's own tool (PR #22, internal checked unconditionally before
+ * external), and later QuickTime/"on a Mac" resolving to AI Convertly's
+ * own tool again (PR #24, platform checked only as a last resort
+ * regardless of position, not compared against the other two at all).
+ *
+ * Exported and pure (a plain string in, a plain result out -- no file
+ * I/O, no browser) specifically so this exact logic can be exercised by
+ * an automated regression test against synthetic section text (see
+ * scripts/capture-screenshots.test.mjs), rather than relying on someone
+ * remembering to hand-reimplement and manually re-run this comparison
+ * before every future article, the way this class of bug was actually
+ * caught twice so far.
+ *
+ * Returns { kind: "internal" | "external" | "platform", tool, index } for
+ * whichever candidate's match sits closest to the marker, or null if
+ * none of the three resolvers found anything. Ties keep the original
+ * preference order: internal, then external, then platform.
+ */
+export function resolveMarkerTarget(sectionContext, frontmatterRelatedTool) {
+  const internalMatch = findInternalTool(sectionContext, frontmatterRelatedTool);
+  const externalMatch = findExternalTool(sectionContext);
+  const platformMatch = findPlatform(sectionContext);
+  const candidates = [
+    internalMatch && { kind: "internal", tool: internalMatch.tool, index: internalMatch.index },
+    externalMatch && { kind: "external", tool: externalMatch.tool, index: externalMatch.index },
+    platformMatch && { kind: "platform", tool: platformMatch.tool, index: platformMatch.index },
+  ].filter(Boolean);
+  const TIE_PRIORITY = { internal: 0, external: 1, platform: 2 };
+  let winner = null;
+  for (const c of candidates) {
+    if (!winner || c.index > winner.index || (c.index === winner.index && TIE_PRIORITY[c.kind] < TIE_PRIORITY[winner.kind])) {
+      winner = c;
+    }
+  }
+  return winner;
+}
+
 async function processDraft(browser, filePath, summary, externalShotCounts, toolColorCache) {
   const raw = fs.readFileSync(filePath, "utf8");
   const { data, content } = matter(raw);
@@ -672,37 +715,11 @@ async function processDraft(browser, filePath, summary, externalShotCounts, tool
     // earlier mention in the section (findInternalTool takes whichever
     // name's last/rightmost occurrence in the combined text it's given).
     const sectionContext = `${sectionTextBeforeMarker(content, match.index)} ${trimmedDescription}`;
-    const internalMatch = findInternalTool(sectionContext, data.relatedTool);
-    const externalMatch = findExternalTool(sectionContext);
-    const platformMatch = findPlatform(sectionContext);
-    // All three resolvers report where in the text their match sits;
-    // whichever is closest to the marker wins, the same rightmost-wins
-    // principle each resolver already applies internally, extended across
-    // all three categories -- not just internal vs. external (see
-    // findInternalTool's own comment for the iLoveIMG mislabeling case
-    // that first motivated this) but platform too. Platform used to be a
-    // strict lowest-priority fallback, checked only once neither internal
-    // nor external matched at all, regardless of position -- that let an
-    // incidental, *distant* self-reference mention (e.g. a competitor
-    // comparison sentence earlier in a shared "## " section: "...unlike AI
-    // Convertly's converter, your file is sitting on a third-party
-    // server...") outrank a native-OS-app phrase ("on a Mac") sitting
-    // right next to the marker itself, in an article whose per-solution
-    // "### " subsections all share one "## " parent heading. Ties keep
-    // the original preference order (internal, then external, then
-    // platform), same as before this changed.
-    const candidates = [
-      internalMatch && { kind: "internal", tool: internalMatch.tool, index: internalMatch.index },
-      externalMatch && { kind: "external", tool: externalMatch.tool, index: externalMatch.index },
-      platformMatch && { kind: "platform", tool: platformMatch.tool, index: platformMatch.index },
-    ].filter(Boolean);
-    const TIE_PRIORITY = { internal: 0, external: 1, platform: 2 };
-    let winner = null;
-    for (const c of candidates) {
-      if (!winner || c.index > winner.index || (c.index === winner.index && TIE_PRIORITY[c.kind] < TIE_PRIORITY[winner.kind])) {
-        winner = c;
-      }
-    }
+    // See resolveMarkerTarget's own comment for what this rightmost-wins
+    // comparison across all three resolver categories is guarding
+    // against, and scripts/capture-screenshots.test.mjs for the
+    // automated regression coverage of it.
+    const winner = resolveMarkerTarget(sectionContext, data.relatedTool);
     const internalTool = winner?.kind === "internal" ? winner.tool : null;
     const externalTool = winner?.kind === "external" ? winner.tool : null;
     const platformTool = winner?.kind === "platform" ? winner.tool : null;
@@ -857,7 +874,14 @@ async function main() {
   console.log(`External tools visited: ${summary.externalToolsVisited.size ? [...summary.externalToolsVisited].join(", ") : "(none)"}`);
 }
 
-main().catch((err) => {
-  console.error(err);
-  process.exit(1);
-});
+// Only runs the real pipeline when this file is executed directly (as
+// the CLI it's documented as at the top of this file) -- not when it's
+// imported for its exported pure functions, e.g. by
+// scripts/capture-screenshots.test.mjs, which must not spawn a dev
+// server or launch a real browser just to test string-matching logic.
+if (import.meta.url === `file://${process.argv[1]}`) {
+  main().catch((err) => {
+    console.error(err);
+    process.exit(1);
+  });
+}
