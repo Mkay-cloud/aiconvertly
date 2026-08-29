@@ -1,5 +1,6 @@
 import { ImageResponse } from "next/og";
 
+export const alt = "AI convertly — Convert files. Right in your browser. Free PDF & image tools. No uploads, no sign-up.";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 

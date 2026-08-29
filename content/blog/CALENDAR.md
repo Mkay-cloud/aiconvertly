@@ -19,7 +19,7 @@ regardless of which group it's in.
 
 | # | Category | Title | Target Keywords | Related Tool Slug | Content Note | Status |
 |---|----------|-------|------------------|--------------------|---------------|--------|
-| 1 | Video | How video conversion works: MP4, WebM & MOV explained | converter, convert, file converter, video format converter | video-converter | | Pending |
+| 1 | Video | How video conversion works: MP4, WebM & MOV explained | converter, convert, file converter, video format converter | video-converter | Published as `how-video-conversion-works-mp4-webm-mov-explained` | Published |
 | 2 | Video | Free online video converter, no sign-up or watermark | video converter online free, online video converter, freeconvert | video-converter | Can honestly position as a FreeConvert alternative | Pending |
 | 3 | Video | How to save a video you've downloaded (and why "YouTube converters" often don't work) | youtube video converter, onlinevideoconverter, clip converter | video-converter | Honest reframe — site is local-file-only, explain why, then cover converting a file the reader already has | Pending |
 | 4 | Video | HandBrake alternative: a simpler free video converter | handbrake video converter | video-converter, compress-video | | Pending |
