@@ -43,13 +43,13 @@ export function Dropzone({
         setIsDragging(false);
         handleFiles(event.dataTransfer.files);
       }}
-      className={`flex cursor-pointer flex-col items-center justify-center gap-3 rounded-2xl border-2 border-dashed px-6 py-14 text-center transition-colors ${
+      className={`flex cursor-pointer flex-col items-center justify-center gap-3 rounded-2xl border-2 border-dashed px-6 py-14 text-center shadow-card transition-all ${
         isDragging
-          ? "border-accent bg-accent/5"
+          ? "border-accent bg-accent/5 shadow-interactive"
           : "border-card-border bg-card hover:border-accent/40"
       }`}
     >
-      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-accent/10 text-accent">
+      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-accent-soft text-accent">
         <svg viewBox="0 0 24 24" fill="none" className="h-6 w-6">
           <path
             d="M12 16V4m0 0 4 4m-4-4L8 8M5 16v3a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-3"
