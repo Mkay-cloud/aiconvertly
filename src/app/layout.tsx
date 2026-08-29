@@ -1,19 +1,21 @@
 import type { Metadata } from "next";
-import { Geist, Inter } from "next/font/google";
+import { Poppins } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { SITE_URL, SITE_NAME, SITE_DESCRIPTION } from "@/lib/site";
 import { themeInitScript } from "@/lib/theme";
 
-const geist = Geist({
-  variable: "--font-geist",
+// Single family for both headlines and body text -- hierarchy comes from
+// weight (400 body, 600/700 headlines via existing font-semibold/font-bold
+// classes throughout the site), not a second family. next/font/google
+// self-hosts this at build time (downloaded once, served from this site's
+// own origin), same as the Geist/Inter pair it replaces -- no live request
+// to Google at runtime.
+const poppins = Poppins({
+  variable: "--font-poppins",
   subsets: ["latin"],
-});
-
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
+  weight: ["400", "600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -63,7 +65,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${geist.variable} ${inter.variable} h-full antialiased`}
+      className={`${poppins.variable} h-full antialiased`}
       // The theme-init script below sets data-theme on this element via
       // direct DOM manipulation before React hydrates -- an attribute
       // React's own server render never included, so hydration would

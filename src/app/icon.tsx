@@ -1,4 +1,5 @@
 import { ImageResponse } from "next/og";
+import { poppinsOgFonts } from "@/lib/ogFonts";
 
 export const size = { width: 32, height: 32 };
 export const contentType = "image/png";
@@ -22,13 +23,13 @@ export default function Icon() {
             color: "#A8FF2A",
             fontSize: 18,
             fontWeight: 700,
-            fontFamily: "sans-serif",
+            fontFamily: "Poppins",
           }}
         >
           AI
         </div>
       </div>
     ),
-    { ...size }
+    { ...size, fonts: poppinsOgFonts() }
   );
 }
