@@ -674,22 +674,38 @@ async function processDraft(browser, filePath, summary, externalShotCounts, tool
     const sectionContext = `${sectionTextBeforeMarker(content, match.index)} ${trimmedDescription}`;
     const internalMatch = findInternalTool(sectionContext, data.relatedTool);
     const externalMatch = findExternalTool(sectionContext);
-    // Both resolvers report where in the text their match sits; whichever
-    // is closer to the marker wins, the same rightmost-wins principle each
-    // resolver already applies internally, just extended across the
-    // internal/external boundary too -- checking internal unconditionally
-    // first (the previous behavior) let an early, incidental "AI
-    // Convertly" mention beat a competitor named right next to the marker
-    // itself. See findInternalTool's own comment for the real case this
-    // was caught against.
-    const internalWins = internalMatch && (!externalMatch || internalMatch.index >= externalMatch.index);
-    const internalTool = internalWins ? internalMatch.tool : null;
-    const externalTool = !internalWins && externalMatch ? externalMatch.tool : null;
-    // Checked last, only once neither an AI Convertly tool nor a
-    // registered website matched -- a native-OS-app marker (e.g. "On a
-    // Mac, Using Preview") is a distinct, final-fallback category, not a
-    // named competitor that should ever out-rank an actual tool match.
-    const platformTool = !internalTool && !externalTool ? findPlatform(sectionContext)?.tool ?? null : null;
+    const platformMatch = findPlatform(sectionContext);
+    // All three resolvers report where in the text their match sits;
+    // whichever is closest to the marker wins, the same rightmost-wins
+    // principle each resolver already applies internally, extended across
+    // all three categories -- not just internal vs. external (see
+    // findInternalTool's own comment for the iLoveIMG mislabeling case
+    // that first motivated this) but platform too. Platform used to be a
+    // strict lowest-priority fallback, checked only once neither internal
+    // nor external matched at all, regardless of position -- that let an
+    // incidental, *distant* self-reference mention (e.g. a competitor
+    // comparison sentence earlier in a shared "## " section: "...unlike AI
+    // Convertly's converter, your file is sitting on a third-party
+    // server...") outrank a native-OS-app phrase ("on a Mac") sitting
+    // right next to the marker itself, in an article whose per-solution
+    // "### " subsections all share one "## " parent heading. Ties keep
+    // the original preference order (internal, then external, then
+    // platform), same as before this changed.
+    const candidates = [
+      internalMatch && { kind: "internal", tool: internalMatch.tool, index: internalMatch.index },
+      externalMatch && { kind: "external", tool: externalMatch.tool, index: externalMatch.index },
+      platformMatch && { kind: "platform", tool: platformMatch.tool, index: platformMatch.index },
+    ].filter(Boolean);
+    const TIE_PRIORITY = { internal: 0, external: 1, platform: 2 };
+    let winner = null;
+    for (const c of candidates) {
+      if (!winner || c.index > winner.index || (c.index === winner.index && TIE_PRIORITY[c.kind] < TIE_PRIORITY[winner.kind])) {
+        winner = c;
+      }
+    }
+    const internalTool = winner?.kind === "internal" ? winner.tool : null;
+    const externalTool = winner?.kind === "external" ? winner.tool : null;
+    const platformTool = winner?.kind === "platform" ? winner.tool : null;
 
     try {
       if (internalTool) {

@@ -93,7 +93,7 @@ Already on a Mac? QuickTime Player, sitting in Applications, can export a MOV st
 
 1. Open the video in QuickTime Player (right-click the file, choose Open With, then QuickTime Player).
 2. Go to File, then Export As.
-3. Pick a resolution. 1080p is a safe default for most uses.
+3. Pick a resolution. 1080p is a safe default for most uses. ![the Export As dialog with a resolution option selected](/blog/how-video-conversion-works-mp4-webm-mov-explained-shot-01.svg)
 4. Choose a save location and click Save.
 
 It won't export to WebM, since QuickTime only really speaks Apple's own format language. Fine if MP4 is your target, a dead end if it isn't.
