@@ -8,7 +8,7 @@ import { ButtonLink } from "./Button";
  */
 export function RelatedToolCta({ tool }: { tool: Tool }) {
   return (
-    <div className="flex flex-col items-start gap-4 rounded-2xl border border-card-border bg-card p-6 sm:flex-row sm:items-center sm:justify-between">
+    <div className="flex flex-col items-start gap-4 rounded-2xl border border-card-border bg-card p-6 shadow-card sm:flex-row sm:items-center sm:justify-between">
       <div className="flex flex-col gap-1.5">
         <span className="text-xs font-semibold uppercase tracking-wide text-accent">
           Try it yourself

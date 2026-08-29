@@ -6,7 +6,7 @@ export function BlogPostCard({ post }: { post: BlogPostMeta }) {
   return (
     <Link
       href={`/blog/${post.slug}`}
-      className="group flex flex-col overflow-hidden rounded-2xl border border-card-border bg-card transition-all hover:-translate-y-1 hover:border-accent/40"
+      className="group flex flex-col overflow-hidden rounded-2xl border border-card-border bg-card shadow-card transition-all hover:-translate-y-1 hover:border-accent/40"
     >
       {/* eslint-disable-next-line @next/next/no-img-element -- generated
           at request time by a Next route handler (not a static asset),

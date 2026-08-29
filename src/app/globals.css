@@ -21,6 +21,23 @@
   --color-accent: #a8ff2a;
   --color-accent-foreground: #08090b;
   --color-teal: #2ee6c8;
+  /* Icon-badge background (ToolCard, Dropzone): a real color-mix result,
+     not a shared opacity fraction applied identically in both themes --
+     see the light-mode value's own comment for why that distinction
+     matters. Dark mode's value is unchanged from the accent/10 look this
+     replaces (measured ~12:1 glyph-vs-badge contrast either way). */
+  --color-accent-soft: color-mix(in srgb, var(--color-accent) 10%, var(--color-card));
+  /* Black/neutral -- the standard, safe default for elevation, same in
+     both themes. */
+  --shadow-card: 0 10px 30px -8px rgb(0 0 0 / 0.55), 0 4px 10px -4px rgb(0 0 0 / 0.4);
+  /* Accent-tinted (via color-mix, not a hardcoded lime hex), so this stays
+     genuinely on-brand per theme -- lime in dark mode, this theme's own
+     deep-green accent in light mode -- rather than baking in one theme's
+     color the way the accent-badge bug above did. Reserved for
+     interactive elements only (buttons, hover/focus), never static cards:
+     see --shadow-card for those. */
+  --shadow-interactive: 0 8px 22px -6px color-mix(in srgb, var(--color-accent) 35%, transparent),
+    0 2px 8px -2px color-mix(in srgb, var(--color-accent) 28%, transparent);
 }
 
 /*
@@ -37,10 +54,22 @@
     --color-card: #ffffff;
     --color-card-border: #e5e5e2;
     --color-foreground: #14140f;
-    --color-secondary: #6b6b66;
+    /* Pure black -- explicit choice, light mode only. Deliberately gives up
+       the visual hierarchy a lighter gray would carry between primary and
+       secondary text, not an oversight; dark mode's --color-secondary
+       (#a7abb4, a real gray) is untouched. */
+    --color-secondary: #000000;
     --color-accent: #4d7c0f;
     --color-accent-foreground: #ffffff;
     --color-teal: #0f6e56;
+    /* A lower mix ratio than dark mode's, not the same 10% -- with this
+       theme's accent itself being a dark color (unlike dark mode's bright
+       lime), 10% measured at ~4.4:1 glyph-vs-badge contrast (real
+       measurement, not estimated -- see the PR description), the same
+       root cause as the red-* error-state bugs PR #25 fixed: one
+       opacity/shade shared across both themes, tuned for one of them.
+       4% measures ~4.8:1, a real margin above the 4.5:1 text threshold. */
+    --color-accent-soft: color-mix(in srgb, var(--color-accent) 4%, var(--color-card));
   }
 }
 
@@ -51,10 +80,13 @@
   --color-card: #ffffff;
   --color-card-border: #e5e5e2;
   --color-foreground: #14140f;
-  --color-secondary: #6b6b66;
+  /* See the prefers-color-scheme block above for why this is pure black. */
+  --color-secondary: #000000;
   --color-accent: #4d7c0f;
   --color-accent-foreground: #ffffff;
   --color-teal: #0f6e56;
+  /* See the prefers-color-scheme block above for why this ratio differs from dark mode's. */
+  --color-accent-soft: color-mix(in srgb, var(--color-accent) 4%, var(--color-card));
 }
 
 :root[data-theme="dark"] {
@@ -66,6 +98,7 @@
   --color-accent: #a8ff2a;
   --color-accent-foreground: #08090b;
   --color-teal: #2ee6c8;
+  --color-accent-soft: color-mix(in srgb, var(--color-accent) 10%, var(--color-card));
 }
 
 @theme inline {
@@ -77,6 +110,12 @@
   --color-accent: var(--color-accent);
   --color-accent-foreground: var(--color-accent-foreground);
   --color-teal: var(--color-teal);
+  --color-accent-soft: var(--color-accent-soft);
+  /* --shadow-* is Tailwind's own theme namespace for shadow-* utilities
+     (shadow-sm, shadow-md, ...), the same mechanism --color-* already
+     uses here for the bg- and text- utilities. */
+  --shadow-card: var(--shadow-card);
+  --shadow-interactive: var(--shadow-interactive);
   /* One family (Poppins) for both -- hierarchy is weight, not a second
      typeface. See src/app/layout.tsx's Poppins() call for the loaded
      weights (400/600/700). */

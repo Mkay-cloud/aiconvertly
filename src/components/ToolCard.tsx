@@ -64,13 +64,13 @@ export function ToolCard({ tool }: { tool: Tool }) {
   return (
     <Link
       href={`/tools/${tool.slug}`}
-      className="group relative flex flex-col gap-4 overflow-hidden rounded-2xl border border-card-border bg-card p-6 transition-all hover:-translate-y-1 hover:border-accent/40"
+      className="group relative flex flex-col gap-4 overflow-hidden rounded-2xl border border-card-border bg-card p-6 shadow-card transition-all hover:-translate-y-1 hover:border-accent/40"
     >
       <div
         className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-accent/0 blur-3xl transition-colors duration-300 group-hover:bg-accent/10"
         aria-hidden
       />
-      <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-accent/10 text-accent">
+      <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-accent-soft text-accent">
         {Icon ? <Icon className="h-5 w-5" /> : null}
       </div>
       <div className="flex flex-col gap-1.5">

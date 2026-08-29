@@ -21,7 +21,7 @@ function CategoryCard({
   toolSlugs: string[];
 }) {
   return (
-    <div className="flex flex-col gap-5 rounded-2xl border border-card-border bg-card p-6">
+    <div className="flex flex-col gap-5 rounded-2xl border border-card-border bg-card p-6 shadow-card">
       <div>
         <h3 className="font-display text-xl font-semibold text-foreground">{title}</h3>
         <p className="mt-1 text-sm text-secondary">{description}</p>

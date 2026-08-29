@@ -5,8 +5,11 @@ const base =
   "inline-flex items-center justify-center gap-2 rounded-full font-semibold transition-all disabled:cursor-not-allowed disabled:opacity-40 active:scale-[0.98]";
 
 const variants = {
-  primary:
-    "bg-accent text-accent-foreground hover:scale-[1.02] hover:shadow-[0_0_24px_-4px_var(--color-accent)]",
+  // shadow-interactive (a token, not a hardcoded per-component shadow
+  // value) is reserved for genuinely interactive elements like this one --
+  // see globals.css's own comment on --shadow-interactive for why it's
+  // never used on a static card.
+  primary: "bg-accent text-accent-foreground hover:scale-[1.02] hover:shadow-interactive",
   secondary:
     "border border-card-border bg-card text-foreground hover:border-accent/50 hover:text-accent",
   ghost: "text-secondary hover:text-foreground",
