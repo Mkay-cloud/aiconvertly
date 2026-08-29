@@ -1,4 +1,5 @@
 import { ImageResponse } from "next/og";
+import { poppinsOgFonts } from "@/lib/ogFonts";
 
 export const size = { width: 180, height: 180 };
 export const contentType = "image/png";
@@ -21,13 +22,13 @@ export default function AppleIcon() {
             color: "#A8FF2A",
             fontSize: 88,
             fontWeight: 700,
-            fontFamily: "sans-serif",
+            fontFamily: "Poppins",
           }}
         >
           AI
         </div>
       </div>
     ),
-    { ...size }
+    { ...size, fonts: poppinsOgFonts() }
   );
 }

@@ -77,8 +77,11 @@
   --color-accent: var(--color-accent);
   --color-accent-foreground: var(--color-accent-foreground);
   --color-teal: var(--color-teal);
-  --font-sans: var(--font-inter);
-  --font-display: var(--font-geist);
+  /* One family (Poppins) for both -- hierarchy is weight, not a second
+     typeface. See src/app/layout.tsx's Poppins() call for the loaded
+     weights (400/600/700). */
+  --font-sans: var(--font-poppins);
+  --font-display: var(--font-poppins);
 }
 
 /*
@@ -155,7 +158,7 @@ body {
 /*
  * Long-form article typography for blog posts. Hand-styled with the
  * site's own tokens (not a generic Tailwind Typography plugin) so it
- * matches the rest of the brand exactly -- Geist headings, lime accent
+ * matches the rest of the brand exactly -- Poppins headings, accent
  * links, the same card/border colors used everywhere else -- rather than
  * a plugin's default look. max-width caps line length for readability;
  * everything else is spacing and color only, no layout, so it composes

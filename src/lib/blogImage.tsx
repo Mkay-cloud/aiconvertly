@@ -1,4 +1,5 @@
 import { ImageResponse } from "next/og";
+import { poppinsOgFonts } from "@/lib/ogFonts";
 
 // Standard OG-image dimensions (1.91:1) -- also doubles as the blog
 // index/article thumbnail's aspect ratio, so one image serves both.
@@ -22,7 +23,7 @@ const COLORS = {
 // deterministically in JS instead of trusted to CSS: step down through a
 // few font sizes, and if the title still wouldn't fit in 3 lines even at
 // the smallest one, truncate the string itself with an ellipsis. This is
-// approximate (average glyph width for bold Geist, not per-character
+// approximate (average glyph width for bold Poppins, not per-character
 // metrics) but errs on the safe side and is verified against real
 // rendered output, not just assumed to work.
 const TITLE_BOX_WIDTH = 1200 - 80 * 2; // canvas width minus horizontal padding
@@ -50,12 +51,10 @@ function fitTitle(title: string): { fontSize: number; text: string } {
 }
 
 /**
- * Renders one article's branded featured image. No `fonts` option is
- * passed to ImageResponse -- next/og's default font is Geist (the same
- * Vercel-bundled Geist-Regular.ttf satori falls back to), which is also
- * exactly what the site-wide src/app/opengraph-image.tsx already relies
- * on implicitly, so this stays consistent with that existing pattern
- * rather than introducing a separate font-loading path.
+ * Renders one article's branded featured image, using the site's real
+ * Poppins font data (src/lib/ogFonts.ts) rather than satori's own
+ * fallback -- the same self-hosted fonts src/app/opengraph-image.tsx
+ * uses, kept in one shared helper so both stay in sync.
  */
 export function renderBlogFeaturedImage(title: string, category: string): ImageResponse {
   const { fontSize, text } = fitTitle(title);
@@ -81,7 +80,7 @@ export function renderBlogFeaturedImage(title: string, category: string): ImageR
           }}
         >
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-            <div style={{ display: "flex", fontSize: 32, fontWeight: 700, fontFamily: "sans-serif" }}>
+            <div style={{ display: "flex", fontSize: 32, fontWeight: 700, fontFamily: "Poppins" }}>
               <span style={{ color: COLORS.accent }}>AI</span>
               <span style={{ color: COLORS.foreground }}>&nbsp;convertly</span>
             </div>
@@ -94,7 +93,7 @@ export function renderBlogFeaturedImage(title: string, category: string): ImageR
                   border: `2px solid ${COLORS.cardBorder}`,
                   borderRadius: 999,
                   padding: "8px 22px",
-                  fontFamily: "sans-serif",
+                  fontFamily: "Poppins",
                 }}
               >
                 {category}
@@ -124,19 +123,19 @@ export function renderBlogFeaturedImage(title: string, category: string): ImageR
                 color: COLORS.foreground,
                 lineHeight,
                 letterSpacing: -1,
-                fontFamily: "sans-serif",
+                fontFamily: "Poppins",
               }}
             >
               {text}
             </div>
           </div>
 
-          <div style={{ display: "flex", fontSize: 24, color: COLORS.secondary, fontFamily: "sans-serif" }}>
+          <div style={{ display: "flex", fontSize: 24, color: COLORS.secondary, fontFamily: "Poppins" }}>
             aiconvertly.online
           </div>
         </div>
       </div>
     ),
-    { ...BLOG_IMAGE_SIZE }
+    { ...BLOG_IMAGE_SIZE, fonts: poppinsOgFonts() }
   );
 }

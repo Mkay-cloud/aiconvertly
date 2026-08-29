@@ -1,4 +1,5 @@
 import { ImageResponse } from "next/og";
+import { poppinsOgFonts } from "@/lib/ogFonts";
 
 export const alt = "AI convertly — Convert files. Right in your browser. Free PDF & image tools. No uploads, no sign-up.";
 export const size = { width: 1200, height: 630 };
@@ -25,7 +26,7 @@ export default function OpengraphImage() {
             fontSize: 40,
             fontWeight: 700,
             marginBottom: 32,
-            fontFamily: "sans-serif",
+            fontFamily: "Poppins",
           }}
         >
           <span style={{ color: "#A8FF2A" }}>AI</span>
@@ -39,7 +40,7 @@ export default function OpengraphImage() {
             color: "#FFFFFF",
             textAlign: "center",
             lineHeight: 1.15,
-            fontFamily: "sans-serif",
+            fontFamily: "Poppins",
           }}
         >
           Convert files. Right in your browser.
@@ -50,13 +51,13 @@ export default function OpengraphImage() {
             marginTop: 32,
             fontSize: 28,
             color: "#A7ABB4",
-            fontFamily: "sans-serif",
+            fontFamily: "Poppins",
           }}
         >
           Free PDF & image tools. No uploads, no sign-up.
         </div>
       </div>
     ),
-    { ...size }
+    { ...size, fonts: poppinsOgFonts() }
   );
 }
