@@ -3,7 +3,7 @@ import { Poppins } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import { SITE_URL, SITE_NAME, SITE_DESCRIPTION } from "@/lib/site";
+import { SITE_URL, SITE_NAME, SITE_DESCRIPTION, SITE_TITLE } from "@/lib/site";
 import { themeInitScript } from "@/lib/theme";
 
 // Single family for both headlines and body text -- hierarchy comes from
@@ -21,7 +21,7 @@ const poppins = Poppins({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "AI convertly — Free PDF & image tools, right in your browser",
+    default: SITE_TITLE,
     template: "%s | AI convertly",
   },
   description: SITE_DESCRIPTION,
@@ -42,12 +42,12 @@ export const metadata: Metadata = {
     type: "website",
     url: SITE_URL,
     siteName: SITE_NAME,
-    title: "AI convertly — Free PDF & image tools, right in your browser",
+    title: SITE_TITLE,
     description: SITE_DESCRIPTION,
   },
   twitter: {
     card: "summary_large_image",
-    title: "AI convertly — Free PDF & image tools, right in your browser",
+    title: SITE_TITLE,
     description: SITE_DESCRIPTION,
   },
   robots: {
