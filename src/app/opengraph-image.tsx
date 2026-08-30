@@ -1,7 +1,8 @@
 import { ImageResponse } from "next/og";
 import { poppinsOgFonts } from "@/lib/ogFonts";
+import { SITE_CATEGORY_SUMMARY } from "@/lib/site";
 
-export const alt = "AI convertly — Convert files. Right in your browser. Free PDF & image tools. No uploads, no sign-up.";
+export const alt = `AI convertly — Convert files. Right in your browser. Free ${SITE_CATEGORY_SUMMARY} tools. No uploads, no sign-up.`;
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -54,7 +55,7 @@ export default function OpengraphImage() {
             fontFamily: "Poppins",
           }}
         >
-          Free PDF & image tools. No uploads, no sign-up.
+          Free {SITE_CATEGORY_SUMMARY} tools. No uploads, no sign-up.
         </div>
       </div>
     ),

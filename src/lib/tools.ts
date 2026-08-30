@@ -4,6 +4,12 @@ export type Tool = {
   shortDescription: string;
   description: string;
   metaDescription: string;
+  // Marks a tool whose primary function is an on-device AI model (as
+  // opposed to e.g. remove-background-noise, where AI is one of two
+  // selectable engines, not the tool's defining feature). Read by
+  // site.ts to decide whether the site-wide description calls out
+  // "AI-powered enhancement" as one of the site's categories.
+  aiPowered?: boolean;
 };
 
 export const tools: Tool[] = [
@@ -123,6 +129,7 @@ export const tools: Tool[] = [
       "Enhance a photo's quality with an AI super-resolution model — upscales 4x and restores fine detail, running entirely on your device.",
     metaDescription:
       "Enhance and upscale image quality 4x for free using AI, entirely in your browser. Fast, private — no uploads, no sign-up.",
+    aiPowered: true,
   },
   {
     slug: "mp4-to-mp3",
@@ -231,6 +238,7 @@ export const tools: Tool[] = [
       "Enhance a short video clip with an AI super-resolution model — every frame is upscaled 4x and sharpened, with the original audio preserved, entirely on your device.",
     metaDescription:
       "Enhance and upscale video quality 4x for free using AI, entirely in your browser. Fast, private — no uploads, no sign-up.",
+    aiPowered: true,
   },
   {
     slug: "remove-background-noise",

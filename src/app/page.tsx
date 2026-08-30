@@ -6,6 +6,7 @@ import { ToolsSection } from "@/components/ToolsSection";
 import { JsonLd } from "@/components/JsonLd";
 import { tools } from "@/lib/tools";
 import { siteStructuredData } from "@/lib/structuredData";
+import { SITE_DESCRIPTION } from "@/lib/site";
 
 const steps = [
   {
@@ -46,9 +47,7 @@ export default function Home() {
             <span className="gradient-headline">Right in your browser.</span>
           </h1>
           <p className="max-w-xl text-lg leading-relaxed text-secondary sm:text-xl">
-            AI convertly is a free toolkit for merging, splitting, rotating,
-            and converting PDFs and images. No uploads, no accounts, no
-            limits.
+            {SITE_DESCRIPTION}
           </p>
           <div className="flex w-full flex-col items-center gap-4">
             <SmartFileDetector />
