@@ -31,21 +31,33 @@ const NEUTRAL_STYLE = { accent: "#8B93A1", chrome: "#EEF0F3", titlebar: "#E2E5EA
 const PLATFORM_STYLES = {
   Windows: { accent: "#0078D4", chrome: "#F3F3F3", titlebar: "#E8E8E8", card: "#FFFFFF", ink: "#1B1B1B", confidence: "known" },
   macOS: { accent: "#0A84FF", chrome: "#ECECEC", titlebar: "#E3E3E3", card: "#FFFFFF", ink: "#1D1D1F", confidence: "known" },
+  // Not an OS, but the same category as the two above: a cross-platform
+  // desktop application named in an article, with no browser-drivable
+  // interactive state to capture (VLC's conversion feature lives entirely
+  // behind its own native menus). VLC's traffic-cone orange is as
+  // broadly, confidently public a brand color as Windows blue or macOS
+  // blue, so it stays a knowledge-based "known" entry rather than a
+  // live color-research result.
+  VLC: { accent: "#FF8800", chrome: "#F5F0EA", titlebar: "#EDE4D8", card: "#FFFFFF", ink: "#2B2620", confidence: "known" },
 };
 
 /**
- * Marker text that names a native OS app rather than a website -- there's
- * no URL to ever navigate to (unlike scripts/lib/externalTools.mjs's
- * registry), so a marker resolved here skips network capture entirely and
- * goes straight to an illustration in this platform's own style. This is
- * the one case where "the real screenshot can't be captured" is
- * permanent, not just this-pass -- e.g. a "using Preview" step on macOS
- * has no browser-drivable target this sandbox (or any server-side
- * pipeline) could ever reach, not merely one currently blocked.
+ * Marker text that names a native OS app or native desktop application
+ * rather than a website -- there's no URL to ever navigate to (unlike
+ * scripts/lib/externalTools.mjs's registry), so a marker resolved here
+ * skips network capture entirely and goes straight to an illustration in
+ * this platform's own style. This is the one case where "the real
+ * screenshot can't be captured" is permanent, not just this-pass -- e.g.
+ * a "using Preview" step on macOS has no browser-drivable target this
+ * sandbox (or any server-side pipeline) could ever reach, not merely one
+ * currently blocked. VLC is included here for the same reason even
+ * though it isn't an OS: its conversion feature lives behind native
+ * menus with no web-drivable equivalent, matching this category exactly.
  */
 const PLATFORMS = [
   { match: ["on a mac", "using preview", "mac's preview", "in preview", "preview app"], name: "macOS" },
   { match: ["on windows", "in paint", "windows photos app"], name: "Windows" },
+  { match: ["vlc"], name: "VLC" },
 ];
 
 /**
