@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540">
+  <rect width="960" height="540" fill="#EEF0F3" />
+  <rect x="90" y="78" width="780" height="372" rx="16" fill="#FFFFFF" />
+  <path d="M 90 94 A 16 16 0 0 1 106 78 L 854 78 A 16 16 0 0 1 870 94 L 870 112 L 90 112 Z" fill="#E2E5EA" />
+  <circle cx="114" cy="95" r="6" fill="#ED6A5E" />
+  <circle cx="136" cy="95" r="6" fill="#F4BF4F" />
+  <circle cx="158" cy="95" r="6" fill="#61C454" />
+  <circle cx="172" cy="281" r="42" fill="#8B93A1" />
+  <ellipse cx="161" cy="279" rx="10" ry="8" fill="#FFFFFF" />
+  <ellipse cx="181" cy="281" rx="11" ry="9" fill="#FFFFFF" />
+  <ellipse cx="172" cy="272" rx="12" ry="10" fill="#FFFFFF" />
+  <rect x="152" y="279" width="40" height="13" rx="6.5" fill="#FFFFFF" />
+  <path d="M 172 301 L 172 283 M 165 290 L 172 282 L 179 290" fill="none" stroke="#8B93A1" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" />
+  <text x="238" y="269" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="24" font-weight="700" fill="#3A4150">Drop file here</text>
+  <text x="238" y="301" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="16" font-weight="400" fill="#3A4150">or click to browse</text>
+  <rect x="238" y="311" width="165" height="44" rx="10" fill="#8B93A1" />
+  <text x="320.5" y="339" text-anchor="middle" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="17" font-weight="600" fill="#FFFFFF">Choose File</text>
+  <text x="480" y="494" text-anchor="middle" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="22" fill="#5A6070">CloudConvert</text>
+</svg>
