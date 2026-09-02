@@ -3,7 +3,7 @@ title: 'How Video Conversion Works: MP4, WebM & MOV Explained'
 description: >-
   MP4, WebM, and MOV aren't interchangeable labels, they're different containers
   with different codecs. Here's what that means and how to convert between them.
-slug: how-video-conversion-works-mp4-webm-mov-explained
+slug: video-format-converter
 publishDate: 2026-08-28T00:00:00.000Z
 category: Video
 relatedTool: video-converter
@@ -55,7 +55,7 @@ Cheapest and fastest first. If you've got a single file and nothing installed, h
 1. Open the [video converter](/tools/video-converter).
 2. Drop your MOV, WebM, or MP4 file onto the upload area, or click to browse for it. Once it loads, pick your output format from the dropdown that appears: MP4 for broad compatibility, WebM if you're optimizing specifically for the web, MOV only if you actually need it back in Apple's ecosystem.
 
-![the video converter with a file loaded, the output format dropdown set to MP4, and the Convert to MP4 button ready to click](/blog/how-video-conversion-works-mp4-webm-mov-explained-shot-01.png)
+![the video converter with a file loaded, the output format dropdown set to MP4, and the Convert to MP4 button ready to click](/blog/video-format-converter-shot-01.png)
 
 3. Click Convert and let it process. Time depends on file size and length, so a five-minute 4K clip takes longer than a fifteen-second one.
 4. The converted file downloads automatically the moment it's ready. There's no separate Download button to click or result screen to wait on.
@@ -93,7 +93,7 @@ Already on a Mac? QuickTime Player, sitting in Applications, can export a MOV st
 
 1. Open the video in QuickTime Player (right-click the file, choose Open With, then QuickTime Player).
 2. Go to File, then Export As.
-3. Pick a resolution. 1080p is a safe default for most uses. ![the Export As dialog with a resolution option selected](/blog/how-video-conversion-works-mp4-webm-mov-explained-shot-01.svg)
+3. Pick a resolution. 1080p is a safe default for most uses. ![the Export As dialog with a resolution option selected](/blog/video-format-converter-shot-01.svg)
 4. Choose a save location and click Save.
 
 It won't export to WebM, since QuickTime only really speaks Apple's own format language. Fine if MP4 is your target, a dead end if it isn't.

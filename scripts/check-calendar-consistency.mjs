@@ -32,9 +32,8 @@
  *   - The row's Content Note cell contains a backtick-quoted slug
  *     (`` `some-slug` ``) equal to the article's real slug -- the
  *     existing convention already used in this file itself (see rows
- *     for how-video-conversion-works-mp4-webm-mov-explained and
- *     how-to-resize-a-photo-to-an-exact-kb-size) to record which file
- *     fulfills a row once it's written.
+ *     for video-format-converter and resize-image-kb) to record which
+ *     file fulfills a row once it's written.
  */
 import fs from "node:fs";
 import path from "node:path";

@@ -26,7 +26,7 @@ If you just need to open *this one photo* right now, on whatever device you're u
 3. Conversion starts the moment the file loads, no separate "Convert" button to click. A short "Converting…" spinner appears while it decodes the HEIC data and re-encodes it as a JPG. ![the tool showing a "Converting…" spinner right after a photo is dropped in](/blog/how-to-open-heic-file-shot-02.png)
 4. When it's done, you'll see a JPG thumbnail with the new filename underneath it. Click **Download** on an individual photo, or **Download all** if you converted several at once. ![the finished result: a converted JPG thumbnail with its filename, a Download link, and a Download all button](/blog/how-to-open-heic-file-shot-03.png)
 
-That's it. HEIC and JPEG both store a single compressed image, so turning one into the other doesn't lose any meaningful quality. You're just repackaging the same photo into a format almost everything can read. If you're converting this photo for a form with a strict file size limit, like a visa or exam upload, our guide on [resizing a photo to an exact KB size](/blog/how-to-resize-a-photo-to-an-exact-kb-size) covers that next step.
+That's it. HEIC and JPEG both store a single compressed image, so turning one into the other doesn't lose any meaningful quality. You're just repackaging the same photo into a format almost everything can read. If you're converting this photo for a form with a strict file size limit, like a visa or exam upload, our guide on [resizing a photo to an exact KB size](/blog/resize-image-kb) covers that next step.
 
 ## On a Mac, iPad, or iPhone? You Don't Need to Do Anything
 
