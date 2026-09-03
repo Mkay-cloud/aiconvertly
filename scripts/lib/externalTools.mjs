@@ -39,6 +39,14 @@ export const EXTERNAL_TOOLS = [
   // article's own "go to x.com" instruction gives.
   { match: ["passport photo snap", "passportphotosnap"], name: "Passport Photo Snap", url: "https://passportphotosnap.com", kind: "web-interactive" },
   { match: ["imagera"], name: "Imagera", url: "https://imagera.ai", kind: "web-interactive" },
+  // A real website, unlike the other YouTube-related mentions in the
+  // youtube-video-converter article (Premium's app-locked downloads, the
+  // "paste a link" converter sites it's warning against) -- but the
+  // specific state a marker here asks for (a signed-in Content list with
+  // a video's own three-dot menu open) requires a real account, so this
+  // is homepage-only rather than web-interactive, same reasoning as
+  // Canva above.
+  { match: ["youtube studio"], name: "YouTube Studio", url: "https://studio.youtube.com/", kind: "homepage-only" },
 ];
 
 /**
