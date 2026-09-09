@@ -1,17 +1,21 @@
 /**
  * Generates a code-drawn SVG illustration to stand in for a screenshot
  * that genuinely couldn't be captured (a network-blocked external site,
- * in practice -- see capture-screenshots.mjs). Deliberately NOT an
- * attempt to fake a real screenshot: it's a generic browser-window
- * illustration -- a titlebar, a filled icon, a heading, and a labeled
- * button, all built from plain shapes and ordinary UI copy ("Drop file
- * here", "Download", ...) that isn't unique to any one product. Never
- * draws a logo, wordmark, or a specific tool's actual layout/copy.
+ * or a native OS app/desktop application with no browser-drivable target
+ * at all -- see capture-screenshots.mjs). Deliberately NOT an attempt to
+ * fake a real screenshot: everything here is built from plain shapes and
+ * ordinary UI copy ("Drop file here", "Download", ...) that isn't unique
+ * to any one product, and native-platform illustrations (macOS, Windows,
+ * VLC) redraw each platform's real *conventions* -- window-control
+ * placement, a menu bar, a thumbnail rail, a dark theme, a transport bar
+ * -- from scratch, never tracing an actual logo, wordmark, or a real
+ * app's exact pixel layout/copy.
  *
  * Color comes from colorResearch.mjs's live lookup of the tool's real
  * site when that succeeds (see styleForTool), and only falls through to
  * a neutral gray/white style when it doesn't -- see NEUTRAL_STYLE's own
- * comment.
+ * comment. Native-platform entries (PLATFORM_STYLES) skip research
+ * entirely and use a fixed, broadly-public brand color instead.
  */
 
 // Genuine last resort -- used only when live color research found
@@ -147,6 +151,15 @@ const ICON_CY = CARD_Y + TITLEBAR_H + (CARD_H - TITLEBAR_H) / 2;
 const TEXT_X = ICON_CX + 66;
 const TEXT_W = CARD_X + CARD_W - 44 - TEXT_X;
 
+// Extra chrome used only by the native-platform illustrations below (the
+// generic/researched-tool template above never uses these): a menu-bar
+// or ribbon strip under the titlebar, a macOS-style thumbnail rail, and
+// VLC's bottom transport bar. Kept narrow/short enough that none of them
+// ever overlaps the icon or button drawn by contentPieces() lower down.
+const TOOLBAR_H = 28;
+const SIDEBAR_W = 40;
+const PLAYBAR_H = 40;
+
 /**
  * Which moment in a tool's flow a marker's own description is actually
  * about, so the illustration looks different for "upload this file" vs.
@@ -172,15 +185,104 @@ export function detectVariant(description) {
   return "generic";
 }
 
-function windowChrome(style) {
-  // Only the top two corners need rounding -- a plain rect would be
-  // simpler but would show square corners poking past the card's own
-  // rounded top edge.
+/**
+ * The top titlebar strip shared by every window-styled illustration: a
+ * rounded-top-corner bar in the chrome color, plus window controls drawn
+ * in whichever convention actually matches the platform -- macOS's
+ * colored traffic-light dots top-left (the default, "mac"), or Windows'
+ * plain minimize/maximize/close glyphs top-right ("win"), which VLC also
+ * borrows since VLC's own window chrome follows the host OS. Previously
+ * every platform got macOS's dots regardless -- a real inaccuracy for
+ * Windows and VLC that this fixes.
+ */
+function windowChrome(style, controls = "mac") {
   const r = 16;
-  return `<path d="M ${CARD_X} ${CARD_Y + r} A ${r} ${r} 0 0 1 ${CARD_X + r} ${CARD_Y} L ${CARD_X + CARD_W - r} ${CARD_Y} A ${r} ${r} 0 0 1 ${CARD_X + CARD_W} ${CARD_Y + r} L ${CARD_X + CARD_W} ${CARD_Y + TITLEBAR_H} L ${CARD_X} ${CARD_Y + TITLEBAR_H} Z" fill="${style.titlebar}" />
+  const bar = `<path d="M ${CARD_X} ${CARD_Y + r} A ${r} ${r} 0 0 1 ${CARD_X + r} ${CARD_Y} L ${CARD_X + CARD_W - r} ${CARD_Y} A ${r} ${r} 0 0 1 ${CARD_X + CARD_W} ${CARD_Y + r} L ${CARD_X + CARD_W} ${CARD_Y + TITLEBAR_H} L ${CARD_X} ${CARD_Y + TITLEBAR_H} Z" fill="${style.titlebar}" />`;
+  if (controls === "win") {
+    const cy = CARD_Y + TITLEBAR_H / 2;
+    const gx = CARD_X + CARD_W - 28;
+    return `${bar}
+  <path d="M ${gx - 84} ${cy - 5} L ${gx - 74} ${cy - 5}" stroke="${style.ink}" stroke-width="1.4" stroke-linecap="round" />
+  <rect x="${gx - 44}" y="${cy - 5}" width="10" height="10" fill="none" stroke="${style.ink}" stroke-width="1.4" />
+  <path d="M ${gx - 4} ${cy - 6} L ${gx + 6} ${cy + 6} M ${gx + 6} ${cy - 6} L ${gx - 4} ${cy + 6}" stroke="${style.ink}" stroke-width="1.6" stroke-linecap="round" />`;
+  }
+  return `${bar}
   <circle cx="${CARD_X + 24}" cy="${CARD_Y + TITLEBAR_H / 2}" r="6" fill="#ED6A5E" />
   <circle cx="${CARD_X + 46}" cy="${CARD_Y + TITLEBAR_H / 2}" r="6" fill="#F4BF4F" />
   <circle cx="${CARD_X + 68}" cy="${CARD_Y + TITLEBAR_H / 2}" r="6" fill="#61C454" />`;
+}
+
+/** Centered titlebar text -- macOS puts the document/app title in the middle of the titlebar; Windows and VLC put it flush left, drawn separately by their own render functions instead. */
+function centeredTitlebarLabel(title, style) {
+  return `<text x="${CARD_X + CARD_W / 2}" y="${CARD_Y + TITLEBAR_H / 2 + 4}" text-anchor="middle" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="600" fill="${style.ink}">${escapeXml(title)}</text>`;
+}
+
+/** A thin menu-bar strip with real menu labels (File/Edit/View/... or Media/Playback/...) -- generic UI chrome copy shared by essentially every app in that category, not specific to any one product's actual menu set. */
+function menuBar(items, style, opts = {}) {
+  const y = CARD_Y + TITLEBAR_H + TOOLBAR_H / 2 + 4;
+  const color = opts.color ?? style.ink;
+  const bg = opts.bg ?? style.card;
+  const size = 12;
+  let x = CARD_X + 16;
+  const pieces = [`<rect x="${CARD_X}" y="${CARD_Y + TITLEBAR_H}" width="${CARD_W}" height="${TOOLBAR_H}" fill="${bg}" />`];
+  for (const item of items) {
+    pieces.push(
+      `<text x="${x}" y="${y}" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="${size}" fill="${color}">${escapeXml(item)}</text>`
+    );
+    x += item.length * 6.4 + 18;
+  }
+  return pieces.join("\n  ");
+}
+
+/** Preview.app's own signature convention: a narrow thumbnail rail down the left edge, with one "selected" thumbnail highlighted in the accent color. Kept narrow enough (SIDEBAR_W) to never reach the icon drawn by contentPieces(). */
+function macSidebar(style) {
+  const top = CARD_Y + TITLEBAR_H + TOOLBAR_H;
+  const thumbW = 24;
+  const thumbH = 32;
+  const gap = 10;
+  const startY = top + 12;
+  const rects = [0, 1, 2].map((i) => {
+    const y = startY + i * (thumbH + gap);
+    const selected = i === 0;
+    return `<rect x="${CARD_X + (SIDEBAR_W - thumbW) / 2}" y="${y}" width="${thumbW}" height="${thumbH}" rx="3" fill="${selected ? style.accent : style.titlebar}" />`;
+  });
+  return `<rect x="${CARD_X}" y="${top}" width="${SIDEBAR_W}" height="${CARD_Y + CARD_H - top}" fill="${style.chrome}" />
+  ${rects.join("\n  ")}
+  <path d="M ${CARD_X + SIDEBAR_W} ${top} L ${CARD_X + SIDEBAR_W} ${CARD_Y + CARD_H}" stroke="${style.titlebar}" stroke-width="1" />`;
+}
+
+/** Windows Photos' own signature convention: a row of ribbon buttons (Rotate / Edit & Create / Share / Delete) under the titlebar -- generic Fluent-style pill buttons, not a pixel copy of the real ribbon's icons. */
+function winRibbon(style) {
+  const y = CARD_Y + TITLEBAR_H;
+  const items = ["Rotate", "Edit & Create", "Share", "Delete"];
+  let x = CARD_X + 16;
+  const pieces = [
+    `<rect x="${CARD_X}" y="${y}" width="${CARD_W}" height="${TOOLBAR_H}" fill="${style.card}" />`,
+    `<path d="M ${CARD_X} ${y + TOOLBAR_H} L ${CARD_X + CARD_W} ${y + TOOLBAR_H}" stroke="${style.titlebar}" stroke-width="1" />`,
+  ];
+  for (const label of items) {
+    const w = label.length * 6.6 + 20;
+    pieces.push(`<rect x="${x}" y="${y + 4}" width="${w}" height="${TOOLBAR_H - 8}" rx="4" fill="${style.chrome}" />`);
+    pieces.push(
+      `<text x="${x + w / 2}" y="${y + TOOLBAR_H / 2 + 4}" text-anchor="middle" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="11" fill="${style.ink}">${escapeXml(label)}</text>`
+    );
+    x += w + 10;
+  }
+  return pieces.join("\n  ");
+}
+
+/** VLC's own signature convention: a dark transport bar pinned to the bottom of the window, with a seek track, a play glyph, and an elapsed/total time readout -- generic media-player chrome, not a copy of VLC's actual control icons. */
+function vlcPlaybar(accentHex) {
+  const y = CARD_Y + CARD_H - PLAYBAR_H;
+  const trackY = y + 10;
+  const trackX = CARD_X + 20;
+  const trackW = CARD_W - 40;
+  return `<rect x="${CARD_X}" y="${y}" width="${CARD_W}" height="${PLAYBAR_H}" fill="#1B1B1B" />
+  <rect x="${trackX}" y="${trackY}" width="${trackW}" height="4" rx="2" fill="#3A3A3A" />
+  <rect x="${trackX}" y="${trackY}" width="${trackW * 0.34}" height="4" rx="2" fill="${accentHex}" />
+  <circle cx="${trackX + trackW * 0.34}" cy="${trackY + 2}" r="5" fill="${accentHex}" />
+  <path d="M ${CARD_X + 26} ${y + 28} L ${CARD_X + 26} ${y + 16} L ${CARD_X + 36} ${y + 22} Z" fill="#EDEDED" />
+  <text x="${CARD_X + CARD_W - 20}" y="${y + 26}" text-anchor="end" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="11" fill="#B5B5B5">01:12 / 03:40</text>`;
 }
 
 /** A wrapped block of plain text, since SVG has no native text-wrapping -- splits on whitespace and greedily fills lines under maxCharsPerLine (an estimate from fontSize, not exact metrics, but this is short UI-style copy, not prose, so it doesn't need to be). */
@@ -283,22 +385,13 @@ function progressBar(x, y, width, style) {
 }
 
 /**
- * Draws one browser-window illustration: a titlebar with the generic
- * "traffic light" window-chrome dots, a solid variant-specific icon, a
- * real heading/secondary line, and (for upload/result) a real labeled
- * button -- all still plain geometry and generic UI copy, deliberately
- * not shaped or worded like any one product's actual layout. `toolName`
- * is set as plain text below the card (in the site's own generic
- * sans-serif, not any brand's real logotype/font) so a reader can tell
- * what it's standing in for -- identification, not an imitation of the
- * brand's own wordmark styling.
+ * The icon + heading + secondary line + (progress bar or button) block
+ * shared by every illustration variant, platform-styled ones included --
+ * factored out so the platform-specific chrome around it (a menu bar, a
+ * ribbon, a dark playback bar) can vary without duplicating this logic.
  */
-export function renderFallbackIllustrationSVG(toolName, description = "", researchedAccent = null) {
-  const style = styleForTool(toolName, researchedAccent);
-  const variant = detectVariant(description);
+function contentPieces(style, variant) {
   const content = VARIANT_CONTENT[variant] ?? VARIANT_CONTENT.upload;
-  const label = escapeXml(toolName);
-
   const headingY = ICON_CY - (content.secondary || content.showProgressBar ? 12 : 0);
   const pieces = [content.glyph(style)];
   pieces.push(
@@ -313,12 +406,105 @@ export function renderFallbackIllustrationSVG(toolName, description = "", resear
   if (content.buttonLabel) {
     pieces.push(button(TEXT_X, ICON_CY + 30, content.buttonLabel, style));
   }
+  return pieces.join("\n  ");
+}
 
+/**
+ * Preview.app-recognizable window: macOS's traffic-light dots, a
+ * centered titlebar filename, a real menu-bar row, and Preview's own
+ * signature left-hand thumbnail rail -- not a pixel copy of Preview's
+ * actual chrome, but enough of its real conventions that a reader
+ * immediately reads "this is a Mac app," which the old shared template
+ * never conveyed for any platform.
+ */
+function renderMacIllustration(style, variant, toolName) {
+  const label = escapeXml(toolName);
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${WIDTH}" height="${HEIGHT}" viewBox="0 0 ${WIDTH} ${HEIGHT}">
+  <rect width="${WIDTH}" height="${HEIGHT}" fill="${style.chrome}" />
+  <rect x="${CARD_X}" y="${CARD_Y}" width="${CARD_W}" height="${CARD_H}" rx="16" fill="${style.card}" />
+  ${windowChrome(style, "mac")}
+  ${centeredTitlebarLabel("IMG_0342.png — Preview", style)}
+  ${menuBar(["File", "Edit", "View", "Tools", "Window", "Help"], style, { color: "#8A8A8E" })}
+  ${macSidebar(style)}
+  ${contentPieces(style, variant)}
+  <text x="${WIDTH / 2}" y="${CARD_Y + CARD_H + 44}" text-anchor="middle" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="22" fill="${style.ink}">${label}</text>
+</svg>`;
+}
+
+/**
+ * Windows Photos-recognizable window: square minimize/maximize/close
+ * controls top-right (not macOS's dots, which the old shared template
+ * wrongly put here too), a left-aligned title, and a ribbon row of
+ * action buttons under the titlebar, matching the real Photos app's own
+ * layout conventions without copying its actual icon set.
+ */
+function renderWindowsIllustration(style, variant, toolName) {
+  const label = escapeXml(toolName);
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${WIDTH}" height="${HEIGHT}" viewBox="0 0 ${WIDTH} ${HEIGHT}">
+  <rect width="${WIDTH}" height="${HEIGHT}" fill="${style.chrome}" />
+  <rect x="${CARD_X}" y="${CARD_Y}" width="${CARD_W}" height="${CARD_H}" rx="8" fill="${style.card}" />
+  ${windowChrome(style, "win")}
+  <text x="${CARD_X + 16}" y="${CARD_Y + TITLEBAR_H / 2 + 4}" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="600" fill="${style.ink}">Photos</text>
+  ${winRibbon(style)}
+  ${contentPieces(style, variant)}
+  <text x="${WIDTH / 2}" y="${CARD_Y + CARD_H + 44}" text-anchor="middle" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="22" fill="${style.ink}">${label}</text>
+</svg>`;
+}
+
+/**
+ * VLC-recognizable window: its real dark theme (VLC ships dark by
+ * default on both platforms it's most commonly captured on), Windows-
+ * style window controls, a real menu-bar row, and VLC's own signature
+ * bottom transport bar with a seek track and time readout -- all
+ * redrawn generically, never the actual VLC cone logo or icon set.
+ */
+function renderVLCIllustration(style, variant, toolName) {
+  const label = escapeXml(toolName);
+  const dark = { ...style, chrome: "#141414", titlebar: "#0F0F0F", card: "#1E1E1E", ink: "#EDEDED" };
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${WIDTH}" height="${HEIGHT}" viewBox="0 0 ${WIDTH} ${HEIGHT}">
+  <rect width="${WIDTH}" height="${HEIGHT}" fill="${dark.chrome}" />
+  <rect x="${CARD_X}" y="${CARD_Y}" width="${CARD_W}" height="${CARD_H}" rx="8" fill="${dark.card}" />
+  ${windowChrome(dark, "win")}
+  <path d="M ${CARD_X + 16} ${CARD_Y + TITLEBAR_H / 2 - 7} L ${CARD_X + 28} ${CARD_Y + TITLEBAR_H / 2 + 7} L ${CARD_X + 4} ${CARD_Y + TITLEBAR_H / 2 + 7} Z" fill="${style.accent}" />
+  <text x="${CARD_X + 36}" y="${CARD_Y + TITLEBAR_H / 2 + 4}" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="600" fill="${dark.ink}">VLC media player</text>
+  ${menuBar(["Media", "Playback", "Audio", "Video", "Subtitle", "Tools", "View", "Help"], dark, { color: "#9A9A9A", bg: dark.card })}
+  ${contentPieces(dark, variant)}
+  ${vlcPlaybar(style.accent)}
+  <text x="${WIDTH / 2}" y="${CARD_Y + CARD_H + 44}" text-anchor="middle" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="22" fill="${dark.ink}">${label}</text>
+</svg>`;
+}
+
+/**
+ * Draws one illustration. For a researched/generic tool this is the
+ * original browser-window template: a titlebar with the generic
+ * "traffic light" dots, a solid variant-specific icon, a real
+ * heading/secondary line, and (for upload/result) a real labeled button
+ * -- all plain geometry and generic UI copy, deliberately not shaped or
+ * worded like any one product's actual layout. For a native-platform
+ * tool (macOS, Windows, VLC -- see PLATFORM_STYLES) this instead routes
+ * to that platform's own dedicated renderer above, which draws that
+ * platform's real window-chrome and navigation conventions rather than
+ * reusing the generic template unchanged. `toolName` is set as plain
+ * text below the card (in the site's own generic sans-serif, not any
+ * brand's real logotype/font) so a reader can tell what it's standing in
+ * for -- identification, not an imitation of the brand's own wordmark
+ * styling. No caption is ever added alongside the embed, matching every
+ * other successful capture in this pipeline.
+ */
+export function renderFallbackIllustrationSVG(toolName, description = "", researchedAccent = null) {
+  const style = styleForTool(toolName, researchedAccent);
+  const variant = detectVariant(description);
+
+  if (toolName === "macOS") return renderMacIllustration(style, variant, toolName);
+  if (toolName === "Windows") return renderWindowsIllustration(style, variant, toolName);
+  if (toolName === "VLC") return renderVLCIllustration(style, variant, toolName);
+
+  const label = escapeXml(toolName);
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${WIDTH}" height="${HEIGHT}" viewBox="0 0 ${WIDTH} ${HEIGHT}">
   <rect width="${WIDTH}" height="${HEIGHT}" fill="${style.chrome}" />
   <rect x="${CARD_X}" y="${CARD_Y}" width="${CARD_W}" height="${CARD_H}" rx="16" fill="${style.card}" />
   ${windowChrome(style)}
-  ${pieces.join("\n  ")}
+  ${contentPieces(style, variant)}
   <text x="${WIDTH / 2}" y="${CARD_Y + CARD_H + 44}" text-anchor="middle" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="22" fill="${style.confidence === "neutral" ? "#5A6070" : style.ink}">${label}</text>
 </svg>`;
 }
