@@ -50,7 +50,8 @@
  */
 import fs from "node:fs";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
+import { LIBFIX_DIR } from "./setup-playwright-libfix.mjs";
 import { spawn } from "node:child_process";
 import matter from "gray-matter";
 import { chromium } from "playwright";
@@ -332,6 +333,20 @@ async function screenshotToolContent(page) {
 }
 
 async function launchBrowser() {
+  // This repo's device sandbox is missing libXdamage.so.1, a normal
+  // Chromium runtime dependency `npx playwright install-deps` would
+  // normally install via apt -- except that needs root, and this
+  // sandbox's container config blocks sudo outright. See
+  // setup-playwright-libfix.mjs for how the one missing library gets
+  // fetched without root and dropped in LIBFIX_DIR; pointing
+  // LD_LIBRARY_PATH there before launch is enough for the dynamic
+  // linker to find it (confirmed: without this, launch fails with
+  // "error while loading shared libraries: libXdamage.so.1"; with it,
+  // Chromium launches and navigates normally). A no-op on any machine
+  // that already has the library system-wide, or isn't Linux at all.
+  if (fs.existsSync(LIBFIX_DIR)) {
+    process.env.LD_LIBRARY_PATH = process.env.LD_LIBRARY_PATH ? `${LIBFIX_DIR}:${process.env.LD_LIBRARY_PATH}` : LIBFIX_DIR;
+  }
   try {
     return await chromium.launch();
   } catch {
@@ -905,7 +920,20 @@ async function main() {
 // imported for its exported pure functions, e.g. by
 // scripts/capture-screenshots.test.mjs, which must not spawn a dev
 // server or launch a real browser just to test string-matching logic.
-if (import.meta.url === `file://${process.argv[1]}`) {
+//
+// Built with pathToFileURL rather than a plain `file://${process.argv[1]}`
+// string comparison: that plain form silently never matches on Windows
+// (process.argv[1] there is a bare path with backslashes and no percent-
+// encoding, e.g. "C:\Users\...\capture-screenshots.mjs", while
+// import.meta.url is always a real, percent-encoded file:// URL like
+// "file:///C:/Users/.../capture-screenshots.mjs"). That mismatch meant
+// main() silently never ran when this script was invoked normally
+// (`npm run capture-screenshots`) on the user's actual Windows machine --
+// confirmed by running it directly and getting a clean exit with zero
+// output, not even the dev-server startup log, let alone a captured
+// screenshot. The entire capture pipeline had never actually executed on
+// this machine before this fix.
+if (import.meta.url === pathToFileURL(process.argv[1]).href) {
   main().catch((err) => {
     console.error(err);
     process.exit(1);

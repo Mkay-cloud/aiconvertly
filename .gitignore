@@ -44,3 +44,6 @@ public/pdf.min.mjs
 public/wasm/
 public/ffmpeg/
 public/ort/
+
+# Repo-local git credential store for automated push access -- never commit.
+.git-credentials-local
