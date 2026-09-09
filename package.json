@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev --webpack",
     "test": "node --experimental-strip-types --test scripts/capture-screenshots.test.mjs",
-    "prebuild": "node --experimental-strip-types scripts/check-calendar-consistency.mjs && npm run test",
+    "prebuild": "node --experimental-strip-types scripts/check-calendar-consistency.mjs && node --experimental-strip-types scripts/check-blog-frontmatter.mjs && npm run test",
     "build": "next build --webpack",
     "start": "next start",
     "lint": "eslint",

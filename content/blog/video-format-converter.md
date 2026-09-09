@@ -4,7 +4,7 @@ description: >-
   MP4, WebM, and MOV aren't interchangeable labels, they're different containers
   with different codecs. Here's what that means and how to convert between them.
 slug: video-format-converter
-publishDate: 2026-08-28T00:00:00.000Z
+publishDate: '2026-08-28'
 category: Video
 relatedTool: video-converter
 ---
