@@ -70,6 +70,41 @@ export async function pageHasSignupWall(page) {
   return hasEmail;
 }
 
+
+const LOCATION_LEAK_PATTERNS = [
+  /\b(?:\d{1,3}\.){3}\d{1,3}\b/, // a bare IPv4 address rendered on the page
+  /\b(?:your\s+)?ip\s*address\s*:?\s*\S/i,
+  // A labeled "Location:"/"City:" field naming something -- this is
+  // deliberately broad enough to also match unrelated copy like "File
+  // location: Downloads folder". That's an acceptable false positive:
+  // worst case it skips a real screenshot in favor of an illustration.
+  // The one case it must never miss is a bare results-table field (no
+  // "your"/"detected" qualifier) naming a real place, which is exactly
+  // the shape fast.com's own leaked "Location: Ikoyi, NG" took.
+  /\b(?:your\s+)?(?:location|city)\s*:\s*\S/i,
+  /\bisp\s*:\s*\S/i,
+  /your (?:location|city|isp|network|connection)\b/i,
+  /(?:detected|estimated|approximate) location/i,
+  /\blat(?:itude)?[:,]\s*-?\d/i,
+];
+
+/**
+ * True if the page appears to display information tied to the *real*
+ * machine doing the capture -- its IP address, ISP, or an auto-detected
+ * city/location -- rather than content that would be identical for every
+ * visitor. This is exactly what happened once on Techiebull: a real
+ * screenshot of a speed-test tool captured its auto-detected "Ikoyi, NG"
+ * location string, publishing the capturing machine's real physical
+ * location on a public article without anyone intending to. Network-
+ * diagnostic and "what's my IP" style tools are the main risk category,
+ * but this check runs on every external page regardless, since there's
+ * no reliable way to know in advance which tools do this.
+ */
+export async function pageLeaksLocationInfo(page) {
+  const bodyText = await page.locator("body").innerText().catch(() => "");
+  return LOCATION_LEAK_PATTERNS.some((re) => re.test(bodyText));
+}
+
 /**
  * Runs every check and returns a human-readable reason if the current page
  * is unsafe to interact with further (a plain screenshot of this state is

@@ -60,7 +60,7 @@ import { chromium } from "playwright";
 // internal imports of its own to trip over the same resolution gap.
 import { tools, getTool } from "../src/lib/tools.ts";
 import { findExternalTool } from "./lib/externalTools.mjs";
-import { unsafeReason } from "./lib/safety.mjs";
+import { unsafeReason, pageLeaksLocationInfo } from "./lib/safety.mjs";
 import { renderFallbackIllustrationSVG, findPlatform } from "./lib/fallbackIllustration.mjs";
 import { researchToolColor } from "./lib/colorResearch.mjs";
 
@@ -598,6 +598,23 @@ async function captureExternal(page, externalTool) {
     };
   }
 
+  // Mirrors a real lesson from Techiebull: a speed-test tool's own UI
+  // once displayed its auto-detected city ("Ikoyi, NG"), and that got
+  // captured and published as-is, leaking the capturing machine's real
+  // physical location. A screenshot with this on it is still worth
+  // illustrating for the reader -- just not with the real capture, so
+  // this gets a fallback illustration (skipKind "unreachable" territory),
+  // not a bare "skipped" text note like the CAPTCHA/payment/signup cases
+  // above.
+  if (await pageLeaksLocationInfo(page)) {
+    return {
+      skipped: true,
+      skipKind: "privacy",
+      publicNote: `Screenshot pending: ${externalTool.name}'s page displayed network/location details tied to this run, so the real capture was skipped.`,
+      logNote: `${externalTool.name} appears to display IP/ISP/location details on this page -- skipped the real screenshot to avoid publishing that (see the Techiebull fast.com lesson)`,
+    };
+  }
+
   if (externalTool.kind === "web-interactive") {
     const fileInput = page.locator('input[type="file"]').first();
     const hasFileInput = (await fileInput.count()) > 0;
@@ -617,6 +634,15 @@ async function captureExternal(page, externalTool) {
         skipKind: "unsafe",
         publicNote: `Screenshot skipped: reaching this state on ${externalTool.name} isn't something this workflow does automatically.`,
         logNote: `${externalTool.name} ${reason} while trying to reach the described state`,
+      };
+    }
+
+    if (await pageLeaksLocationInfo(page)) {
+      return {
+        skipped: true,
+        skipKind: "privacy",
+        publicNote: `Screenshot pending: ${externalTool.name}'s page displayed network/location details tied to this run, so the real capture was skipped.`,
+        logNote: `${externalTool.name} appears to display IP/ISP/location details after the upload interaction -- skipped the real screenshot to avoid publishing that`,
       };
     }
     const screenshot = await screenshotFullPage(page);
@@ -747,7 +773,7 @@ async function processDraft(browser, filePath, summary, externalShotCounts, tool
           } finally {
             await page.close();
           }
-          if (result.skipped && result.skipKind === "unreachable") {
+          if (result.skipped && (result.skipKind === "unreachable" || result.skipKind === "privacy")) {
             // A genuine capture failure (the site just couldn't be
             // reached this pass), not a deliberate policy skip -- draw a
             // real-colored, tool-styled illustration instead of leaving
