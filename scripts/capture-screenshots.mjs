@@ -318,6 +318,28 @@ async function screenshotFullPage(page) {
 }
 
 /**
+ * Viewport-only capture (Playwright's default page.screenshot(), no
+ * fullPage) -- what screenshotFullPage's own comment above VIEWPORT
+ * explains that flag is FOR: not silently cropping a "result" state
+ * (a compressed-file summary, a Download button) that renders further
+ * down the page than the form already on screen, after some interaction
+ * moved the page into that state. A homepage-only capture never reaches
+ * such a state -- there's no interaction, no result, just whatever the
+ * page shows on first load -- so there's nothing full-page protects
+ * against there, and using it anyway produces exactly what a modern
+ * marketing homepage's real length actually is: a single 1280-wide image
+ * several thousand pixels tall (confirmed on the four homepage-only
+ * shots this fixed -- 4900 to 9500px tall, 1.5-2MB each), nothing like
+ * what "a screenshot of the homepage" means in an article. This is what
+ * homepage-only captures should use instead: the same first-impression
+ * view an actual visitor lands on.
+ */
+async function screenshotViewport(page) {
+  await neutralizeStickyPositioning(page);
+  return page.screenshot();
+}
+
+/**
  * Screenshots only the bounded tool-content element (see
  * TOOL_CONTENT_SELECTOR's own comment) rather than the whole page: a
  * full-page capture of one of our own tool pages includes the site Header,
@@ -675,8 +697,9 @@ async function captureExternal(page, externalTool) {
   }
 
   // homepage-only (desktop app, or a web app with no unauthenticated
-  // interactive state, e.g. Canva's real editor)
-  const screenshot = await screenshotFullPage(page);
+  // interactive state, e.g. Canva's real editor) -- viewport-only, see
+  // screenshotViewport's own comment for why full-page is wrong here.
+  const screenshot = await screenshotViewport(page);
   return { screenshot, note: `External tool: ${externalTool.name} (desktop app or account-gated -- homepage/marketing page only)` };
 }
 
