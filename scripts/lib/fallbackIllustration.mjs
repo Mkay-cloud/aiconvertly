@@ -74,16 +74,18 @@ export function findPlatform(searchText) {
   const lower = searchText.toLowerCase();
   let bestName = null;
   let bestIndex = -1;
+  let bestLength = 0;
   for (const platform of PLATFORMS) {
     for (const needle of platform.match) {
       const idx = lower.lastIndexOf(needle);
       if (idx > bestIndex) {
         bestIndex = idx;
+        bestLength = needle.length;
         bestName = platform.name;
       }
     }
   }
-  return bestName ? { tool: { name: bestName }, index: bestIndex } : null;
+  return bestName ? { tool: { name: bestName }, index: bestIndex, length: bestLength } : null;
 }
 
 function hexToRgb(hex) {

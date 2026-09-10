@@ -75,14 +75,16 @@ export function findExternalTool(searchText) {
   const lower = searchText.toLowerCase();
   let bestTool = null;
   let bestIndex = -1;
+  let bestLength = 0;
   for (const tool of EXTERNAL_TOOLS) {
     for (const needle of tool.match) {
       const idx = lower.lastIndexOf(needle);
       if (idx > bestIndex) {
         bestIndex = idx;
+        bestLength = needle.length;
         bestTool = tool;
       }
     }
   }
-  return bestTool ? { tool: bestTool, index: bestIndex } : null;
+  return bestTool ? { tool: bestTool, index: bestIndex, length: bestLength } : null;
 }

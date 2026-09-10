@@ -202,19 +202,23 @@ export function findInternalTool(searchText, frontmatterRelatedTool) {
   const lower = searchText.toLowerCase();
   let bestTool = null;
   let bestIndex = -1;
+  let bestLength = 0;
 
   if (frontmatterRelatedTool) {
     const selfReferenceRe = /\bai convertly\b|\bthis tool\b|\bthis site\b|\bthe site\b/g;
     let lastSelfRefIndex = -1;
+    let lastSelfRefLength = 0;
     let match;
     while ((match = selfReferenceRe.exec(lower))) {
       lastSelfRefIndex = match.index;
+      lastSelfRefLength = match[0].length;
     }
     if (lastSelfRefIndex > bestIndex) {
       const tool = getTool(frontmatterRelatedTool);
       if (tool) {
         bestTool = tool;
         bestIndex = lastSelfRefIndex;
+        bestLength = lastSelfRefLength;
       }
     }
   }
@@ -224,11 +228,12 @@ export function findInternalTool(searchText, frontmatterRelatedTool) {
       const idx = lower.lastIndexOf(needle);
       if (idx > bestIndex) {
         bestIndex = idx;
+        bestLength = needle.length;
         bestTool = t;
       }
     }
   }
-  return bestTool ? { tool: bestTool, index: bestIndex } : null;
+  return bestTool ? { tool: bestTool, index: bestIndex, length: bestLength } : null;
 }
 
 /** Text of the current "## " section up to (and not including) `markerIndex`, or from the top of the file if there's no preceding heading. */
@@ -706,20 +711,38 @@ async function getToolColor(browser, externalTool, toolColorCache) {
  * whichever candidate's match sits closest to the marker, or null if
  * none of the three resolvers found anything. Ties keep the original
  * preference order: internal, then external, then platform.
+ *
+ * Compares candidates by where their matched text ENDS, not where it
+ * starts -- a third real mislabeling bug, found the same way as the two
+ * described above: an article naming "Any Video Converter" (a registered
+ * external tool) got that marker resolved to AI Convertly's own internal
+ * "Video Converter" tool instead, because "video converter" is a
+ * substring of "any video converter" starting 4 characters later, so its
+ * start index came out higher even though the external match is the
+ * longer, more specific, and clearly correct one. Comparing by end index
+ * instead fixes this in general (the two matches end at the same point
+ * here, so the length tiebreak below picks the longer/more-specific
+ * match) without regressing the two bugs above, since two genuinely
+ * separate mentions elsewhere in the text never end at the same offset.
  */
 export function resolveMarkerTarget(sectionContext, frontmatterRelatedTool) {
   const internalMatch = findInternalTool(sectionContext, frontmatterRelatedTool);
   const externalMatch = findExternalTool(sectionContext);
   const platformMatch = findPlatform(sectionContext);
   const candidates = [
-    internalMatch && { kind: "internal", tool: internalMatch.tool, index: internalMatch.index },
-    externalMatch && { kind: "external", tool: externalMatch.tool, index: externalMatch.index },
-    platformMatch && { kind: "platform", tool: platformMatch.tool, index: platformMatch.index },
+    internalMatch && { kind: "internal", tool: internalMatch.tool, index: internalMatch.index, end: internalMatch.index + (internalMatch.length ?? 0) },
+    externalMatch && { kind: "external", tool: externalMatch.tool, index: externalMatch.index, end: externalMatch.index + (externalMatch.length ?? 0) },
+    platformMatch && { kind: "platform", tool: platformMatch.tool, index: platformMatch.index, end: platformMatch.index + (platformMatch.length ?? 0) },
   ].filter(Boolean);
   const TIE_PRIORITY = { internal: 0, external: 1, platform: 2 };
   let winner = null;
   for (const c of candidates) {
-    if (!winner || c.index > winner.index || (c.index === winner.index && TIE_PRIORITY[c.kind] < TIE_PRIORITY[winner.kind])) {
+    if (
+      !winner ||
+      c.end > winner.end ||
+      (c.end === winner.end && c.index < winner.index) ||
+      (c.end === winner.end && c.index === winner.index && TIE_PRIORITY[c.kind] < TIE_PRIORITY[winner.kind])
+    ) {
       winner = c;
     }
   }

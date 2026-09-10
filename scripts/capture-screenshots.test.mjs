@@ -178,3 +178,25 @@ them up is why a renamed extension never actually fixes playback.
 
   assert.equal(winner, null);
 });
+
+test("an external tool whose name contains an internal tool's name resolves to the external tool (the Any Video Converter bug)", () => {
+  // "Any Video Converter" (a registered external tool) contains "video
+  // converter" (AI Convertly's own internal tool name) as a substring
+  // starting 4 characters later, so its start index used to come out
+  // higher and win a start-index comparison even though "any video
+  // converter" is the longer, more specific, and correct match -- a
+  // real mislabeling this exact marker text produced in production
+  // before resolveMarkerTarget started comparing by end index.
+  const sectionContext = `
+## Any Video Converter (genuinely free tier, but it's still an install)
+
+Any Video Converter's free edition is the most straightforwardly honest
+of the five: no watermark, no file size ceiling, and no daily cap on the
+free download.`;
+  const description = "Any Video Converter's official homepage";
+  const winner = resolveMarkerTarget(`${sectionContext} ${description}`, RELATED_TOOL);
+
+  assert.ok(winner, "expected a resolved target, got null (unresolved)");
+  assert.equal(winner.kind, "external");
+  assert.equal(winner.tool.name, "Any Video Converter");
+});
