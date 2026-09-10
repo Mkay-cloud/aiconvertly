@@ -49,7 +49,7 @@ The catch isn't hidden in fine print, it's just the format itself: you download 
 
 Freemake's own site currently states it's "absolutely free, no trials or limitations." That's not quite the whole story: Freemake sells a separate "Remove Branding" pack specifically because, in the company's own words, the free converter "adds a logo on the converted clips." Buying that pack is described as the only legal way to get a Freemake-free export.
 
-![Freemake's official homepage](/blog/video-converter-alternatives-shot-05.svg)
+![Freemake's official homepage](/blog/video-converter-alternatives-shot-05.png)
 
 So the free version does convert your file, but what comes out has a watermark burned into it unless you pay. That's a meaningfully different deal than "no limitations," and worth knowing before you spend the time installing it expecting a clean file. Freemake still supports a genuinely wide format list (500+, per its own claims) and handles DVD ripping and burning, which is more than most of the other tools here offer. If that specific feature set is what you need and you're willing to pay for the branding removal, it's a real option. If you just need one clean converted file, it isn't the free tool its homepage makes it sound like.
 
