@@ -4,6 +4,11 @@ import { tools } from "./tools";
 export const SITE_URL = "https://aiconvertly.online";
 export const SITE_NAME = "AI convertly";
 
+// Google Analytics 4 Measurement ID -- wired up in src/app/layout.tsx via
+// next/script. Free (GA4 has no paid tier for this volume), consistent
+// with the project's zero-budget approach.
+export const GA_MEASUREMENT_ID = "G-R6YV0RFHRJ";
+
 const CATEGORY_LABELS: Record<CategoryId, string> = {
   pdf: "PDF",
   image: "image",

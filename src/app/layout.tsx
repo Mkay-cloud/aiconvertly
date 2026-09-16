@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import { SITE_URL, SITE_NAME, SITE_DESCRIPTION, SITE_TITLE } from "@/lib/site";
+import { SITE_URL, SITE_NAME, SITE_DESCRIPTION, SITE_TITLE, GA_MEASUREMENT_ID } from "@/lib/site";
 import { themeInitScript } from "@/lib/theme";
 
 // Single family for both headlines and body text -- hierarchy comes from
@@ -75,6 +76,21 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       suppressHydrationWarning
     >
       <body className="flex min-h-full flex-col bg-bg font-sans text-foreground">
+        {/* Google Analytics (GA4) -- loaded after the page is interactive so it
+            never competes with the tools themselves for the main thread. See
+            GA_MEASUREMENT_ID in src/lib/site.ts for the property ID. */}
+        <Script
+          src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', '${GA_MEASUREMENT_ID}');
+          `}
+        </Script>
         {/* Runs synchronously before first paint, so the correct theme's
             colors apply immediately -- no flash of the wrong theme while
             waiting for React to hydrate. See src/lib/theme.ts for the
