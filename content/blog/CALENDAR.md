@@ -25,7 +25,7 @@ regardless of which group it's in.
 | 4 | Video | HandBrake alternative: a simpler free video converter | handbrake video converter | video-converter, compress-video | Published as `handbrake-video-converter` | Published |
 | 5 | Video | Alternatives to Any Video Converter, Freemake, Movavi, MiniTool & HitPaw | any video converter, freemake, movavi, minitool, hitpaw | video-converter | Published as `video-converter-alternatives` | Published |
 | 6 | Video | How to turn photos, audio, or a PDF into a video slideshow | audio to video converter, image to video converter, pdf to video converter | | Purely informational — no matching tool, genuinely useful guide -- Published as `photos-audio-pdf-to-video` | Published |
-| 7 | Video | How to compress a video online free without losing quality | video size reducer online, video compressor, compress video online | compress-video | Flagship — biggest single spike in the research | Pending |
+| 7 | Video | How to compress a video online free without losing quality | video size reducer online, video compressor, compress video online | compress-video | Flagship — biggest single spike in the research -- Published as `compress-video-online` | Published |
 | 8 | Video | Compress a video under a size limit (Discord, email, WhatsApp) | video mb reducer, compress video size, reduce video file size | compress-video | Distinct intent from #7 — hard limit, not general "smaller" | Pending |
 | 9 | Video | Shrink a video without losing quality: decrease, downsize, downsample | decrease video size, downsize video, shrink video size | compress-video | | Pending |
 | 10 | Video | How to change video resolution (480p / 720p / 1080p) | resize video, resize video online | video-resolution-converter | | Pending |
