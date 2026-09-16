@@ -86,16 +86,16 @@ const DEV_SERVER_PORT = 3900;
 const DEV_SERVER_BASE_URL = `http://localhost:${DEV_SERVER_PORT}`;
 const CHROMIUM_FALLBACK_PATH = "/opt/pw-browsers/chromium";
 // Only sets the layout width and initial viewport height -- it doesn't cap
-// what gets captured. Both screenshot paths below (screenshotToolContent's
-// locator.screenshot() for internal tools, screenshotFullPage's
-// page.screenshot({ fullPage: true }) for external sites) capture their
-// full target regardless of this height. That matters because a "result"
-// state (a compressed-file summary, a Download button) routinely renders
-// further down the page than the upload form that was already on screen,
-// past this height -- a viewport-only screenshot would silently crop it out
-// and show the pre-result state instead, which is exactly what happened
-// here before that was accounted for (see the PR description for how that
-// was tracked down).
+// what gets captured. screenshotToolContent's locator.screenshot() for
+// internal tools captures its full target regardless of this height, which
+// matters because a "result" state (a compressed-file summary, a Download
+// button) routinely renders further down the page than the upload form
+// that was already on screen, past this height -- a viewport-only
+// screenshot would silently crop it out and show the pre-result state
+// instead, which is exactly what happened here before that was accounted
+// for (see the PR description for how that was tracked down).
+// screenshotAroundElement (external sites) works differently -- see its
+// own comment -- but still respects this as its clip's outer bound.
 const VIEWPORT = { width: 1280, height: 800 };
 // The element ToolPageShell wraps every tool's client component in --
 // see its own comment. Scoping internal-tool screenshots to this element
@@ -165,6 +165,26 @@ const FIXTURE_BY_SLUG = {
 
 function fixturePathForSlug(slug) {
   return path.join(FIXTURES_DIR, FIXTURE_BY_SLUG[slug] ?? "test-image.jpg");
+}
+
+/**
+ * Same idea as FIXTURE_BY_SLUG, for an external tool instead of one of our
+ * own: uploading an image fixture to a video converter (or the reverse) is
+ * a plausible reason a site's own client-side validation quietly refuses
+ * the file with no visible change at all -- checked and ruled out on
+ * FreeConvert specifically during this feature's own verification pass
+ * (still didn't take with a matching video fixture either, so this alone
+ * isn't the whole story there -- see uploadFixtureAndVerify's caller), but
+ * cheap enough to get right regardless. Keyed off the registry entry's own
+ * name/URL rather than a per-tool map, since most entries clearly declare
+ * their format in one or the other ("video-converter", "MP3 Compressor").
+ */
+function externalFixtureFor(externalTool) {
+  const haystack = `${externalTool.name} ${externalTool.url}`.toLowerCase();
+  if (/video/.test(haystack)) return path.join(FIXTURES_DIR, "test-video.mp4");
+  if (/audio|mp3|wav/.test(haystack)) return path.join(FIXTURES_DIR, "test-audio.wav");
+  if (/pdf|document/.test(haystack)) return path.join(FIXTURES_DIR, "test-document.pdf");
+  return path.join(FIXTURES_DIR, "test-image.jpg");
 }
 
 /**
@@ -312,15 +332,10 @@ async function neutralizeStickyPositioning(page) {
     .catch(() => {});
 }
 
-async function screenshotFullPage(page) {
-  await neutralizeStickyPositioning(page);
-  return page.screenshot({ fullPage: true });
-}
-
 /**
  * Viewport-only capture (Playwright's default page.screenshot(), no
- * fullPage) -- what screenshotFullPage's own comment above VIEWPORT
- * explains that flag is FOR: not silently cropping a "result" state
+ * fullPage) -- see VIEWPORT's own comment on why a full-page capture
+ * exists at all: not silently cropping a "result" state
  * (a compressed-file summary, a Download button) that renders further
  * down the page than the form already on screen, after some interaction
  * moved the page into that state. A homepage-only capture never reaches
@@ -337,6 +352,45 @@ async function screenshotFullPage(page) {
 async function screenshotViewport(page) {
   await neutralizeStickyPositioning(page);
   return page.screenshot();
+}
+
+/**
+ * Crops to the area around one anchor element instead of the whole page --
+ * what captureExternal's web-interactive branch should have been using all
+ * along instead of screenshotFullPage. A real external site (unlike our own
+ * tool pages, which have TOOL_CONTENT_SELECTOR to scope to) routinely wraps
+ * its actual upload/convert widget in a full marketing homepage: a hero,
+ * an SEO-driven grid of every format-specific converter it offers, a
+ * features/trust section, a footer, an upgrade banner. screenshotFullPage
+ * captured all of that below the widget every single time, which is
+ * exactly the "showing the entire webpage instead of just the part
+ * relevant to this step" bug a reader flagged -- a marker like "the Choose
+ * Files button and drop area" has no business including a converter
+ * directory and a footer several screens down.
+ *
+ * anchorLocator is the element the step is actually about (here, the file
+ * input); scrollIntoViewIfNeeded brings it into frame first since the page
+ * may have scrolled during the interaction, then the crop is built from
+ * its on-screen bounding box plus generous padding above and below --
+ * enough to also catch a result panel (a progress bar, a Download button)
+ * that typically renders directly below the same widget, without reaching
+ * all the way down into unrelated page sections. Clamped to the current
+ * viewport's width and height since this deliberately never scrolls the
+ * capture past one screen -- if the anchor has gone stale (some sites
+ * replace the whole upload widget with a result widget elsewhere in the
+ * DOM) or its box can't be read, falls back to a plain viewport screenshot
+ * of wherever the page ended up rather than guessing further.
+ */
+async function screenshotAroundElement(page, anchorLocator, { padTop = 140, padBottom = 420 } = {}) {
+  await neutralizeStickyPositioning(page);
+  await anchorLocator.scrollIntoViewIfNeeded({ timeout: 3000 }).catch(() => {});
+  await page.waitForTimeout(150);
+  const box = await anchorLocator.boundingBox().catch(() => null);
+  if (!box) return page.screenshot();
+  const viewport = page.viewportSize() ?? VIEWPORT;
+  const y = Math.max(0, box.y - padTop);
+  const height = Math.min(viewport.height - y, box.height + padTop + padBottom);
+  return page.screenshot({ clip: { x: 0, y, width: viewport.width, height } });
 }
 
 /**
@@ -660,14 +714,31 @@ async function captureExternal(page, externalTool) {
   if (externalTool.kind === "web-interactive") {
     const fileInput = page.locator('input[type="file"]').first();
     const hasFileInput = (await fileInput.count()) > 0;
+    let uploaded = false;
     if (hasFileInput) {
-      try {
-        await fileInput.setInputFiles(path.join(FIXTURES_DIR, "test-image.jpg"), { timeout: 8000 });
-        await page.waitForTimeout(2000);
-      } catch {
-        // Upload attempt failed (hidden input, custom picker, etc.) -- fall
-        // through to a plain screenshot of whatever state we're in.
-      }
+      uploaded = await uploadFixtureAndVerify(page, externalFixtureFor(externalTool), 2).catch(() => false);
+    }
+    // A file input existing isn't the same as the upload actually landing --
+    // several real sites (confirmed on FreeConvert's real video-converter
+    // page during this feature's own verification pass) wire the visible
+    // "Choose Files" button to a decoy/placeholder <input>, or don't attach
+    // their real change handler the way setInputFiles's dispatched event
+    // expects, so the page silently stays on its untouched upload prompt no
+    // matter how many times a marker in the same article asks for a
+    // different later state ("compression options", "mid-compression",
+    // "finished result"). Screenshotting that anyway, over and over, is
+    // exactly the "same wrong image for every step" bug a reader flagged.
+    // Treating a verified-failed upload as a genuine capture failure (the
+    // same skipKind an unreachable site gets) routes it to a real-colored
+    // fallback illustration instead -- honest about what wasn't actually
+    // captured, rather than a real screenshot of the wrong state.
+    if (hasFileInput && !uploaded) {
+      return {
+        skipped: true,
+        skipKind: "unreachable",
+        publicNote: `Screenshot pending: ${externalTool.name}'s upload didn't visibly complete during this pass.`,
+        logNote: `${externalTool.name}'s page never visibly changed after a real upload attempt (retried) -- the site's actual upload wiring couldn't be driven generically`,
+      };
     }
     reason = await unsafeReason(page);
     if (reason) {
@@ -687,7 +758,12 @@ async function captureExternal(page, externalTool) {
         logNote: `${externalTool.name} appears to display IP/ISP/location details after the upload interaction -- skipped the real screenshot to avoid publishing that`,
       };
     }
-    const screenshot = await screenshotFullPage(page);
+    // Anchored to the file input when there is one -- see
+    // screenshotAroundElement's own comment for why this replaced a
+    // full-page capture here. With no file input to anchor on at all,
+    // there's no better guess than whatever's on screen already, so that
+    // case still gets a plain viewport shot rather than the whole page.
+    const screenshot = hasFileInput ? await screenshotAroundElement(page, fileInput) : await screenshotViewport(page);
     return {
       screenshot,
       note: hasFileInput
