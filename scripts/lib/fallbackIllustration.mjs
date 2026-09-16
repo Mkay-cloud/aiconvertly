@@ -373,11 +373,35 @@ function resultGlyph(style) {
   return iconCircle(style, `<path d="M ${cx - 15} ${cy} L ${cx - 4} ${cy + 12} L ${cx + 17} ${cy - 13}" fill="none" stroke="${color}" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" />`);
 }
 
+/** A plain cursor-arrow glyph -- the neutral "an interaction happens here" icon for `generic`, deliberately not claiming any specific action (no upload, no selection, no result) the way every other glyph in this set does. */
+function cursorGlyph(style) {
+  const cx = ICON_CX;
+  const cy = ICON_CY;
+  const color = textColorFor(style.accent);
+  return iconCircle(
+    style,
+    `<path d="M ${cx - 13} ${cy - 16} L ${cx - 13} ${cy + 15} L ${cx - 5} ${cy + 7} L ${cx + 1} ${cy + 18} L ${cx + 8} ${cy + 15} L ${cx + 2} ${cy + 4} L ${cx + 12} ${cy + 4} Z" fill="${color}" stroke="${style.accent}" stroke-width="1" stroke-linejoin="round" />`
+  );
+}
+
 const VARIANT_CONTENT = {
   upload: { glyph: uploadGlyph, heading: "Drop file here", secondary: "or click to browse", buttonLabel: "Choose File" },
   select: { glyph: selectGlyph, heading: "Choose an option", secondary: "50 KB · 100 KB · 200 KB", buttonLabel: null },
   process: { glyph: processGlyph, heading: "Processing…", secondary: null, buttonLabel: null, showProgressBar: true },
   result: { glyph: resultGlyph, heading: "Done", secondary: "Your file is ready", buttonLabel: "Download" },
+  // Real fallback for a description that doesn't clearly describe an
+  // upload/select/process/result moment (a menu being opened, a timeline
+  // being edited, a toolbar button, ...). Previously this case fell
+  // through to VARIANT_CONTENT.upload via `?? VARIANT_CONTENT.upload` in
+  // contentPieces below, which asserted a specific, frequently wrong claim
+  // ("Drop file here") on top of an otherwise-accurate platform window --
+  // e.g. a "File > Export As" menu screenshot rendered with a cloud-upload
+  // icon and a dropzone prompt that has nothing to do with that step. This
+  // entry has no heading/secondary/button at all, just the neutral cursor
+  // glyph, so an unmatched step shows only the platform's real window
+  // chrome (titlebar, ribbon/menu-bar/sidebar/playbar) without asserting
+  // anything false about what's on screen.
+  generic: { glyph: cursorGlyph, heading: null, secondary: null, buttonLabel: null },
 };
 
 function progressBar(x, y, width, style) {
@@ -393,12 +417,14 @@ function progressBar(x, y, width, style) {
  * ribbon, a dark playback bar) can vary without duplicating this logic.
  */
 function contentPieces(style, variant) {
-  const content = VARIANT_CONTENT[variant] ?? VARIANT_CONTENT.upload;
+  const content = VARIANT_CONTENT[variant] ?? VARIANT_CONTENT.generic;
   const headingY = ICON_CY - (content.secondary || content.showProgressBar ? 12 : 0);
   const pieces = [content.glyph(style)];
-  pieces.push(
-    `<text x="${TEXT_X}" y="${headingY}" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="24" font-weight="700" fill="${style.ink}">${escapeXml(content.heading)}</text>`
-  );
+  if (content.heading) {
+    pieces.push(
+      `<text x="${TEXT_X}" y="${headingY}" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="24" font-weight="700" fill="${style.ink}">${escapeXml(content.heading)}</text>`
+    );
+  }
   if (content.secondary) {
     pieces.push(wrappedText(content.secondary, TEXT_X, ICON_CY + 20, { fontSize: 16, fill: style.ink, maxWidth: TEXT_W }));
   }

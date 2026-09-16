@@ -19,14 +19,6 @@
   <rect x="98" y="236" width="24" height="32" rx="3" fill="#E3E3E3" />
   <path d="M 130 140 L 130 450" stroke="#E3E3E3" stroke-width="1" />
   <circle cx="172" cy="281" r="42" fill="#0A84FF" />
-  <ellipse cx="161" cy="279" rx="10" ry="8" fill="#FFFFFF" />
-  <ellipse cx="181" cy="281" rx="11" ry="9" fill="#FFFFFF" />
-  <ellipse cx="172" cy="272" rx="12" ry="10" fill="#FFFFFF" />
-  <rect x="152" y="279" width="40" height="13" rx="6.5" fill="#FFFFFF" />
-  <path d="M 172 301 L 172 283 M 165 290 L 172 282 L 179 290" fill="none" stroke="#0A84FF" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" />
-  <text x="238" y="269" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="24" font-weight="700" fill="#1D1D1F">Drop file here</text>
-  <text x="238" y="301" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="16" font-weight="400" fill="#1D1D1F">or click to browse</text>
-  <rect x="238" y="311" width="165" height="44" rx="10" fill="#0A84FF" />
-  <text x="320.5" y="339" text-anchor="middle" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="17" font-weight="600" fill="#FFFFFF">Choose File</text>
+  <path d="M 159 265 L 159 296 L 167 288 L 173 299 L 180 296 L 174 285 L 184 285 Z" fill="#FFFFFF" stroke="#0A84FF" stroke-width="1" stroke-linejoin="round" />
   <text x="480" y="494" text-anchor="middle" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="22" fill="#1D1D1F">macOS</text>
 </svg>
