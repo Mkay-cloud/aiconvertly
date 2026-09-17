@@ -62,6 +62,7 @@ import { chromium } from "playwright";
 // internal imports of its own to trip over the same resolution gap.
 import { tools, getTool } from "../src/lib/tools.ts";
 import { findExternalTool } from "./lib/externalTools.mjs";
+import { lastGenuineMentionIndex } from "./lib/textMatch.mjs";
 import { unsafeReason, pageLeaksLocationInfo } from "./lib/safety.mjs";
 import { renderFallbackIllustrationSVG, findPlatform } from "./lib/fallbackIllustration.mjs";
 
@@ -113,6 +114,16 @@ const MARKER_RE = /\[SCREENSHOT:\s*([^\]]+)\]/g;
 // state, which is what most markers describing a UI step actually want.
 const RESULT_STATE_RE =
   /\b(result|download|after|finished|complete|completed|output|converted|denoised|compressed|resized|enhanced|merged|extracted)\b/i;
+// A marker asking for the transient "still working" moment (real examples
+// from published articles: "mid-compression", "mid-conversion",
+// "mid-process, showing the Working state") never used to get the primary
+// action clicked at all -- it doesn't match RESULT_STATE_RE (compare
+// "compressed" above vs. "compression" here), so the tool was screenshotted
+// in its untouched pre-click state and captioned as if it were already
+// processing. AI Convertly's own tools do have a real, distinct "Working…"
+// button state for this (see e.g. CompressVideoClient.tsx's isBusy), so
+// this is captured properly instead of silently mismatched.
+const MID_PROCESS_STATE_RE = /\bmid-\w+|\bprocessing state\b|\bworking state\b/i;
 // Mirrors fallbackIllustration.mjs's own "upload" rule (same idea, used
 // there to pick an upload-widget illustration). Here it flags a marker
 // whose own description is about the upload/drop-zone moment itself, not
@@ -120,6 +131,18 @@ const RESULT_STATE_RE =
 // that distinction matters for an external site we can't fully drive.
 const IDLE_UPLOAD_MARKER_RE =
   /\b(upload(ing|ed)?|drop(ping|zone)?|drag(ging)?|choose file|select file|browsing|browse)\b/i;
+// IDLE_UPLOAD_MARKER_RE alone isn't enough -- a real published marker,
+// "FreeConvert's upload and processing progress indicator", contains
+// "upload" but is genuinely asking for the progress-indicator moment, not
+// the plain drop zone. Confirmed live: that marker and the section's actual
+// idle-upload marker got byte-identical real screenshots (the untouched
+// "Choose Files" widget) captioned as two different steps, the same
+// mislabeling IDLE_UPLOAD_MARKER_RE exists to prevent, just introduced by
+// this classifier itself. A description naming any further-state word
+// (beyond RESULT_STATE_RE's own list) alongside "upload" means it isn't
+// the idle marker after all.
+const FURTHER_STATE_WORD_RE =
+  /\b(progress|processing|indicator|selector|options?|choice|choices|codec|picker|dialog|menu|spinner|mid-\w+)\b/i;
 const PRIMARY_ACTION_WORD_RE =
   /convert|compress|resize|merge|remove|enhance|extract|trim|rotate|split|change|noise|generate|crop|denoise/i;
 // "click to browse" excludes the Dropzone itself: it has role="button" and
@@ -252,7 +275,12 @@ export function findInternalTool(searchText, frontmatterRelatedTool) {
 
   for (const t of tools) {
     for (const needle of [t.name.toLowerCase(), t.slug.replace(/-/g, " ")]) {
-      const idx = lower.lastIndexOf(needle);
+      // lastGenuineMentionIndex, not a plain lastIndexOf -- a passing
+      // comparison ("the same setting desktop tools like HandBrake
+      // expose directly") shouldn't count as this tool being the
+      // marker's actual subject. See textMatch.mjs's own comment for the
+      // real live mislabeling this fixes.
+      const idx = lastGenuineMentionIndex(lower, needle);
       if (idx > bestIndex) {
         bestIndex = idx;
         bestLength = needle.length;
@@ -627,6 +655,21 @@ async function captureInternal(browser, tool, description, maxAttempts = 3) {
         } else {
           note += " (result state requested, but no matching action button was found -- captured the upload state)";
         }
+      } else if (MID_PROCESS_STATE_RE.test(description)) {
+        // Deliberately the opposite of the branch above: click, then
+        // screenshot right away instead of waiting for anything further --
+        // waiting for the download button here would capture the finished
+        // result, not the "still working" moment this marker actually asked
+        // for. On a large real file this genuinely catches the "Working…"
+        // button state; on ffmpeg-wasm's small test fixtures processing can
+        // finish before the screenshot call lands, which is an inherent
+        // limit of using a tiny fixture for this specific marker type, not
+        // a bug in this branch -- see the PR description for what this
+        // looked like against the real fixture.
+        const clicked = await clickPrimaryAction(page);
+        note += clicked
+          ? " (mid-process state requested; captured immediately after clicking the primary action)"
+          : " (mid-process state requested, but no matching action button was found -- captured the upload state)";
       }
       const screenshot = await screenshotToolContent(page);
       await page.close();
@@ -761,7 +804,10 @@ async function captureExternal(page, externalTool, description = "") {
     // anything asking for a further state keeps the fallback-illustration
     // behavior for now (illustrating that specific described state is a
     // separate, later piece of work).
-    const isIdleUploadMarker = IDLE_UPLOAD_MARKER_RE.test(description);
+    const isIdleUploadMarker =
+      IDLE_UPLOAD_MARKER_RE.test(description) &&
+      !RESULT_STATE_RE.test(description) &&
+      !FURTHER_STATE_WORD_RE.test(description);
     if (hasFileInput && !uploaded && !isIdleUploadMarker) {
       return {
         skipped: true,

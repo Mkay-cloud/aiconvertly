@@ -46,7 +46,7 @@ FreeConvert is one of the sites people mean when they search "online video conve
 
 1. Go to FreeConvert and click Choose Files, or drag your video onto the page.
 
-![FreeConvert's converter page with the Choose Files button and drop area](/blog/video-converter-online-free-shot-04.svg)
+![FreeConvert's converter page with the Choose Files button and drop area](/blog/video-converter-online-free-shot-04.png)
 
 2. Pick your target format from the list, then click Convert.
 

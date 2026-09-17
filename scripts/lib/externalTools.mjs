@@ -1,3 +1,5 @@
+import { lastGenuineMentionIndex } from "./textMatch.mjs";
+
 /**
  * Known external tools an article's [SCREENSHOT: ...] marker might name,
  * curated from the competitors named in content/blog/CALENDAR.md. Kept as
@@ -78,7 +80,14 @@ export function findExternalTool(searchText) {
   let bestLength = 0;
   for (const tool of EXTERNAL_TOOLS) {
     for (const needle of tool.match) {
-      const idx = lower.lastIndexOf(needle);
+      // lastGenuineMentionIndex, not a plain lastIndexOf -- a competitor
+      // named only in a passing comparison ("desktop tools like
+      // HandBrake") isn't the marker's actual subject. See
+      // textMatch.mjs's own comment for the real live mislabeling this
+      // fixes (three of AI Convertly's own screenshots captioned as if
+      // they were HandBrake's, in a section about AI Convertly's tool
+      // that only mentioned HandBrake as a comparison).
+      const idx = lastGenuineMentionIndex(lower, needle);
       if (idx > bestIndex) {
         bestIndex = idx;
         bestLength = needle.length;
