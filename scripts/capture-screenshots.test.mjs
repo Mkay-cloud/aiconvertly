@@ -30,9 +30,10 @@
  * Wired into "npm run prebuild" (see package.json) alongside the
  * CALENDAR.md consistency check, so it runs before every build.
  */
+import path from "node:path";
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { resolveMarkerTarget } from "./capture-screenshots.mjs";
+import { resolveMarkerTarget, externalFixtureFor } from "./capture-screenshots.mjs";
 
 // A real tool slug is required for findInternalTool's self-reference
 // branch to resolve to anything (see its own comment) -- "video-converter"
@@ -199,4 +200,39 @@ free download.`;
   assert.ok(winner, "expected a resolved target, got null (unresolved)");
   assert.equal(winner.kind, "external");
   assert.equal(winner.tool.name, "Any Video Converter");
+});
+
+/**
+ * externalFixtureFor's own regression coverage (the CloudConvert bug found
+ * while investigating the HandBrake mislabeling): a multi-format tool whose
+ * registry entry doesn't declare a type (CloudConvert's is just its bare
+ * homepage) used to always default to the image fixture, regardless of
+ * what the surrounding article was actually about -- confirmed live as a
+ * real screenshot of CloudConvert's "JPG Converter" page published in a
+ * video-conversion article. externalFixtureFor now falls back to the
+ * caller-supplied context text only when the tool's own name/URL didn't
+ * already decide it.
+ */
+const CLOUDCONVERT = { name: "CloudConvert", url: "https://cloudconvert.com" };
+const FREECONVERT_VIDEO = { name: "FreeConvert", url: "https://www.freeconvert.com/video-converter" };
+
+test("a multi-format external tool with no context falls back to the image fixture (unchanged default)", () => {
+  const fixture = externalFixtureFor(CLOUDCONVERT, "");
+  assert.equal(path.basename(fixture), "test-image.jpg");
+});
+
+test("a multi-format external tool picks the fixture matching its article's context (the CloudConvert bug)", () => {
+  const fixture = externalFixtureFor(
+    CLOUDCONVERT,
+    "Video CloudConvert runs the same basic way, upload, pick a format, download.",
+  );
+  assert.equal(path.basename(fixture), "test-video.mp4");
+});
+
+test("a tool whose own name/URL already declares a format ignores conflicting context", () => {
+  // FreeConvert's own URL says "video-converter" -- that should win even if
+  // the surrounding context text happened to mention something else, since
+  // the tool's own declared format is the more specific, reliable signal.
+  const fixture = externalFixtureFor(FREECONVERT_VIDEO, "Images a page about resizing photos");
+  assert.equal(path.basename(fixture), "test-video.mp4");
 });

@@ -205,15 +205,35 @@ function fixturePathForSlug(slug) {
  * FreeConvert specifically during this feature's own verification pass
  * (still didn't take with a matching video fixture either, so this alone
  * isn't the whole story there -- see uploadFixtureAndVerify's caller), but
- * cheap enough to get right regardless. Keyed off the registry entry's own
- * name/URL rather than a per-tool map, since most entries clearly declare
- * their format in one or the other ("video-converter", "MP3 Compressor").
+ * cheap enough to get right regardless. Keyed primarily off the registry
+ * entry's own name/URL, since most entries clearly declare their format in
+ * one or the other ("video-converter", "MP3 Compressor").
+ *
+ * That breaks down for a genuinely multi-format tool whose own name/URL
+ * doesn't declare one -- CloudConvert's registry entry is just its bare
+ * homepage, so it always fell through to the default image fixture no
+ * matter what the surrounding article was actually about. Confirmed live:
+ * video-converter-online-free.md's CloudConvert section ("CloudConvert's
+ * homepage with the drop area for a file") got a real screenshot of
+ * CloudConvert's "JPG Converter" page with test-image.jpg uploaded --
+ * factually wrong for a video-conversion article. `contextText` (the
+ * marker's own section text, plus the article's frontmatter category) is
+ * the fallback signal for exactly this case: only consulted when the
+ * tool's own name/URL didn't already decide it, so a tool that DOES
+ * declare its format (FreeConvert's "/video-converter" URL) is unaffected.
  */
-function externalFixtureFor(externalTool) {
-  const haystack = `${externalTool.name} ${externalTool.url}`.toLowerCase();
-  if (/video/.test(haystack)) return path.join(FIXTURES_DIR, "test-video.mp4");
-  if (/audio|mp3|wav/.test(haystack)) return path.join(FIXTURES_DIR, "test-audio.wav");
-  if (/pdf|document/.test(haystack)) return path.join(FIXTURES_DIR, "test-document.pdf");
+export function externalFixtureFor(externalTool, contextText = "") {
+  const pickFixture = (haystack) => {
+    if (/video/.test(haystack)) return "test-video.mp4";
+    if (/audio|mp3|wav/.test(haystack)) return "test-audio.wav";
+    if (/pdf|document/.test(haystack)) return "test-document.pdf";
+    return null;
+  };
+  const ownHaystack = `${externalTool.name} ${externalTool.url}`.toLowerCase();
+  const ownMatch = pickFixture(ownHaystack);
+  if (ownMatch) return path.join(FIXTURES_DIR, ownMatch);
+  const contextMatch = pickFixture(contextText.toLowerCase());
+  if (contextMatch) return path.join(FIXTURES_DIR, contextMatch);
   return path.join(FIXTURES_DIR, "test-image.jpg");
 }
 
@@ -697,8 +717,15 @@ async function captureInternal(browser, tool, description, maxAttempts = 3) {
  * (see IDLE_UPLOAD_MARKER_RE's own comment below for why that distinction
  * matters). Optional/blank for callers that don't have it, in which case
  * this behaves as if every marker described a further state.
+ *
+ * fixtureContext is the broader text (the marker's whole section, plus the
+ * article's frontmatter category) used only as a fallback signal for
+ * externalFixtureFor -- see that function's own comment for why a
+ * multi-format tool like CloudConvert needs it. Optional/blank for callers
+ * that don't have it, in which case externalFixtureFor falls straight
+ * through to the default image fixture, same as before this existed.
  */
-async function captureExternal(page, externalTool, description = "") {
+async function captureExternal(page, externalTool, description = "", fixtureContext = "") {
   await page.setViewportSize(VIEWPORT);
   let response;
   try {
@@ -773,7 +800,7 @@ async function captureExternal(page, externalTool, description = "") {
     const hasFileInput = (await fileInput.count()) > 0;
     let uploaded = false;
     if (hasFileInput) {
-      uploaded = await uploadFixtureAndVerify(page, externalFixtureFor(externalTool), 2).catch(() => false);
+      uploaded = await uploadFixtureAndVerify(page, externalFixtureFor(externalTool, fixtureContext), 2).catch(() => false);
     }
     // A file input existing isn't the same as the upload actually landing --
     // several real sites (confirmed on FreeConvert's real video-converter
@@ -977,7 +1004,12 @@ async function processDraft(browser, filePath, summary, externalShotCounts) {
           const page = await browser.newPage();
           let result;
           try {
-            result = await captureExternal(page, externalTool, trimmedDescription);
+            result = await captureExternal(
+              page,
+              externalTool,
+              trimmedDescription,
+              `${data.category ?? ""} ${sectionContext}`,
+            );
           } finally {
             await page.close();
           }

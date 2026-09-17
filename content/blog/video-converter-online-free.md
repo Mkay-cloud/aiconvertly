@@ -68,7 +68,7 @@ CloudConvert runs the same basic way, upload, pick a format, download, but doles
 
 1. Go to CloudConvert and drop your file onto the homepage converter, or click to browse.
 
-![CloudConvert's homepage with the drop area for a file](/blog/video-converter-online-free-shot-08.svg)
+![CloudConvert's homepage with the drop area for a file](/blog/video-converter-online-free-shot-08.png)
 
 2. Select your output format from the video options.
 
