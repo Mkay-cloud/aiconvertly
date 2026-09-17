@@ -1,16 +1,162 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540">
   <rect width="960" height="540" fill="#F4F6F9" />
-  <rect x="90" y="78" width="780" height="372" rx="8" fill="#FFFFFF" />
   <path d="M 90 94 A 16 16 0 0 1 106 78 L 854 78 A 16 16 0 0 1 870 94 L 870 112 L 90 112 Z" fill="#E5E7EB" />
   <path d="M 758 90 L 768 90" stroke="#1A1A1A" stroke-width="1.4" stroke-linecap="round" />
   <rect x="798" y="90" width="10" height="10" fill="none" stroke="#1A1A1A" stroke-width="1.4" />
   <path d="M 838 89 L 848 101 M 848 89 L 838 101" stroke="#1A1A1A" stroke-width="1.6" stroke-linecap="round" />
   <text x="106" y="99" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="600" fill="#1A1A1A" text-anchor="start">Untitled video — Clipchamp</text>
-  
-  <circle cx="480" cy="236" r="30" fill="#FFFFFF" stroke="#1A1A1A" stroke-width="2" />
-  <path d="M 469 223 L 469 248 L 476 242 L 481 251 L 487 248 L 482 239 L 490 239 Z" fill="#FFFFFF" stroke="#1A1A1A" stroke-width="2" stroke-linejoin="round" />
-  <line x1="480" y1="386" x2="480" y2="236" stroke="#C0293F" stroke-width="2" stroke-dasharray="4,3" />
-  <circle cx="480" cy="236" r="4" fill="#C0293F" />
+  <rect x="778" y="118" width="76" height="28" rx="6" fill="#1A1A1A" stroke="none" stroke-width="0" />
+  <text x="816" y="136" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="12.5" font-weight="700" fill="#FFFFFF" text-anchor="middle">Export</text>
+  <g transform="translate(0, 34)"><rect x="90" y="112" width="780" height="268" fill="#FFFFFF" stroke="#D1D5DB" stroke-width="1" />
+  <rect x="90" y="112" width="780" height="40" fill="#F4F6F9" />
+  <line x1="90" y1="152" x2="870" y2="152" stroke="#D1D5DB" stroke-width="1" />
+  <text x="106" y="136" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="600" fill="#1A1A1A" text-anchor="start">Untitled video</text>
+  <rect x="90" y="152" width="90" height="228" fill="#F4F6F9" />
+  <line x1="180" y1="152" x2="180" y2="380" stroke="#D1D5DB" stroke-width="1" />
+  <text x="100" y="170" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="9.5" font-weight="700" fill="#1A1A1A" text-anchor="start">Your Media</text>
+  <text x="100" y="194" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="9.5" font-weight="400" fill="#6B7280" text-anchor="start">Record &amp; create</text>
+  <text x="100" y="218" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="9.5" font-weight="400" fill="#6B7280" text-anchor="start">Content Library</text>
+  <text x="100" y="242" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="9.5" font-weight="400" fill="#6B7280" text-anchor="start">Text</text>
+  <text x="100" y="266" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="9.5" font-weight="400" fill="#6B7280" text-anchor="start">Transitions</text></g>
+  <rect x="192" y="198" width="666" height="40" rx="4" fill="#F4F6F9" stroke="#D1D5DB" stroke-width="1" />
+  <rect x="192" y="202" width="666" height="32" rx="4" fill="#E5E7EB" stroke="#D1D5DB" stroke-width="1.5" />
+  <line x1="358.5" y1="206" x2="358.5" y2="230" stroke="#D1D5DB" stroke-width="1" opacity="0.6" />
+  <line x1="525" y1="206" x2="525" y2="230" stroke="#D1D5DB" stroke-width="1" opacity="0.6" />
+  <line x1="691.5" y1="206" x2="691.5" y2="230" stroke="#D1D5DB" stroke-width="1" opacity="0.6" />
+  <rect x="192" y="244" width="666" height="40" rx="4" fill="#F4F6F9" stroke="#D1D5DB" stroke-width="1" />
+  <rect x="192" y="248" width="666" height="32" rx="4" fill="#F4F6F9" stroke="#C0293F" stroke-width="2.5" />
+  <line x1="200" y1="256.9363435889024" x2="200" y2="271.0636564110976" stroke="#6B7280" stroke-width="2" />
+  <line x1="205" y1="252.7825457509327" x2="205" y2="275.2174542490673" stroke="#6B7280" stroke-width="2" />
+  <line x1="210" y1="252.29464716462516" x2="210" y2="275.70535283537487" stroke="#6B7280" stroke-width="2" />
+  <line x1="215" y1="255.6666913276855" x2="215" y2="272.3333086723145" stroke="#6B7280" stroke-width="2" />
+  <line x1="220" y1="261.5575732191493" x2="220" y2="266.4424267808507" stroke="#6B7280" stroke-width="2" />
+  <line x1="225" y1="256.37558610933655" x2="225" y2="271.62441389066345" stroke="#6B7280" stroke-width="2" />
+  <line x1="230" y1="252.5456466597523" x2="230" y2="275.4543533402477" stroke="#6B7280" stroke-width="2" />
+  <line x1="235" y1="252.47582425533489" x2="235" y2="275.5241757446651" stroke="#6B7280" stroke-width="2" />
+  <line x1="240" y1="256.19388815787687" x2="240" y2="271.80611184212313" stroke="#6B7280" stroke-width="2" />
+  <line x1="245" y1="261.7788831222717" x2="245" y2="266.2211168777283" stroke="#6B7280" stroke-width="2" />
+  <line x1="250" y1="255.83959540811344" x2="250" y2="272.16040459188656" stroke="#6B7280" stroke-width="2" />
+  <line x1="255" y1="252.35037926177645" x2="255" y2="275.6496207382236" stroke="#6B7280" stroke-width="2" />
+  <line x1="260" y1="252.69894049813237" x2="260" y2="275.3010595018676" stroke="#6B7280" stroke-width="2" />
+  <line x1="265" y1="256.74665186273677" x2="265" y2="271.25334813726323" stroke="#6B7280" stroke-width="2" />
+  <line x1="270" y1="261.11631313896" x2="270" y2="266.88368686104" stroke="#6B7280" stroke-width="2" />
+  <line x1="275" y1="255.33073168900694" x2="275" y2="272.66926831099306" stroke="#6B7280" stroke-width="2" />
+  <line x1="280" y1="252.19760340559688" x2="280" y2="275.8023965944031" stroke="#6B7280" stroke-width="2" />
+  <line x1="285" y1="252.96301341366294" x2="285" y2="275.0369865863371" stroke="#6B7280" stroke-width="2" />
+  <line x1="290" y1="257.32254837954866" x2="290" y2="270.67745162045134" stroke="#6B7280" stroke-width="2" />
+  <line x1="295" y1="260.4576344191714" x2="295" y2="267.5423655808286" stroke="#6B7280" stroke-width="2" />
+  <line x1="300" y1="254.85123570370837" x2="300" y2="273.14876429629163" stroke="#6B7280" stroke-width="2" />
+  <line x1="305" y1="252.08799183078074" x2="305" y2="275.91200816921923" stroke="#6B7280" stroke-width="2" />
+  <line x1="310" y1="253.26688017225354" x2="310" y2="274.73311982774646" stroke="#6B7280" stroke-width="2" />
+  <line x1="315" y1="257.9190417816084" x2="315" y2="270.0809582183916" stroke="#6B7280" stroke-width="2" />
+  <line x1="320" y1="259.80574741620995" x2="320" y2="268.19425258379005" stroke="#6B7280" stroke-width="2" />
+  <line x1="325" y1="254.40321888480688" x2="325" y2="273.5967811151931" stroke="#6B7280" stroke-width="2" />
+  <line x1="330" y1="252.0220272055011" x2="330" y2="275.9779727944989" stroke="#6B7280" stroke-width="2" />
+  <line x1="335" y1="253.60920271436552" x2="335" y2="274.3907972856345" stroke="#6B7280" stroke-width="2" />
+  <line x1="340" y1="258.5335054450297" x2="340" y2="269.4664945549703" stroke="#6B7280" stroke-width="2" />
+  <line x1="345" y1="259.16352267645084" x2="345" y2="268.83647732354916" stroke="#6B7280" stroke-width="2" />
+  <line x1="350" y1="253.9886540482196" x2="350" y2="274.0113459517804" stroke="#6B7280" stroke-width="2" />
+  <line x1="355" y1="252.00000000113585" x2="355" y2="275.99999999886415" stroke="#6B7280" stroke-width="2" />
+  <line x1="360" y1="253.9884736426617" x2="360" y2="274.0115263573383" stroke="#6B7280" stroke-width="2" />
+  <line x1="365" y1="259.163233614929" x2="365" y2="268.836766385071" stroke="#6B7280" stroke-width="2" />
+  <line x1="370" y1="258.53378819905726" x2="370" y2="269.46621180094274" stroke="#6B7280" stroke-width="2" />
+  <line x1="375" y1="253.60936670601154" x2="375" y2="274.39063329398846" stroke="#6B7280" stroke-width="2" />
+  <line x1="380" y1="252.022007213194" x2="380" y2="275.977992786806" stroke="#6B7280" stroke-width="2" />
+  <line x1="385" y1="254.40302285974246" x2="385" y2="273.59697714025754" stroke="#6B7280" stroke-width="2" />
+  <line x1="390" y1="259.80545332005937" x2="390" y2="268.19454667994063" stroke="#6B7280" stroke-width="2" />
+  <line x1="395" y1="257.9193169830508" x2="395" y2="270.0806830169492" stroke="#6B7280" stroke-width="2" />
+  <line x1="400" y1="253.26702702786005" x2="400" y2="274.7329729721399" stroke="#6B7280" stroke-width="2" />
+  <line x1="405" y1="252.0879519342015" x2="405" y2="275.9120480657985" stroke="#6B7280" stroke-width="2" />
+  <line x1="410" y1="254.85102492232235" x2="410" y2="273.1489750776776" stroke="#6B7280" stroke-width="2" />
+  <line x1="415" y1="260.4573365834273" x2="415" y2="267.5426634165727" stroke="#6B7280" stroke-width="2" />
+  <line x1="420" y1="257.3228148165724" x2="420" y2="270.6771851834276" stroke="#6B7280" stroke-width="2" />
+  <line x1="425" y1="252.96314248655986" x2="425" y2="275.03685751344017" stroke="#6B7280" stroke-width="2" />
+  <line x1="430" y1="252.19754378042776" x2="430" y2="275.8024562195722" stroke="#6B7280" stroke-width="2" />
+  <line x1="435" y1="255.3305070794629" x2="435" y2="272.6694929205371" stroke="#6B7280" stroke-width="2" />
+  <line x1="440" y1="261.1160128751247" x2="440" y2="266.8839871248753" stroke="#6B7280" stroke-width="2" />
+  <line x1="445" y1="256.746908362102" x2="445" y2="271.253091637898" stroke="#6B7280" stroke-width="2" />
+  <line x1="450" y1="252.69905121995475" x2="450" y2="275.30094878004525" stroke="#6B7280" stroke-width="2" />
+  <line x1="455" y1="252.3503001705734" x2="455" y2="275.6496998294266" stroke="#6B7280" stroke-width="2" />
+  <line x1="460" y1="255.83935795946635" x2="460" y2="272.1606420405336" stroke="#6B7280" stroke-width="2" />
+  <line x1="465" y1="261.7785817525395" x2="465" y2="266.2214182474605" stroke="#6B7280" stroke-width="2" />
+  <line x1="470" y1="256.19413359010355" x2="470" y2="271.80586640989645" stroke="#6B7280" stroke-width="2" />
+  <line x1="475" y1="252.4759161385256" x2="475" y2="275.5240838614744" stroke="#6B7280" stroke-width="2" />
+  <line x1="480" y1="252.54554845078883" x2="480" y2="275.45445154921117" stroke="#6B7280" stroke-width="2" />
+  <line x1="485" y1="256.37533686717774" x2="485" y2="271.62466313282226" stroke="#6B7280" stroke-width="2" />
+  <line x1="490" y1="261.5578743677144" x2="490" y2="266.4421256322856" stroke="#6B7280" stroke-width="2" />
+  <line x1="495" y1="255.6669246120272" x2="495" y2="272.33307538797277" stroke="#6B7280" stroke-width="2" />
+  <line x1="500" y1="252.29471980458194" x2="500" y2="275.705280195418" stroke="#6B7280" stroke-width="2" />
+  <line x1="505" y1="252.78242885666626" x2="505" y2="275.21757114333377" stroke="#6B7280" stroke-width="2" />
+  <line x1="510" y1="256.9360836507551" x2="510" y2="271.0639163492449" stroke="#6B7280" stroke-width="2" />
+  <line x1="515" y1="260.89627736238884" x2="515" y2="267.10372263761116" stroke="#6B7280" stroke-width="2" />
+  <line x1="520" y1="255.16760296184148" x2="520" y2="272.8323970381585" stroke="#6B7280" stroke-width="2" />
+  <line x1="525" y1="252.1562601056062" x2="525" y2="275.84373989439376" stroke="#6B7280" stroke-width="2" />
+  <line x1="530" y1="253.05989829916206" x2="530" y2="274.94010170083794" stroke="#6B7280" stroke-width="2" />
+  <line x1="535" y1="257.5191290944606" x2="535" y2="270.4808709055394" stroke="#6B7280" stroke-width="2" />
+  <line x1="540" y1="260.23954053528786" x2="540" y2="267.76045946471214" stroke="#6B7280" stroke-width="2" />
+  <line x1="545" y1="254.69836737329402" x2="545" y2="273.301632626706" stroke="#6B7280" stroke-width="2" />
+  <line x1="550" y1="252.06114674080274" x2="550" y2="275.9388532591973" stroke="#6B7280" stroke-width="2" />
+  <line x1="555" y1="253.37673495777855" x2="555" y2="274.6232650422215" stroke="#6B7280" stroke-width="2" />
+  <line x1="560" y1="258.1219057917077" x2="560" y2="269.8780942082923" stroke="#6B7280" stroke-width="2" />
+  <line x1="565" y1="259.59055578870436" x2="565" y2="268.40944421129564" stroke="#6B7280" stroke-width="2" />
+  <line x1="570" y1="254.26128409791568" x2="570" y2="273.7387159020843" stroke="#6B7280" stroke-width="2" />
+  <line x1="575" y1="252.00979853632288" x2="575" y2="275.9902014636771" stroke="#6B7280" stroke-width="2" />
+  <line x1="580" y1="253.73154366077918" x2="580" y2="274.2684563392208" stroke="#6B7280" stroke-width="2" />
+  <line x1="585" y1="258.7417594504865" x2="585" y2="269.2582405495135" stroke="#6B7280" stroke-width="2" />
+  <line x1="590" y1="258.95218088909695" x2="590" y2="269.04781911090305" stroke="#6B7280" stroke-width="2" />
+  <line x1="595" y1="253.8582778064027" x2="595" y2="274.14172219359733" stroke="#6B7280" stroke-width="2" />
+  <line x1="600" y1="252.0024416009885" x2="600" y2="275.9975583990115" stroke="#6B7280" stroke-width="2" />
+  <line x1="605" y1="254.12276202874594" x2="605" y2="273.87723797125403" stroke="#6B7280" stroke-width="2" />
+  <line x1="610" y1="259.37596058138337" x2="610" y2="268.62403941861663" stroke="#6B7280" stroke-width="2" />
+  <line x1="615" y1="258.32722688308235" x2="615" y2="269.67277311691765" stroke="#6B7280" stroke-width="2" />
+  <line x1="620" y1="253.4911231134414" x2="620" y2="274.5088768865586" stroke="#6B7280" stroke-width="2" />
+  <line x1="625" y1="252.03910833063506" x2="625" y2="275.96089166936497" stroke="#6B7280" stroke-width="2" />
+  <line x1="630" y1="254.54866735442587" x2="630" y2="273.4513326455741" stroke="#6B7280" stroke-width="2" />
+  <line x1="635" y1="260.02171651672865" x2="635" y2="267.97828348327135" stroke="#6B7280" stroke-width="2" />
+  <line x1="640" y1="257.7184457191555" x2="640" y2="270.2815542808445" stroke="#6B7280" stroke-width="2" />
+  <line x1="645" y1="253.16143676329617" x2="645" y2="274.8385632367038" stroke="#6B7280" stroke-width="2" />
+  <line x1="650" y1="252.1196372654583" x2="650" y2="275.8803627345417" stroke="#6B7280" stroke-width="2" />
+  <line x1="655" y1="255.00738418857196" x2="655" y2="272.99261581142804" stroke="#6B7280" stroke-width="2" />
+  <line x1="660" y1="260.6761837079455" x2="660" y2="267.3238162920545" stroke="#6B7280" stroke-width="2" />
+  <line x1="665" y1="257.12851812964493" x2="665" y2="270.87148187035507" stroke="#6B7280" stroke-width="2" />
+  <line x1="670" y1="252.8706705105703" x2="670" y2="275.12932948942967" stroke="#6B7280" stroke-width="2" />
+  <line x1="675" y1="252.24367380099318" x2="675" y2="275.7563261990068" stroke="#6B7280" stroke-width="2" />
+  <line x1="680" y1="255.49689259837447" x2="680" y2="272.5031074016255" stroke="#6B7280" stroke-width="2" />
+  <line x1="685" y1="261.3364802469502" x2="685" y2="266.6635197530498" stroke="#6B7280" stroke-width="2" />
+  <line x1="690" y1="256.5600418262647" x2="690" y2="271.4399581737353" stroke="#6B7280" stroke-width="2" />
+  <line x1="695" y1="252.6201047274894" x2="695" y2="275.37989527251057" stroke="#6B7280" stroke-width="2" />
+  <line x1="700" y1="252.41067174959386" x2="700" y2="275.58932825040614" stroke="#6B7280" stroke-width="2" />
+  <line x1="705" y1="256.01503706211713" x2="705" y2="271.98496293788287" stroke="#6B7280" stroke-width="2" />
+  <line x1="710" y1="261.9996985564664" x2="710" y2="266.0003014435336" stroke="#6B7280" stroke-width="2" />
+  <line x1="715" y1="256.01552006124194" x2="715" y2="271.98447993875806" stroke="#6B7280" stroke-width="2" />
+  <line x1="720" y1="252.41084276585693" x2="720" y2="275.58915723414304" stroke="#6B7280" stroke-width="2" />
+  <line x1="725" y1="252.61989574553925" x2="725" y2="275.3801042544608" stroke="#6B7280" stroke-width="2" />
+  <line x1="730" y1="256.55953596089137" x2="730" y2="271.44046403910863" stroke="#6B7280" stroke-width="2" />
+  <line x1="735" y1="261.3370818066284" x2="735" y2="266.6629181933716" stroke="#6B7280" stroke-width="2" />
+  <line x1="740" y1="255.49735060439224" x2="740" y2="272.50264939560776" stroke="#6B7280" stroke-width="2" />
+  <line x1="745" y1="252.24380609850903" x2="745" y2="275.756193901491" stroke="#6B7280" stroke-width="2" />
+  <line x1="750" y1="252.87042448317288" x2="750" y2="275.1295755168271" stroke="#6B7280" stroke-width="2" />
+  <line x1="755" y1="257.1279916255717" x2="755" y2="270.8720083744283" stroke="#6B7280" stroke-width="2" />
+  <line x1="760" y1="260.6767812913017" x2="760" y2="267.3232187086983" stroke="#6B7280" stroke-width="2" />
+  <line x1="765" y1="255.00781518467994" x2="765" y2="272.99218481532006" stroke="#6B7280" stroke-width="2" />
+  <line x1="770" y1="252.11973026166254" x2="770" y2="275.88026973833746" stroke="#6B7280" stroke-width="2" />
+  <line x1="775" y1="253.1611547738188" x2="775" y2="274.8388452261812" stroke="#6B7280" stroke-width="2" />
+  <line x1="780" y1="257.7179008948123" x2="780" y2="270.2820991051877" stroke="#6B7280" stroke-width="2" />
+  <line x1="785" y1="260.0223074923395" x2="785" y2="267.9776925076605" stroke="#6B7280" stroke-width="2" />
+  <line x1="790" y1="254.54906944275785" x2="790" y2="273.45093055724215" stroke="#6B7280" stroke-width="2" />
+  <line x1="795" y1="252.03916161602433" x2="795" y2="275.96083838397567" stroke="#6B7280" stroke-width="2" />
+  <line x1="800" y1="253.49080640360825" x2="800" y2="274.50919359639175" stroke="#6B7280" stroke-width="2" />
+  <line x1="805" y1="258.32666613757146" x2="805" y2="269.67333386242854" stroke="#6B7280" stroke-width="2" />
+  <line x1="810" y1="259.37654234692224" x2="810" y2="268.62345765307776" stroke="#6B7280" stroke-width="2" />
+  <line x1="815" y1="254.12313343872944" x2="815" y2="273.87686656127056" stroke="#6B7280" stroke-width="2" />
+  <line x1="820" y1="252.00245494092368" x2="820" y2="275.9975450590763" stroke="#6B7280" stroke-width="2" />
+  <line x1="825" y1="253.85792777082702" x2="825" y2="274.142072229173" stroke="#6B7280" stroke-width="2" />
+  <line x1="830" y1="258.95160669162846" x2="830" y2="269.04839330837154" stroke="#6B7280" stroke-width="2" />
+  <line x1="835" y1="258.74232944418276" x2="835" y2="269.25767055581724" stroke="#6B7280" stroke-width="2" />
+  <line x1="840" y1="253.73188275693198" x2="840" y2="274.268117243068" stroke="#6B7280" stroke-width="2" />
+  <line x1="845" y1="252.00977187206237" x2="845" y2="275.99022812793766" stroke="#6B7280" stroke-width="2" />
+  <line x1="480" y1="386" x2="525" y2="264" stroke="#C0293F" stroke-width="2" stroke-dasharray="4,3" />
+  <circle cx="525" cy="264" r="4" fill="#C0293F" />
   <rect x="267.6516" y="386" width="424.69680000000005" height="29.650000000000002" rx="6" fill="#FFFFFF" stroke="#C0293F" stroke-width="2" />
   <text x="480" y="404.92" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="700" fill="#C0293F" text-anchor="middle">Placing the audio file on Clipchamp's audio track</text>
   <text x="480" y="494" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="20" font-weight="400" fill="#6B7280" text-anchor="middle">Windows</text>

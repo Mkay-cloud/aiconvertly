@@ -6,40 +6,39 @@
   <rect x="798" y="90" width="10" height="10" fill="none" stroke="#1A1A1A" stroke-width="1.4" />
   <path d="M 838 89 L 848 101 M 848 89 L 838 101" stroke="#1A1A1A" stroke-width="1.6" stroke-linecap="round" />
   <text x="106" y="99" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="600" fill="#1A1A1A" text-anchor="start">Photos</text>
-  <rect x="90" y="112" width="780" height="28" fill="#FFFFFF" />
-  <path d="M 90 140 L 870 140" stroke="#D1D5DB" stroke-width="1" />
-  <rect x="106" y="116" width="56.66300000000001" height="20" rx="4" fill="#F4F6F9" />
-  <text x="134.3315" y="130" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="400" fill="#1A1A1A" text-anchor="middle">Rotate</text>
-  <rect x="172.663" y="116" width="97.319" height="20" rx="4" fill="#F4F6F9" />
-  <text x="221.32250000000002" y="130" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="400" fill="#1A1A1A" text-anchor="middle">Edit &amp; Create</text>
-  <rect x="279.982" y="116" width="55.332" height="20" rx="4" fill="#F4F6F9" />
-  <text x="307.648" y="130" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="400" fill="#1A1A1A" text-anchor="middle">Share</text>
-  <rect x="345.314" y="116" width="56.66300000000001" height="20" rx="4" fill="#F4F6F9" />
-  <text x="373.6455" y="130" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="400" fill="#1A1A1A" text-anchor="middle">Delete</text>
-  <rect x="270" y="150" width="133.33333333333334" height="70" rx="5" fill="#F4F6F9" stroke="#C0293F" stroke-width="2.5" />
-  <circle cx="307.33333333333337" cy="172.4" r="7.7" fill="none" stroke="#6B7280" stroke-width="1.6" />
-  <path d="M 276 212 L 332.6666666666667 189 L 352.6666666666667 178 L 397.33333333333337 212 Z" fill="none" stroke="#6B7280" stroke-width="1.6" stroke-linejoin="round" />
-  <circle cx="391.33333333333337" cy="162" r="9" fill="#C0293F" />
-  <path d="M 387.33333333333337 162 L 390.33333333333337 165 L 395.33333333333337 158" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-  <rect x="413.33333333333337" y="150" width="133.33333333333334" height="70" rx="5" fill="#F4F6F9" stroke="#C0293F" stroke-width="2.5" />
-  <circle cx="450.66666666666674" cy="172.4" r="7.7" fill="none" stroke="#6B7280" stroke-width="1.6" />
-  <path d="M 419.33333333333337 212 L 476.00000000000006 189 L 496.00000000000006 178 L 540.6666666666667 212 Z" fill="none" stroke="#6B7280" stroke-width="1.6" stroke-linejoin="round" />
-  <circle cx="534.6666666666667" cy="162" r="9" fill="#C0293F" />
-  <path d="M 530.6666666666667 162 L 533.6666666666667 165 L 538.6666666666667 158" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-  <rect x="556.6666666666667" y="150" width="133.33333333333334" height="70" rx="5" fill="#F4F6F9" stroke="#D1D5DB" stroke-width="1.5" />
-  <circle cx="594.0000000000001" cy="172.4" r="7.7" fill="none" stroke="#6B7280" stroke-width="1.6" />
-  <path d="M 562.6666666666667 212 L 619.3333333333334 189 L 639.3333333333334 178 L 684.0000000000001 212 Z" fill="none" stroke="#6B7280" stroke-width="1.6" stroke-linejoin="round" />
-  <rect x="270" y="230" width="133.33333333333334" height="70" rx="5" fill="#F4F6F9" stroke="#D1D5DB" stroke-width="1.5" />
-  <circle cx="307.33333333333337" cy="252.4" r="7.7" fill="none" stroke="#6B7280" stroke-width="1.6" />
-  <path d="M 276 292 L 332.6666666666667 269 L 352.6666666666667 258 L 397.33333333333337 292 Z" fill="none" stroke="#6B7280" stroke-width="1.6" stroke-linejoin="round" />
-  <rect x="413.33333333333337" y="230" width="133.33333333333334" height="70" rx="5" fill="#F4F6F9" stroke="#D1D5DB" stroke-width="1.5" />
-  <circle cx="450.66666666666674" cy="252.4" r="7.7" fill="none" stroke="#6B7280" stroke-width="1.6" />
-  <path d="M 419.33333333333337 292 L 476.00000000000006 269 L 496.00000000000006 258 L 540.6666666666667 292 Z" fill="none" stroke="#6B7280" stroke-width="1.6" stroke-linejoin="round" />
-  <rect x="556.6666666666667" y="230" width="133.33333333333334" height="70" rx="5" fill="#F4F6F9" stroke="#D1D5DB" stroke-width="1.5" />
-  <circle cx="594.0000000000001" cy="252.4" r="7.7" fill="none" stroke="#6B7280" stroke-width="1.6" />
-  <path d="M 562.6666666666667 292 L 619.3333333333334 269 L 639.3333333333334 258 L 684.0000000000001 292 Z" fill="none" stroke="#6B7280" stroke-width="1.6" stroke-linejoin="round" />
-  <line x1="480" y1="386" x2="341.4" y2="192" stroke="#C0293F" stroke-width="2" stroke-dasharray="4,3" />
-  <circle cx="341.4" cy="192" r="4" fill="#C0293F" />
+  
+  <rect x="250" y="122" width="107.5" height="75" rx="5" fill="#F4F6F9" stroke="#C0293F" stroke-width="2.5" />
+  <circle cx="316.65" cy="144.5" r="8.25" fill="none" stroke="#6B7280" stroke-width="1.6" />
+  <path d="M 256 189 L 299.75 163.5 L 316.65 152 L 351.5 189 Z" fill="none" stroke="#6B7280" stroke-width="1.6" stroke-linejoin="round" />
+  <rect x="256" y="128" width="16" height="16" rx="3" fill="#C0293F" />
+  <path d="M 259 136 L 263 140 L 269 131" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+  <rect x="367.5" y="122" width="107.5" height="75" rx="5" fill="#F4F6F9" stroke="#C0293F" stroke-width="2.5" />
+  <circle cx="434.15" cy="144.5" r="8.25" fill="none" stroke="#6B7280" stroke-width="1.6" />
+  <path d="M 373.5 189 L 417.25 163.5 L 434.15 152 L 469 189 Z" fill="none" stroke="#6B7280" stroke-width="1.6" stroke-linejoin="round" />
+  <rect x="373.5" y="128" width="16" height="16" rx="3" fill="#C0293F" />
+  <path d="M 376.5 136 L 380.5 140 L 386.5 131" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+  <rect x="485" y="122" width="107.5" height="75" rx="5" fill="#F4F6F9" stroke="#C0293F" stroke-width="2.5" />
+  <circle cx="551.65" cy="144.5" r="8.25" fill="none" stroke="#6B7280" stroke-width="1.6" />
+  <path d="M 491 189 L 534.75 163.5 L 551.65 152 L 586.5 189 Z" fill="none" stroke="#6B7280" stroke-width="1.6" stroke-linejoin="round" />
+  <rect x="491" y="128" width="16" height="16" rx="3" fill="#C0293F" />
+  <path d="M 494 136 L 498 140 L 504 131" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+  <rect x="602.5" y="122" width="107.5" height="75" rx="5" fill="#F4F6F9" stroke="#D1D5DB" stroke-width="1.5" />
+  <circle cx="669.15" cy="144.5" r="8.25" fill="none" stroke="#6B7280" stroke-width="1.6" />
+  <path d="M 608.5 189 L 652.25 163.5 L 669.15 152 L 704 189 Z" fill="none" stroke="#6B7280" stroke-width="1.6" stroke-linejoin="round" />
+  <rect x="250" y="207" width="107.5" height="75" rx="5" fill="#F4F6F9" stroke="#D1D5DB" stroke-width="1.5" />
+  <circle cx="316.65" cy="229.5" r="8.25" fill="none" stroke="#6B7280" stroke-width="1.6" />
+  <path d="M 256 274 L 299.75 248.5 L 316.65 237 L 351.5 274 Z" fill="none" stroke="#6B7280" stroke-width="1.6" stroke-linejoin="round" />
+  <rect x="367.5" y="207" width="107.5" height="75" rx="5" fill="#F4F6F9" stroke="#D1D5DB" stroke-width="1.5" />
+  <circle cx="434.15" cy="229.5" r="8.25" fill="none" stroke="#6B7280" stroke-width="1.6" />
+  <path d="M 373.5 274 L 417.25 248.5 L 434.15 237 L 469 274 Z" fill="none" stroke="#6B7280" stroke-width="1.6" stroke-linejoin="round" />
+  <rect x="485" y="207" width="107.5" height="75" rx="5" fill="#F4F6F9" stroke="#D1D5DB" stroke-width="1.5" />
+  <circle cx="551.65" cy="229.5" r="8.25" fill="none" stroke="#6B7280" stroke-width="1.6" />
+  <path d="M 491 274 L 534.75 248.5 L 551.65 237 L 586.5 274 Z" fill="none" stroke="#6B7280" stroke-width="1.6" stroke-linejoin="round" />
+  <rect x="602.5" y="207" width="107.5" height="75" rx="5" fill="#F4F6F9" stroke="#D1D5DB" stroke-width="1.5" />
+  <circle cx="669.15" cy="229.5" r="8.25" fill="none" stroke="#6B7280" stroke-width="1.6" />
+  <path d="M 608.5 274 L 652.25 248.5 L 669.15 237 L 704 274 Z" fill="none" stroke="#6B7280" stroke-width="1.6" stroke-linejoin="round" />
+  <line x1="480" y1="386" x2="290" y2="142" stroke="#C0293F" stroke-width="2" stroke-dasharray="4,3" />
+  <circle cx="290" cy="142" r="4" fill="#C0293F" />
   <rect x="252.27959999999993" y="386" width="455.44080000000014" height="29.650000000000002" rx="6" fill="#FFFFFF" stroke="#C0293F" stroke-width="2" />
   <text x="480" y="404.92" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="700" fill="#C0293F" text-anchor="middle">Selecting multiple photos in the Windows Photos app</text>
   <text x="480" y="494" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="20" font-weight="400" fill="#6B7280" text-anchor="middle">Windows</text>

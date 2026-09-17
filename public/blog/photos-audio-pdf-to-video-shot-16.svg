@@ -1,20 +1,27 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540">
   <rect width="960" height="540" fill="#F4F6F9" />
-  <rect x="90" y="78" width="780" height="372" rx="8" fill="#FFFFFF" />
   <path d="M 90 94 A 16 16 0 0 1 106 78 L 854 78 A 16 16 0 0 1 870 94 L 870 112 L 90 112 Z" fill="#E5E7EB" />
   <path d="M 758 90 L 768 90" stroke="#1A1A1A" stroke-width="1.4" stroke-linecap="round" />
   <rect x="798" y="90" width="10" height="10" fill="none" stroke="#1A1A1A" stroke-width="1.4" />
   <path d="M 838 89 L 848 101 M 848 89 L 838 101" stroke="#1A1A1A" stroke-width="1.6" stroke-linecap="round" />
   <text x="106" y="99" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="600" fill="#1A1A1A" text-anchor="start">Untitled video — Clipchamp</text>
-  
-  <circle cx="150" cy="246" r="30" fill="#FFFFFF" stroke="#1A1A1A" stroke-width="2" />
-  <path d="M 137 246 L 147 256 L 165 235" fill="none" stroke="#1A1A1A" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" />
-  <text x="206" y="240" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="20" font-weight="700" fill="#1A1A1A" text-anchor="start">Done</text>
-  <text x="206" y="262" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="400" fill="#6B7280" text-anchor="start">Your file is ready</text>
-  <rect x="206" y="272" width="122.00999999999998" height="38" rx="7" fill="#1A1A1A" />
-  <text x="267.005" y="296" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="700" fill="#FFFFFF" text-anchor="middle">Download</text>
-  <line x1="480" y1="386" x2="150" y2="246" stroke="#C0293F" stroke-width="2" stroke-dasharray="4,3" />
-  <circle cx="150" cy="246" r="4" fill="#C0293F" />
+  <rect x="778" y="118" width="76" height="28" rx="6" fill="#1A1A1A" stroke="none" stroke-width="0" />
+  <text x="816" y="136" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="12.5" font-weight="700" fill="#FFFFFF" text-anchor="middle">Export</text>
+  <g transform="translate(0, 34)"><rect x="90" y="112" width="780" height="268" fill="#FFFFFF" stroke="#D1D5DB" stroke-width="1" />
+  <rect x="90" y="112" width="780" height="40" fill="#F4F6F9" />
+  <line x1="90" y1="152" x2="870" y2="152" stroke="#D1D5DB" stroke-width="1" />
+  <text x="106" y="136" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="600" fill="#1A1A1A" text-anchor="start">Untitled video</text>
+  <rect x="90" y="152" width="90" height="228" fill="#F4F6F9" />
+  <line x1="180" y1="152" x2="180" y2="380" stroke="#D1D5DB" stroke-width="1" />
+  <text x="100" y="170" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="9.5" font-weight="700" fill="#1A1A1A" text-anchor="start">Your Media</text>
+  <text x="100" y="194" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="9.5" font-weight="400" fill="#6B7280" text-anchor="start">Record &amp; create</text>
+  <text x="100" y="218" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="9.5" font-weight="400" fill="#6B7280" text-anchor="start">Content Library</text>
+  <text x="100" y="242" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="9.5" font-weight="400" fill="#6B7280" text-anchor="start">Text</text>
+  <text x="100" y="266" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="9.5" font-weight="400" fill="#6B7280" text-anchor="start">Transitions</text></g>
+  <rect x="778" y="118" width="76" height="28" rx="6" fill="none" stroke="#C0293F" stroke-width="2" />
+  <text x="816" y="136" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="12.5" font-weight="700" fill="#C0293F" text-anchor="middle">Export</text>
+  <line x1="480" y1="386" x2="816" y2="146" stroke="#C0293F" stroke-width="2" stroke-dasharray="4,3" />
+  <circle cx="816" cy="146" r="4" fill="#C0293F" />
   <rect x="210.00660000000005" y="386" width="539.9867999999999" height="29.650000000000002" rx="6" fill="#FFFFFF" stroke="#C0293F" stroke-width="2" />
   <text x="480" y="404.92" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="700" fill="#C0293F" text-anchor="middle">Exporting the finished audio-plus-image video from Clipchamp</text>
   <text x="480" y="494" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="20" font-weight="400" fill="#6B7280" text-anchor="middle">Windows</text>
