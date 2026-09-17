@@ -1,22 +1,46 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540">
-  <rect width="960" height="540" fill="#F3F3F3" />
+  <rect width="960" height="540" fill="#F4F6F9" />
   <rect x="90" y="78" width="780" height="372" rx="8" fill="#FFFFFF" />
-  <path d="M 90 94 A 16 16 0 0 1 106 78 L 854 78 A 16 16 0 0 1 870 94 L 870 112 L 90 112 Z" fill="#E8E8E8" />
-  <path d="M 758 90 L 768 90" stroke="#1B1B1B" stroke-width="1.4" stroke-linecap="round" />
-  <rect x="798" y="90" width="10" height="10" fill="none" stroke="#1B1B1B" stroke-width="1.4" />
-  <path d="M 838 89 L 848 101 M 848 89 L 838 101" stroke="#1B1B1B" stroke-width="1.6" stroke-linecap="round" />
-  <text x="106" y="99" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="600" fill="#1B1B1B">Photos</text>
+  <path d="M 90 94 A 16 16 0 0 1 106 78 L 854 78 A 16 16 0 0 1 870 94 L 870 112 L 90 112 Z" fill="#E5E7EB" />
+  <path d="M 758 90 L 768 90" stroke="#1A1A1A" stroke-width="1.4" stroke-linecap="round" />
+  <rect x="798" y="90" width="10" height="10" fill="none" stroke="#1A1A1A" stroke-width="1.4" />
+  <path d="M 838 89 L 848 101 M 848 89 L 838 101" stroke="#1A1A1A" stroke-width="1.6" stroke-linecap="round" />
+  <text x="106" y="99" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="600" fill="#1A1A1A" text-anchor="start">Photos</text>
   <rect x="90" y="112" width="780" height="28" fill="#FFFFFF" />
-  <path d="M 90 140 L 870 140" stroke="#E8E8E8" stroke-width="1" />
-  <rect x="106" y="116" width="59.599999999999994" height="20" rx="4" fill="#F3F3F3" />
-  <text x="135.8" y="130" text-anchor="middle" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="11" fill="#1B1B1B">Rotate</text>
-  <rect x="175.6" y="116" width="105.8" height="20" rx="4" fill="#F3F3F3" />
-  <text x="228.5" y="130" text-anchor="middle" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="11" fill="#1B1B1B">Edit &amp; Create</text>
-  <rect x="291.4" y="116" width="53" height="20" rx="4" fill="#F3F3F3" />
-  <text x="317.9" y="130" text-anchor="middle" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="11" fill="#1B1B1B">Share</text>
-  <rect x="354.4" y="116" width="59.599999999999994" height="20" rx="4" fill="#F3F3F3" />
-  <text x="384.2" y="130" text-anchor="middle" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="11" fill="#1B1B1B">Delete</text>
-  <circle cx="172" cy="281" r="42" fill="#0078D4" />
-  <path d="M 159 265 L 159 296 L 167 288 L 173 299 L 180 296 L 174 285 L 184 285 Z" fill="#FFFFFF" stroke="#0078D4" stroke-width="1" stroke-linejoin="round" />
-  <text x="480" y="494" text-anchor="middle" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="22" fill="#1B1B1B">Windows</text>
+  <path d="M 90 140 L 870 140" stroke="#D1D5DB" stroke-width="1" />
+  <rect x="106" y="116" width="56.66300000000001" height="20" rx="4" fill="#F4F6F9" />
+  <text x="134.3315" y="130" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="400" fill="#1A1A1A" text-anchor="middle">Rotate</text>
+  <rect x="172.663" y="116" width="97.319" height="20" rx="4" fill="#F4F6F9" />
+  <text x="221.32250000000002" y="130" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="400" fill="#1A1A1A" text-anchor="middle">Edit &amp; Create</text>
+  <rect x="279.982" y="116" width="55.332" height="20" rx="4" fill="#F4F6F9" />
+  <text x="307.648" y="130" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="400" fill="#1A1A1A" text-anchor="middle">Share</text>
+  <rect x="345.314" y="116" width="56.66300000000001" height="20" rx="4" fill="#F4F6F9" />
+  <text x="373.6455" y="130" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="400" fill="#1A1A1A" text-anchor="middle">Delete</text>
+  <rect x="270" y="150" width="133.33333333333334" height="70" rx="5" fill="#F4F6F9" stroke="#C0293F" stroke-width="2.5" />
+  <circle cx="307.33333333333337" cy="172.4" r="7.7" fill="none" stroke="#6B7280" stroke-width="1.6" />
+  <path d="M 276 212 L 332.6666666666667 189 L 352.6666666666667 178 L 397.33333333333337 212 Z" fill="none" stroke="#6B7280" stroke-width="1.6" stroke-linejoin="round" />
+  <circle cx="391.33333333333337" cy="162" r="9" fill="#C0293F" />
+  <path d="M 387.33333333333337 162 L 390.33333333333337 165 L 395.33333333333337 158" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+  <rect x="413.33333333333337" y="150" width="133.33333333333334" height="70" rx="5" fill="#F4F6F9" stroke="#C0293F" stroke-width="2.5" />
+  <circle cx="450.66666666666674" cy="172.4" r="7.7" fill="none" stroke="#6B7280" stroke-width="1.6" />
+  <path d="M 419.33333333333337 212 L 476.00000000000006 189 L 496.00000000000006 178 L 540.6666666666667 212 Z" fill="none" stroke="#6B7280" stroke-width="1.6" stroke-linejoin="round" />
+  <circle cx="534.6666666666667" cy="162" r="9" fill="#C0293F" />
+  <path d="M 530.6666666666667 162 L 533.6666666666667 165 L 538.6666666666667 158" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+  <rect x="556.6666666666667" y="150" width="133.33333333333334" height="70" rx="5" fill="#F4F6F9" stroke="#D1D5DB" stroke-width="1.5" />
+  <circle cx="594.0000000000001" cy="172.4" r="7.7" fill="none" stroke="#6B7280" stroke-width="1.6" />
+  <path d="M 562.6666666666667 212 L 619.3333333333334 189 L 639.3333333333334 178 L 684.0000000000001 212 Z" fill="none" stroke="#6B7280" stroke-width="1.6" stroke-linejoin="round" />
+  <rect x="270" y="230" width="133.33333333333334" height="70" rx="5" fill="#F4F6F9" stroke="#D1D5DB" stroke-width="1.5" />
+  <circle cx="307.33333333333337" cy="252.4" r="7.7" fill="none" stroke="#6B7280" stroke-width="1.6" />
+  <path d="M 276 292 L 332.6666666666667 269 L 352.6666666666667 258 L 397.33333333333337 292 Z" fill="none" stroke="#6B7280" stroke-width="1.6" stroke-linejoin="round" />
+  <rect x="413.33333333333337" y="230" width="133.33333333333334" height="70" rx="5" fill="#F4F6F9" stroke="#D1D5DB" stroke-width="1.5" />
+  <circle cx="450.66666666666674" cy="252.4" r="7.7" fill="none" stroke="#6B7280" stroke-width="1.6" />
+  <path d="M 419.33333333333337 292 L 476.00000000000006 269 L 496.00000000000006 258 L 540.6666666666667 292 Z" fill="none" stroke="#6B7280" stroke-width="1.6" stroke-linejoin="round" />
+  <rect x="556.6666666666667" y="230" width="133.33333333333334" height="70" rx="5" fill="#F4F6F9" stroke="#D1D5DB" stroke-width="1.5" />
+  <circle cx="594.0000000000001" cy="252.4" r="7.7" fill="none" stroke="#6B7280" stroke-width="1.6" />
+  <path d="M 562.6666666666667 292 L 619.3333333333334 269 L 639.3333333333334 258 L 684.0000000000001 292 Z" fill="none" stroke="#6B7280" stroke-width="1.6" stroke-linejoin="round" />
+  <line x1="480" y1="386" x2="341.4" y2="192" stroke="#C0293F" stroke-width="2" stroke-dasharray="4,3" />
+  <circle cx="341.4" cy="192" r="4" fill="#C0293F" />
+  <rect x="252.27959999999993" y="386" width="455.44080000000014" height="29.650000000000002" rx="6" fill="#FFFFFF" stroke="#C0293F" stroke-width="2" />
+  <text x="480" y="404.92" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="700" fill="#C0293F" text-anchor="middle">Selecting multiple photos in the Windows Photos app</text>
+  <text x="480" y="494" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="20" font-weight="400" fill="#6B7280" text-anchor="middle">Windows</text>
 </svg>

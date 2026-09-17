@@ -35,12 +35,13 @@
  *
  * When a known external tool's real site genuinely can't be reached this
  * pass (a network failure, not a deliberate policy skip -- see
- * captureExternal's skipKind), a real-colored, tool-styled fallback
+ * captureExternal's skipKind), a hand-drawn-style, tool-styled fallback
  * illustration is drawn in its place instead of a bare text note (see
- * scripts/lib/fallbackIllustration.mjs) -- a generic browser-window
- * illustration made of plain shapes and ordinary UI copy, never an
- * attempt to fake the real screenshot. No caption is added alongside it
- * -- it's embedded exactly like any other successful capture.
+ * scripts/lib/fallbackIllustration.mjs) -- a black-and-white line-art UI
+ * mockup with a real annotation callout, built from plain shapes and the
+ * marker's own description, never an attempt to fake the real screenshot.
+ * No caption is added alongside it -- it's embedded exactly like any other
+ * successful capture.
  *
  * Usage:
  *   node --experimental-strip-types scripts/capture-screenshots.mjs [file ...]
@@ -63,7 +64,6 @@ import { tools, getTool } from "../src/lib/tools.ts";
 import { findExternalTool } from "./lib/externalTools.mjs";
 import { unsafeReason, pageLeaksLocationInfo } from "./lib/safety.mjs";
 import { renderFallbackIllustrationSVG, findPlatform } from "./lib/fallbackIllustration.mjs";
-import { researchToolColor } from "./lib/colorResearch.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = path.join(__dirname, "..");
@@ -729,9 +729,9 @@ async function captureExternal(page, externalTool) {
     // "finished result"). Screenshotting that anyway, over and over, is
     // exactly the "same wrong image for every step" bug a reader flagged.
     // Treating a verified-failed upload as a genuine capture failure (the
-    // same skipKind an unreachable site gets) routes it to a real-colored
-    // fallback illustration instead -- honest about what wasn't actually
-    // captured, rather than a real screenshot of the wrong state.
+    // same skipKind an unreachable site gets) routes it to a fallback
+    // illustration instead -- honest about what wasn't actually captured,
+    // rather than a real screenshot of the wrong state.
     if (hasFileInput && !uploaded) {
       return {
         skipped: true,
@@ -777,14 +777,6 @@ async function captureExternal(page, externalTool) {
   // screenshotViewport's own comment for why full-page is wrong here.
   const screenshot = await screenshotViewport(page);
   return { screenshot, note: `External tool: ${externalTool.name} (desktop app or account-gated -- homepage/marketing page only)` };
-}
-
-/** Caches researchToolColor()'s result per tool name so a tool with several markers only ever gets researched once per run, not once per marker. */
-async function getToolColor(browser, externalTool, toolColorCache) {
-  if (toolColorCache.has(externalTool.name)) return toolColorCache.get(externalTool.name);
-  const color = await researchToolColor(browser, externalTool.url);
-  toolColorCache.set(externalTool.name, color);
-  return color;
 }
 
 /**
@@ -848,7 +840,7 @@ export function resolveMarkerTarget(sectionContext, frontmatterRelatedTool) {
   return winner;
 }
 
-async function processDraft(browser, filePath, summary, externalShotCounts, toolColorCache) {
+async function processDraft(browser, filePath, summary, externalShotCounts) {
   const raw = fs.readFileSync(filePath, "utf8");
   const { data, content } = matter(raw);
   const slug = path.basename(filePath, ".md");
@@ -913,24 +905,12 @@ async function processDraft(browser, filePath, summary, externalShotCounts, tool
           if (result.skipped && (result.skipKind === "unreachable" || result.skipKind === "privacy")) {
             // A genuine capture failure (the site just couldn't be
             // reached this pass), not a deliberate policy skip -- draw a
-            // real-colored, tool-styled illustration instead of leaving
-            // a bare text note in its place. See fallbackIllustration.mjs
-            // for what this deliberately does and doesn't draw.
-            //
-            // getToolColor makes one genuine researchToolColor() attempt
-            // per tool per run (cached -- never once per marker), even
-            // though captureExternal's own navigation to this exact URL
-            // just failed moments ago: in an environment where that
-            // domain really is reachable, this call succeeds and the
-            // illustration gets the tool's real color; in an environment
-            // like this sandbox where the domain is blocked outright, it
-            // fails fast (its own bounded timeout) and correctly falls
-            // through to the neutral style. Either way it's a single,
-            // deduplicated attempt, not a retry loop against a denial.
+            // tool-styled illustration instead of leaving a bare text note
+            // in its place. See fallbackIllustration.mjs for what this
+            // deliberately does and doesn't draw.
             shotIndex += 1;
             const filename = `${slug}-shot-${String(shotIndex).padStart(2, "0")}.svg`;
-            const researchedAccent = await getToolColor(browser, externalTool, toolColorCache);
-            const svg = renderFallbackIllustrationSVG(externalTool.name, trimmedDescription, researchedAccent);
+            const svg = renderFallbackIllustrationSVG(externalTool.name, trimmedDescription, externalTool.url);
             pendingWrites.push({ filename, data: svg });
             // No caption -- just the embed, like every other successful
             // capture in this file. Per explicit instruction: never add
@@ -998,7 +978,6 @@ async function main() {
 
   const summary = { captured: [], illustrated: [], skipped: [], externalToolsVisited: new Set() };
   const externalShotCounts = new Map();
-  const toolColorCache = new Map();
 
   const needsInternal = drafts.some((f) => MARKER_RE.test(fs.readFileSync(f, "utf8")));
   MARKER_RE.lastIndex = 0;
@@ -1014,7 +993,7 @@ async function main() {
   try {
     for (const filePath of drafts) {
       console.log(`Processing ${path.relative(REPO_ROOT, filePath)}...`);
-      await processDraft(browser, filePath, summary, externalShotCounts, toolColorCache);
+      await processDraft(browser, filePath, summary, externalShotCounts);
     }
   } finally {
     await browser.close();
