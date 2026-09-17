@@ -723,23 +723,22 @@ async function captureExternal(page, externalTool) {
     // page during this feature's own verification pass) wire the visible
     // "Choose Files" button to a decoy/placeholder <input>, or don't attach
     // their real change handler the way setInputFiles's dispatched event
-    // expects, so the page silently stays on its untouched upload prompt no
-    // matter how many times a marker in the same article asks for a
+    // expects, so the page can silently stay on its untouched upload prompt
+    // no matter how many times a marker in the same article asks for a
     // different later state ("compression options", "mid-compression",
-    // "finished result"). Screenshotting that anyway, over and over, is
-    // exactly the "same wrong image for every step" bug a reader flagged.
-    // Treating a verified-failed upload as a genuine capture failure (the
-    // same skipKind an unreachable site gets) routes it to a fallback
-    // illustration instead -- honest about what wasn't actually captured,
-    // rather than a real screenshot of the wrong state.
-    if (hasFileInput && !uploaded) {
-      return {
-        skipped: true,
-        skipKind: "unreachable",
-        publicNote: `Screenshot pending: ${externalTool.name}'s upload didn't visibly complete during this pass.`,
-        logNote: `${externalTool.name}'s page never visibly changed after a real upload attempt (retried) -- the site's actual upload wiring couldn't be driven generically`,
-      };
-    }
+    // "finished result"). This USED to route a verified-failed upload to a
+    // fallback illustration, on the theory that a fabricated mockup was
+    // more honest than a real screenshot of the wrong state. Per explicit
+    // correction, that was backwards for a tool we can actually reach: a
+    // fabricated illustration pretends to know what a UI state we never
+    // reached looks like, while a real screenshot of whatever's genuinely
+    // on screen -- even the untouched upload prompt, repeated across a few
+    // markers -- never lies about what was captured. So this keeps going
+    // and takes the real (cropped) screenshot either way; only the note
+    // reflects whether the upload was actually verified.
+    const uploadNote = hasFileInput && !uploaded
+      ? " (upload attempt did not visibly complete -- captured the page's current state)"
+      : "";
     reason = await unsafeReason(page);
     if (reason) {
       return {
@@ -767,7 +766,7 @@ async function captureExternal(page, externalTool) {
     return {
       screenshot,
       note: hasFileInput
-        ? `External tool: ${externalTool.name} (attempted a real upload interaction)`
+        ? `External tool: ${externalTool.name} (attempted a real upload interaction${uploadNote})`
         : `External tool: ${externalTool.name} (no upload UI found on this page -- captured as-is)`,
     };
   }
