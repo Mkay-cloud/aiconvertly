@@ -1,15 +1,22 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540">
-  <rect width="960" height="540" fill="#f1f2fe" />
+  <rect width="960" height="540" fill="#F4F6F9" />
   <rect x="90" y="78" width="780" height="372" rx="16" fill="#FFFFFF" />
-  <path d="M 90 94 A 16 16 0 0 1 106 78 L 854 78 A 16 16 0 0 1 870 94 L 870 112 L 90 112 Z" fill="#e6e7fd" />
-  <circle cx="114" cy="95" r="6" fill="#ED6A5E" />
-  <circle cx="136" cy="95" r="6" fill="#F4BF4F" />
-  <circle cx="158" cy="95" r="6" fill="#61C454" />
-  <circle cx="172" cy="281" r="42" fill="#727cf5" />
-  <path d="M 157 281 L 168 293 L 189 268" fill="none" stroke="#FFFFFF" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" />
-  <text x="238" y="269" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="24" font-weight="700" fill="#24262B">Done</text>
-  <text x="238" y="301" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="16" font-weight="400" fill="#24262B">Your file is ready</text>
-  <rect x="238" y="311" width="132" height="44" rx="10" fill="#727cf5" />
-  <text x="304" y="339" text-anchor="middle" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="17" font-weight="600" fill="#FFFFFF">Download</text>
-  <text x="480" y="494" text-anchor="middle" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="22" fill="#24262B">FreeConvert</text>
+  <path d="M 90 94 A 16 16 0 0 1 106 78 L 854 78 A 16 16 0 0 1 870 94 L 870 112 L 90 112 Z" fill="#E5E7EB" />
+  <circle cx="114" cy="95" r="6" fill="#D1D5DB" />
+  <circle cx="136" cy="95" r="6" fill="#D1D5DB" />
+  <circle cx="158" cy="95" r="6" fill="#D1D5DB" />
+  <rect x="90" y="112" width="780" height="30" fill="#FFFFFF" />
+  <path d="M 90 142 L 870 142" stroke="#D1D5DB" stroke-width="1" />
+  <rect x="104" y="117" width="752" height="20" rx="10" fill="#F4F6F9" stroke="#D1D5DB" stroke-width="1" />
+  <path d="M 120 122 a 5 5 0 0 1 10 0 v 3 h 1 a 2 2 0 0 1 2 2 v 5 a 2 2 0 0 1 -2 2 h -12 a 2 2 0 0 1 -2 -2 v -5 a 2 2 0 0 1 2 -2 h 1 Z" fill="none" stroke="#6B7280" stroke-width="1.3" />
+  <text x="142" y="131" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="400" fill="#6B7280" text-anchor="start">freeconvert.com/video-converter</text>
+  <rect x="330" y="245" width="102.54199999999999" height="32" rx="6" fill="#1A1A1A" />
+  <text x="381.271" y="265" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF" text-anchor="middle">Download</text>
+  <rect x="442.542" y="245" width="64" height="32" rx="6" fill="#FFFFFF" stroke="#D1D5DB" stroke-width="1.5" />
+  <rect x="516.5419999999999" y="245" width="48" height="32" rx="6" fill="#FFFFFF" stroke="#D1D5DB" stroke-width="1.5" />
+  <line x1="480" y1="386" x2="360" y2="261" stroke="#C0293F" stroke-width="2" stroke-dasharray="4,3" />
+  <circle cx="360" cy="261" r="4" fill="#C0293F" />
+  <rect x="216.24080000000004" y="386" width="527.5183999999999" height="29.650000000000002" rx="6" fill="#FFFFFF" stroke="#C0293F" stroke-width="2" />
+  <text x="480" y="404.92" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="700" fill="#C0293F" text-anchor="middle">FreeConvert's finished result screen with a Download button</text>
+  <text x="480" y="494" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="20" font-weight="400" fill="#6B7280" text-anchor="middle">FreeConvert</text>
 </svg>

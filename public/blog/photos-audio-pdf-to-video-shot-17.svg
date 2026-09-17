@@ -1,24 +1,25 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540">
-  <rect width="960" height="540" fill="#ECECEC" />
+  <rect width="960" height="540" fill="#F4F6F9" />
   <rect x="90" y="78" width="780" height="372" rx="16" fill="#FFFFFF" />
-  <path d="M 90 94 A 16 16 0 0 1 106 78 L 854 78 A 16 16 0 0 1 870 94 L 870 112 L 90 112 Z" fill="#E3E3E3" />
-  <circle cx="114" cy="95" r="6" fill="#ED6A5E" />
-  <circle cx="136" cy="95" r="6" fill="#F4BF4F" />
-  <circle cx="158" cy="95" r="6" fill="#61C454" />
-  <text x="480" y="99" text-anchor="middle" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="600" fill="#1D1D1F">IMG_0342.png — Preview</text>
+  <path d="M 90 94 A 16 16 0 0 1 106 78 L 854 78 A 16 16 0 0 1 870 94 L 870 112 L 90 112 Z" fill="#E5E7EB" />
+  <circle cx="114" cy="95" r="6" fill="#D1D5DB" />
+  <circle cx="136" cy="95" r="6" fill="#D1D5DB" />
+  <circle cx="158" cy="95" r="6" fill="#D1D5DB" />
+  <text x="480" y="99" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="600" fill="#1A1A1A" text-anchor="middle">My Movie — iMovie</text>
   <rect x="90" y="112" width="780" height="28" fill="#FFFFFF" />
-  <text x="106" y="130" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="12" fill="#8A8A8E">File</text>
-  <text x="149.6" y="130" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="12" fill="#8A8A8E">Edit</text>
-  <text x="193.2" y="130" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="12" fill="#8A8A8E">View</text>
-  <text x="236.79999999999998" y="130" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="12" fill="#8A8A8E">Tools</text>
-  <text x="286.79999999999995" y="130" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="12" fill="#8A8A8E">Window</text>
-  <text x="343.19999999999993" y="130" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="12" fill="#8A8A8E">Help</text>
-  <rect x="90" y="140" width="40" height="310" fill="#ECECEC" />
-  <rect x="98" y="152" width="24" height="32" rx="3" fill="#0A84FF" />
-  <rect x="98" y="194" width="24" height="32" rx="3" fill="#E3E3E3" />
-  <rect x="98" y="236" width="24" height="32" rx="3" fill="#E3E3E3" />
-  <path d="M 130 140 L 130 450" stroke="#E3E3E3" stroke-width="1" />
-  <circle cx="172" cy="281" r="42" fill="#0A84FF" />
-  <path d="M 159 265 L 159 296 L 167 288 L 173 299 L 180 296 L 174 285 L 184 285 Z" fill="#FFFFFF" stroke="#0A84FF" stroke-width="1" stroke-linejoin="round" />
-  <text x="480" y="494" text-anchor="middle" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="22" fill="#1D1D1F">macOS</text>
+  <text x="106" y="130" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="400" fill="#8A8A8E" text-anchor="start">File</text>
+  <text x="149.476" y="130" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="400" fill="#8A8A8E" text-anchor="start">Edit</text>
+  <text x="192.952" y="130" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="400" fill="#8A8A8E" text-anchor="start">Clip</text>
+  <text x="236.428" y="130" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="400" fill="#8A8A8E" text-anchor="start">Modify</text>
+  <text x="296.8" y="130" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="400" fill="#8A8A8E" text-anchor="start">View</text>
+  <text x="347.8" y="130" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="400" fill="#8A8A8E" text-anchor="start">Window</text>
+  <text x="415.696" y="130" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="400" fill="#8A8A8E" text-anchor="start">Help</text>
+  
+  <circle cx="480" cy="250" r="30" fill="#FFFFFF" stroke="#1A1A1A" stroke-width="2" />
+  <path d="M 469 237 L 469 262 L 476 256 L 481 265 L 487 262 L 482 253 L 490 253 Z" fill="#FFFFFF" stroke="#1A1A1A" stroke-width="2" stroke-linejoin="round" />
+  <line x1="480" y1="386" x2="480" y2="250" stroke="#C0293F" stroke-width="2" stroke-dasharray="4,3" />
+  <circle cx="480" cy="250" r="4" fill="#C0293F" />
+  <rect x="305.3984" y="386" width="349.20320000000004" height="29.650000000000002" rx="6" fill="#FFFFFF" stroke="#C0293F" stroke-width="2" />
+  <text x="480" y="404.92" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="700" fill="#C0293F" text-anchor="middle">Creating a new Movie project in iMovie</text>
+  <text x="480" y="494" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="20" font-weight="400" fill="#6B7280" text-anchor="middle">macOS</text>
 </svg>
