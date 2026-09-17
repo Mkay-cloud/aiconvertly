@@ -113,6 +113,13 @@ const MARKER_RE = /\[SCREENSHOT:\s*([^\]]+)\]/g;
 // state, which is what most markers describing a UI step actually want.
 const RESULT_STATE_RE =
   /\b(result|download|after|finished|complete|completed|output|converted|denoised|compressed|resized|enhanced|merged|extracted)\b/i;
+// Mirrors fallbackIllustration.mjs's own "upload" rule (same idea, used
+// there to pick an upload-widget illustration). Here it flags a marker
+// whose own description is about the upload/drop-zone moment itself, not
+// a specific further state -- see captureExternal's own comment on why
+// that distinction matters for an external site we can't fully drive.
+const IDLE_UPLOAD_MARKER_RE =
+  /\b(upload(ing|ed)?|drop(ping|zone)?|drag(ging)?|choose file|select file|browsing|browse)\b/i;
 const PRIMARY_ACTION_WORD_RE =
   /convert|compress|resize|merge|remove|enhance|extract|trim|rotate|split|change|noise|generate|crop|denoise/i;
 // "click to browse" excludes the Dropzone itself: it has role="button" and
@@ -640,8 +647,15 @@ async function captureInternal(browser, tool, description, maxAttempts = 3) {
  * of the marker (no raw error strings/URLs in front of a reader);
  * logNote carries the full technical detail for the run summary /
  * PR description, which is where that detail is actually useful.
+ *
+ * description is the marker's own text (e.g. "FreeConvert's video
+ * compressor with a file uploaded") -- only used to tell an idle
+ * upload-prompt marker apart from one describing a specific further state
+ * (see IDLE_UPLOAD_MARKER_RE's own comment below for why that distinction
+ * matters). Optional/blank for callers that don't have it, in which case
+ * this behaves as if every marker described a further state.
  */
-async function captureExternal(page, externalTool) {
+async function captureExternal(page, externalTool, description = "") {
   await page.setViewportSize(VIEWPORT);
   let response;
   try {
@@ -726,16 +740,36 @@ async function captureExternal(page, externalTool) {
     // expects, so the page can silently stay on its untouched upload prompt
     // no matter how many times a marker in the same article asks for a
     // different later state ("compression options", "mid-compression",
-    // "finished result"). This USED to route a verified-failed upload to a
-    // fallback illustration, on the theory that a fabricated mockup was
-    // more honest than a real screenshot of the wrong state. Per explicit
-    // correction, that was backwards for a tool we can actually reach: a
-    // fabricated illustration pretends to know what a UI state we never
-    // reached looks like, while a real screenshot of whatever's genuinely
-    // on screen -- even the untouched upload prompt, repeated across a few
-    // markers -- never lies about what was captured. So this keeps going
-    // and takes the real (cropped) screenshot either way; only the note
-    // reflects whether the upload was actually verified.
+    // "finished result"). This USED to route every verified-failed upload
+    // to a fallback illustration uniformly, on the theory that a fabricated
+    // mockup was more honest than a real screenshot of the wrong state.
+    // Per explicit correction, that was backwards for a marker that's just
+    // asking to see the upload prompt itself ("go to FreeConvert and
+    // upload your file"): the untouched upload widget IS a real, honest
+    // answer to that -- no fabrication needed, and cropped correctly (see
+    // screenshotAroundElement below) it's exactly the "normal screenshot"
+    // that was asked for. But it's genuinely the WRONG picture for a
+    // marker describing a specific state further down the flow ("the
+    // codec selector showing H.264 and H.265", "the progress bar",
+    // "the finished result screen") -- this generic automation has no way
+    // to actually reach those, and confirmed live (see the PR description)
+    // that every such marker for the same tool gets byte-identical real
+    // screenshots of the untouched upload prompt when the upload doesn't
+    // land, which would just mislabel that same image under four different
+    // captions. So only a marker whose own description is about the
+    // upload/drop-zone moment itself gets the guaranteed real screenshot;
+    // anything asking for a further state keeps the fallback-illustration
+    // behavior for now (illustrating that specific described state is a
+    // separate, later piece of work).
+    const isIdleUploadMarker = IDLE_UPLOAD_MARKER_RE.test(description);
+    if (hasFileInput && !uploaded && !isIdleUploadMarker) {
+      return {
+        skipped: true,
+        skipKind: "unreachable",
+        publicNote: `Screenshot pending: ${externalTool.name}'s upload didn't visibly complete during this pass.`,
+        logNote: `${externalTool.name}'s page never visibly changed after a real upload attempt (retried) -- this marker describes a specific state ("${description}") beyond the plain upload prompt, which this generic automation can't manufacture on demand`,
+      };
+    }
     const uploadNote = hasFileInput && !uploaded
       ? " (upload attempt did not visibly complete -- captured the page's current state)"
       : "";
@@ -897,7 +931,7 @@ async function processDraft(browser, filePath, summary, externalShotCounts) {
           const page = await browser.newPage();
           let result;
           try {
-            result = await captureExternal(page, externalTool);
+            result = await captureExternal(page, externalTool, trimmedDescription);
           } finally {
             await page.close();
           }
