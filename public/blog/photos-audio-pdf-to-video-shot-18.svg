@@ -1,39 +1,60 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540">
   <rect width="960" height="540" fill="#F4F6F9" />
-  <rect x="90" y="78" width="780" height="372" rx="16" fill="#FFFFFF" />
-  <path d="M 90 94 A 16 16 0 0 1 106 78 L 854 78 A 16 16 0 0 1 870 94 L 870 112 L 90 112 Z" fill="#E5E7EB" />
-  <circle cx="114" cy="95" r="6" fill="#D1D5DB" />
-  <circle cx="136" cy="95" r="6" fill="#D1D5DB" />
-  <circle cx="158" cy="95" r="6" fill="#D1D5DB" />
-  <text x="480" y="99" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="600" fill="#1A1A1A" text-anchor="middle">My Movie — iMovie</text>
-  <rect x="90" y="112" width="780" height="28" fill="#FFFFFF" />
-  <text x="106" y="130" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="400" fill="#8A8A8E" text-anchor="start">File</text>
-  <text x="149.476" y="130" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="400" fill="#8A8A8E" text-anchor="start">Edit</text>
-  <text x="192.952" y="130" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="400" fill="#8A8A8E" text-anchor="start">Clip</text>
-  <text x="236.428" y="130" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="400" fill="#8A8A8E" text-anchor="start">Modify</text>
-  <text x="296.8" y="130" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="400" fill="#8A8A8E" text-anchor="start">View</text>
-  <text x="347.8" y="130" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="400" fill="#8A8A8E" text-anchor="start">Window</text>
-  <text x="415.696" y="130" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="400" fill="#8A8A8E" text-anchor="start">Help</text>
+  <rect x="90" y="108" width="780" height="342" rx="16" fill="#FFFFFF" />
+  <path d="M 90 124 A 16 16 0 0 1 106 108 L 854 108 A 16 16 0 0 1 870 124 L 870 142 L 90 142 Z" fill="#E5E7EB" />
+  <circle cx="114" cy="125" r="6" fill="#D1D5DB" />
+  <circle cx="136" cy="125" r="6" fill="#D1D5DB" />
+  <circle cx="158" cy="125" r="6" fill="#D1D5DB" />
+  <text x="480" y="129" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="600" fill="#1A1A1A" text-anchor="middle">My Movie</text>
   
-  <rect x="250" y="236" width="460" height="48" rx="4" fill="#F4F6F9" stroke="#D1D5DB" stroke-width="1" />
-  <rect x="250" y="242" width="110.5" height="36" rx="4" fill="#E5E7EB" stroke="#D1D5DB" stroke-width="1.5" />
-  <line x1="277.625" y1="246" x2="277.625" y2="274" stroke="#D1D5DB" stroke-width="1" opacity="0.6" />
-  <line x1="305.25" y1="246" x2="305.25" y2="274" stroke="#D1D5DB" stroke-width="1" opacity="0.6" />
-  <line x1="332.875" y1="246" x2="332.875" y2="274" stroke="#D1D5DB" stroke-width="1" opacity="0.6" />
-  <rect x="366.5" y="242" width="110.5" height="36" rx="4" fill="#FFFFFF" stroke="#C0293F" stroke-width="2.5" />
-  <line x1="394.125" y1="246" x2="394.125" y2="274" stroke="#D1D5DB" stroke-width="1" opacity="0.6" />
-  <line x1="421.75" y1="246" x2="421.75" y2="274" stroke="#D1D5DB" stroke-width="1" opacity="0.6" />
-  <line x1="449.375" y1="246" x2="449.375" y2="274" stroke="#D1D5DB" stroke-width="1" opacity="0.6" />
-  <rect x="483" y="242" width="110.5" height="36" rx="4" fill="#E5E7EB" stroke="#D1D5DB" stroke-width="1.5" />
-  <line x1="510.625" y1="246" x2="510.625" y2="274" stroke="#D1D5DB" stroke-width="1" opacity="0.6" />
-  <line x1="538.25" y1="246" x2="538.25" y2="274" stroke="#D1D5DB" stroke-width="1" opacity="0.6" />
-  <line x1="565.875" y1="246" x2="565.875" y2="274" stroke="#D1D5DB" stroke-width="1" opacity="0.6" />
-  <rect x="599.5" y="242" width="110.5" height="36" rx="4" fill="#E5E7EB" stroke="#D1D5DB" stroke-width="1.5" />
-  <line x1="627.125" y1="246" x2="627.125" y2="274" stroke="#D1D5DB" stroke-width="1" opacity="0.6" />
-  <line x1="654.75" y1="246" x2="654.75" y2="274" stroke="#D1D5DB" stroke-width="1" opacity="0.6" />
-  <line x1="682.375" y1="246" x2="682.375" y2="274" stroke="#D1D5DB" stroke-width="1" opacity="0.6" />
-  <line x1="480" y1="386" x2="422.5" y2="236" stroke="#C0293F" stroke-width="2" stroke-dasharray="4,3" />
-  <circle cx="422.5" cy="236" r="4" fill="#C0293F" />
+  
+  <rect x="0" y="0" width="960" height="24" fill="#FFFFFF" />
+  <line x1="0" y1="24" x2="960" y2="24" stroke="#D1D5DB" stroke-width="1" />
+  <path d="M 26.4 8.8 c 1.2 -1.4 2 -3.3 1.8 -5.2 -1.7 0.1 -3.7 1.2 -4.9 2.6 -1.1 1.3 -2 3.2 -1.7 5 1.8 0.2 3.6 -1 4.8 -2.4 Z" fill="#1A1A1A" />
+  <path d="M 26.88 10.719999999999999 c -2.6 -1.6 -3 -4.6 -0.7 -6.3 -0.7 -1.1 -2 -1.8 -3.4 -1.9 -1.4 -0.1 -3 0.8 -3.8 0.8 -0.8 0 -2.1 -0.8 -3.5 -0.8 -1.8 0 -3.5 1.1 -4.4 2.7 -1.9 3.3 -0.5 8.1 1.3 10.8 0.9 1.3 2 2.8 3.4 2.7 1.3 -0.1 1.9 -0.9 3.5 -0.9 1.7 0 2.2 0.9 3.6 0.8 1.5 -0.1 2.4 -1.3 3.3 -2.6 1 -1.5 1.5 -3 1.5 -3 -0.1 0 -2.8 -1.1 -2.8 -4.3 Z" fill="#1A1A1A" />
+  <text x="42" y="16" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="12.5" font-weight="700" fill="#1A1A1A" text-anchor="start">iMovie</text>
+  <text x="112.9525" y="16" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="12.5" font-weight="400" fill="#1A1A1A" text-anchor="start">File</text>
+  <text x="157.49" y="16" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="12.5" font-weight="400" fill="#1A1A1A" text-anchor="start">Edit</text>
+  <text x="202.02750000000003" y="16" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="12.5" font-weight="400" fill="#1A1A1A" text-anchor="start">Clip</text>
+  <text x="246.56500000000005" y="16" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="12.5" font-weight="400" fill="#1A1A1A" text-anchor="start">Modify</text>
+  <text x="308.70250000000004" y="16" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="12.5" font-weight="400" fill="#1A1A1A" text-anchor="start">View</text>
+  <text x="361.07750000000004" y="16" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="12.5" font-weight="400" fill="#1A1A1A" text-anchor="start">Window</text>
+  <text x="431.0525" y="16" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="12.5" font-weight="400" fill="#1A1A1A" text-anchor="start">Help</text>
+  <text x="944" y="16" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="400" fill="#6B7280" text-anchor="end">9:41</text>
+  <rect x="90" y="142" width="249.6" height="130.9" fill="#F4F6F9" stroke="#D1D5DB" stroke-width="1" />
+  <rect x="98" y="150" width="111.8" height="52.45" rx="5" fill="#F4F6F9" stroke="#C0293F" stroke-width="2.5" />
+  <circle cx="167.316" cy="165.735" r="5.769500000000001" fill="none" stroke="#6B7280" stroke-width="1.6" />
+  <path d="M 104 194.45 L 149.9 180.225 L 167.316 170.98000000000002 L 203.8 194.45 Z" fill="none" stroke="#6B7280" stroke-width="1.6" stroke-linejoin="round" />
+  <circle cx="197.8" cy="162" r="9" fill="#C0293F" />
+  <path d="M 193.8 162 L 196.8 165 L 201.8 158" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+  <rect x="219.8" y="150" width="111.8" height="52.45" rx="5" fill="#F4F6F9" stroke="#D1D5DB" stroke-width="1.5" />
+  <circle cx="289.116" cy="165.735" r="5.769500000000001" fill="none" stroke="#6B7280" stroke-width="1.6" />
+  <path d="M 225.8 194.45 L 271.7 180.225 L 289.116 170.98000000000002 L 325.6 194.45 Z" fill="none" stroke="#6B7280" stroke-width="1.6" stroke-linejoin="round" />
+  <rect x="98" y="212.45" width="111.8" height="52.45" rx="5" fill="#F4F6F9" stroke="#D1D5DB" stroke-width="1.5" />
+  <circle cx="167.316" cy="228.185" r="5.769500000000001" fill="none" stroke="#6B7280" stroke-width="1.6" />
+  <path d="M 104 256.9 L 149.9 242.67499999999998 L 167.316 233.43 L 203.8 256.9 Z" fill="none" stroke="#6B7280" stroke-width="1.6" stroke-linejoin="round" />
+  <rect x="219.8" y="212.45" width="111.8" height="52.45" rx="5" fill="#F4F6F9" stroke="#D1D5DB" stroke-width="1.5" />
+  <circle cx="289.116" cy="228.185" r="5.769500000000001" fill="none" stroke="#6B7280" stroke-width="1.6" />
+  <path d="M 225.8 256.9 L 271.7 242.67499999999998 L 289.116 233.43 L 325.6 256.9 Z" fill="none" stroke="#6B7280" stroke-width="1.6" stroke-linejoin="round" />
+  <rect x="349.6" y="142" width="520.4" height="130.9" fill="#2B2B2B" />
+  <line x1="369.6" y1="207.45" x2="830" y2="197.45" stroke="#C0293F" stroke-width="2" stroke-dasharray="5,4" />
+  <circle cx="830" cy="197.45" r="3.5" fill="#C0293F" />
+  <rect x="90" y="284.9" width="780" height="95.1" fill="#E5E7EB" stroke="#D1D5DB" stroke-width="1" />
+  <rect x="98" y="292.9" width="764" height="79.1" rx="4" fill="#F4F6F9" stroke="#D1D5DB" stroke-width="1" />
+  <rect x="98" y="296.9" width="250.66666666666666" height="71.1" rx="4" fill="#FFFFFF" stroke="#C0293F" stroke-width="2.5" />
+  <line x1="160.66666666666666" y1="300.9" x2="160.66666666666666" y2="364" stroke="#D1D5DB" stroke-width="1" opacity="0.6" />
+  <line x1="223.33333333333331" y1="300.9" x2="223.33333333333331" y2="364" stroke="#D1D5DB" stroke-width="1" opacity="0.6" />
+  <line x1="286" y1="300.9" x2="286" y2="364" stroke="#D1D5DB" stroke-width="1" opacity="0.6" />
+  <rect x="354.66666666666663" y="296.9" width="250.66666666666666" height="71.1" rx="4" fill="#E5E7EB" stroke="#D1D5DB" stroke-width="1.5" />
+  <line x1="417.3333333333333" y1="300.9" x2="417.3333333333333" y2="364" stroke="#D1D5DB" stroke-width="1" opacity="0.6" />
+  <line x1="479.99999999999994" y1="300.9" x2="479.99999999999994" y2="364" stroke="#D1D5DB" stroke-width="1" opacity="0.6" />
+  <line x1="542.6666666666666" y1="300.9" x2="542.6666666666666" y2="364" stroke="#D1D5DB" stroke-width="1" opacity="0.6" />
+  <rect x="611.3333333333333" y="296.9" width="250.66666666666666" height="71.1" rx="4" fill="#E5E7EB" stroke="#D1D5DB" stroke-width="1.5" />
+  <line x1="673.9999999999999" y1="300.9" x2="673.9999999999999" y2="364" stroke="#D1D5DB" stroke-width="1" opacity="0.6" />
+  <line x1="736.6666666666666" y1="300.9" x2="736.6666666666666" y2="364" stroke="#D1D5DB" stroke-width="1" opacity="0.6" />
+  <line x1="799.3333333333333" y1="300.9" x2="799.3333333333333" y2="364" stroke="#D1D5DB" stroke-width="1" opacity="0.6" />
+  <line x1="480" y1="386" x2="319.6" y2="207.45" stroke="#C0293F" stroke-width="2" stroke-dasharray="4,3" />
+  <circle cx="319.6" cy="207.45" r="4" fill="#C0293F" />
   <rect x="290.36800000000005" y="386" width="379.2639999999999" height="29.650000000000002" rx="6" fill="#FFFFFF" stroke="#C0293F" stroke-width="2" />
   <text x="480" y="404.92" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="700" fill="#C0293F" text-anchor="middle">Dragging an image onto the iMovie timeline</text>
   <text x="480" y="494" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="20" font-weight="400" fill="#6B7280" text-anchor="middle">macOS</text>

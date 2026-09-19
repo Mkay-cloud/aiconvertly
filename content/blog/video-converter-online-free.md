@@ -46,7 +46,7 @@ FreeConvert is one of the sites people mean when they search "online video conve
 
 1. Go to FreeConvert and click Choose Files, or drag your video onto the page.
 
-![FreeConvert's converter page with the Choose Files button and drop area](/blog/video-converter-online-free-shot-04.svg)
+![FreeConvert's converter page with the Choose Files button and drop area](/blog/video-converter-online-free-shot-04.png)
 
 2. Pick your target format from the list, then click Convert.
 
@@ -68,7 +68,7 @@ CloudConvert runs the same basic way, upload, pick a format, download, but doles
 
 1. Go to CloudConvert and drop your file onto the homepage converter, or click to browse.
 
-![CloudConvert's homepage with the drop area for a file](/blog/video-converter-online-free-shot-08.svg)
+![CloudConvert's homepage with the drop area for a file](/blog/video-converter-online-free-shot-08.png)
 
 2. Select your output format from the video options.
 

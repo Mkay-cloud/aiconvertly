@@ -35,7 +35,7 @@ Two honest limits worth knowing going in. First, this tool always re-encodes to 
 
 If you need a size or bitrate target the slider above doesn't give you, or your file is bigger than what a browser tab can comfortably chew through, a server-side compressor is the next step. FreeConvert is a solid general-purpose option: no account needed, no watermark on the result, and it accepts files up to 1GB on the free tier.
 
-1. Go to FreeConvert's video compressor page and upload your file. ![FreeConvert's video compressor with a file uploaded](/blog/compress-video-online-shot-05.svg)
+1. Go to FreeConvert's video compressor page and upload your file. ![FreeConvert's video compressor with a file uploaded](/blog/compress-video-online-shot-05.png)
 2. Pick how you want to target the reduction: a percentage of the original size, a specific quality level, a maximum bitrate, or new dimensions. Quality level is the closest match to "smaller without visible damage." ![FreeConvert's compression options, showing the target-size and quality choices](/blog/compress-video-online-shot-06.svg)
 3. It also lets you switch the output codec to H.265 instead of H.264. H.265 compresses noticeably better at the same visual quality, FreeConvert's own numbers put it at 20 to 75% smaller, but it has spottier hardware support on older phones and TVs, so it's worth confirming your destination device actually plays H.265 before relying on it. ![the codec selector showing H.264 and H.265 options](/blog/compress-video-online-shot-07.svg)
 4. Click **Compress Now** and wait for the progress bar to finish uploading and processing. ![FreeConvert mid-compression, showing the progress bar](/blog/compress-video-online-shot-08.svg)

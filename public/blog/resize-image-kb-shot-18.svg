@@ -1,27 +1,42 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540">
   <rect width="960" height="540" fill="#F4F6F9" />
-  <rect x="90" y="78" width="780" height="372" rx="16" fill="#FFFFFF" />
-  <path d="M 90 94 A 16 16 0 0 1 106 78 L 854 78 A 16 16 0 0 1 870 94 L 870 112 L 90 112 Z" fill="#E5E7EB" />
-  <circle cx="114" cy="95" r="6" fill="#D1D5DB" />
-  <circle cx="136" cy="95" r="6" fill="#D1D5DB" />
-  <circle cx="158" cy="95" r="6" fill="#D1D5DB" />
-  <text x="480" y="99" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="600" fill="#1A1A1A" text-anchor="middle">IMG_0342.png — Preview</text>
-  <rect x="90" y="112" width="780" height="28" fill="#FFFFFF" />
-  <text x="106" y="130" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="400" fill="#8A8A8E" text-anchor="start">File</text>
-  <text x="149.476" y="130" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="400" fill="#8A8A8E" text-anchor="start">Edit</text>
-  <text x="192.952" y="130" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="400" fill="#8A8A8E" text-anchor="start">View</text>
-  <text x="243.952" y="130" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="400" fill="#8A8A8E" text-anchor="start">Tools</text>
-  <text x="297.592" y="130" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="400" fill="#8A8A8E" text-anchor="start">Window</text>
-  <text x="365.488" y="130" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="400" fill="#8A8A8E" text-anchor="start">Help</text>
-  <rect x="90" y="140" width="40" height="310" fill="#F4F6F9" />
-  <rect x="98" y="152" width="24" height="32" rx="3" fill="#D1D5DB" stroke="#1A1A1A" stroke-width="1" />
-  <rect x="98" y="194" width="24" height="32" rx="3" fill="#E5E7EB" stroke="#1A1A1A" stroke-width="1" />
-  <rect x="98" y="236" width="24" height="32" rx="3" fill="#E5E7EB" stroke="#1A1A1A" stroke-width="1" />
-  <path d="M 130 140 L 130 450" stroke="#D1D5DB" stroke-width="1" />
-  <circle cx="500" cy="250" r="30" fill="#FFFFFF" stroke="#1A1A1A" stroke-width="2" />
-  <path d="M 489 237 L 489 262 L 496 256 L 501 265 L 507 262 L 502 253 L 510 253 Z" fill="#FFFFFF" stroke="#1A1A1A" stroke-width="2" stroke-linejoin="round" />
-  <line x1="480" y1="386" x2="500" y2="250" stroke="#C0293F" stroke-width="2" stroke-dasharray="4,3" />
-  <circle cx="500" cy="250" r="4" fill="#C0293F" />
+  <rect x="90" y="108" width="780" height="342" rx="16" fill="#FFFFFF" />
+  <path d="M 90 124 A 16 16 0 0 1 106 108 L 854 108 A 16 16 0 0 1 870 124 L 870 142 L 90 142 Z" fill="#E5E7EB" />
+  <circle cx="114" cy="125" r="6" fill="#D1D5DB" />
+  <circle cx="136" cy="125" r="6" fill="#D1D5DB" />
+  <circle cx="158" cy="125" r="6" fill="#D1D5DB" />
+  <text x="480" y="129" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="600" fill="#1A1A1A" text-anchor="middle">image.jpg</text>
+  <rect x="90" y="142" width="40" height="308" fill="#F4F6F9" />
+  <rect x="98" y="154" width="24" height="32" rx="3" fill="#D1D5DB" stroke="#1A1A1A" stroke-width="1" />
+  <rect x="98" y="196" width="24" height="32" rx="3" fill="#E5E7EB" stroke="#1A1A1A" stroke-width="1" />
+  <rect x="98" y="238" width="24" height="32" rx="3" fill="#E5E7EB" stroke="#1A1A1A" stroke-width="1" />
+  <path d="M 130 142 L 130 450" stroke="#D1D5DB" stroke-width="1" />
+  
+  <rect x="0" y="0" width="960" height="24" fill="#FFFFFF" />
+  <line x1="0" y1="24" x2="960" y2="24" stroke="#D1D5DB" stroke-width="1" />
+  <path d="M 26.4 8.8 c 1.2 -1.4 2 -3.3 1.8 -5.2 -1.7 0.1 -3.7 1.2 -4.9 2.6 -1.1 1.3 -2 3.2 -1.7 5 1.8 0.2 3.6 -1 4.8 -2.4 Z" fill="#1A1A1A" />
+  <path d="M 26.88 10.719999999999999 c -2.6 -1.6 -3 -4.6 -0.7 -6.3 -0.7 -1.1 -2 -1.8 -3.4 -1.9 -1.4 -0.1 -3 0.8 -3.8 0.8 -0.8 0 -2.1 -0.8 -3.5 -0.8 -1.8 0 -3.5 1.1 -4.4 2.7 -1.9 3.3 -0.5 8.1 1.3 10.8 0.9 1.3 2 2.8 3.4 2.7 1.3 -0.1 1.9 -0.9 3.5 -0.9 1.7 0 2.2 0.9 3.6 0.8 1.5 -0.1 2.4 -1.3 3.3 -2.6 1 -1.5 1.5 -3 1.5 -3 -0.1 0 -2.8 -1.1 -2.8 -4.3 Z" fill="#1A1A1A" />
+  <text x="42" y="16" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="12.5" font-weight="700" fill="#1A1A1A" text-anchor="start">Preview</text>
+  <text x="127.28750000000001" y="16" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="12.5" font-weight="400" fill="#1A1A1A" text-anchor="start">File</text>
+  <text x="171.82500000000002" y="16" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="12.5" font-weight="400" fill="#1A1A1A" text-anchor="start">Edit</text>
+  <text x="216.3625" y="16" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="12.5" font-weight="400" fill="#1A1A1A" text-anchor="start">View</text>
+  <text x="268.7375" y="16" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="12.5" font-weight="400" fill="#1A1A1A" text-anchor="start">Tools</text>
+  <text x="323.8625" y="16" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="12.5" font-weight="400" fill="#1A1A1A" text-anchor="start">Window</text>
+  <text x="393.8375" y="16" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="12.5" font-weight="400" fill="#1A1A1A" text-anchor="start">Help</text>
+  <text x="944" y="16" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="400" fill="#6B7280" text-anchor="end">9:41</text>
+  <rect x="290" y="166" width="380" height="170" rx="8" fill="#FFFFFF" stroke="#1A1A1A" stroke-width="1.5" />
+  <text x="306" y="192" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="400" fill="#6B7280" text-anchor="start">Export As:</text>
+  <rect x="306" y="198" width="348" height="26" rx="4" fill="#F4F6F9" stroke="#D1D5DB" stroke-width="1" />
+  <text x="316" y="216" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="400" fill="#1A1A1A" text-anchor="start">image</text>
+  <text x="306" y="236" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="400" fill="#6B7280" text-anchor="start">Where:</text>
+  <rect x="306" y="242" width="348" height="26" rx="4" fill="#F4F6F9" stroke="#D1D5DB" stroke-width="1" />
+  <text x="316" y="260" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="400" fill="#6B7280" text-anchor="start">Downloads</text>
+  <text x="306" y="280" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="400" fill="#6B7280" text-anchor="start">Format:</text>
+  <rect x="306" y="286" width="348" height="26" rx="4" fill="#FFFFFF" stroke="#C0293F" stroke-width="2" />
+  <text x="316" y="304" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="700" fill="#C0293F" text-anchor="start">JPEG</text>
+  <path d="M 642 295 L 648 301 L 654 295" fill="none" stroke="#C0293F" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+  <line x1="480" y1="386" x2="654" y2="295" stroke="#C0293F" stroke-width="2" stroke-dasharray="4,3" />
+  <circle cx="654" cy="295" r="4" fill="#C0293F" />
   <rect x="309.15599999999995" y="386" width="341.68800000000005" height="29.650000000000002" rx="6" fill="#FFFFFF" stroke="#C0293F" stroke-width="2" />
   <text x="480" y="404.92" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="700" fill="#C0293F" text-anchor="middle">Export dialog with format set to JPEG</text>
   <text x="480" y="494" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="20" font-weight="400" fill="#6B7280" text-anchor="middle">macOS</text>

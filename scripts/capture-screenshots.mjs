@@ -63,6 +63,7 @@ import { chromium } from "playwright";
 // internal imports of its own to trip over the same resolution gap.
 import { tools, getTool } from "../src/lib/tools.ts";
 import { findExternalTool } from "./lib/externalTools.mjs";
+import { lastGenuineMentionIndex } from "./lib/textMatch.mjs";
 import { unsafeReason, pageLeaksLocationInfo } from "./lib/safety.mjs";
 import { renderFallbackIllustrationSVG, findPlatform } from "./lib/fallbackIllustration.mjs";
 
@@ -114,6 +115,35 @@ const MARKER_RE = /\[SCREENSHOT:\s*([^\]]+)\]/g;
 // state, which is what most markers describing a UI step actually want.
 const RESULT_STATE_RE =
   /\b(result|download|after|finished|complete|completed|output|converted|denoised|compressed|resized|enhanced|merged|extracted)\b/i;
+// A marker asking for the transient "still working" moment (real examples
+// from published articles: "mid-compression", "mid-conversion",
+// "mid-process, showing the Working state") never used to get the primary
+// action clicked at all -- it doesn't match RESULT_STATE_RE (compare
+// "compressed" above vs. "compression" here), so the tool was screenshotted
+// in its untouched pre-click state and captioned as if it were already
+// processing. AI Convertly's own tools do have a real, distinct "Working…"
+// button state for this (see e.g. CompressVideoClient.tsx's isBusy), so
+// this is captured properly instead of silently mismatched.
+const MID_PROCESS_STATE_RE = /\bmid-\w+|\bprocessing state\b|\bworking state\b/i;
+// Mirrors fallbackIllustration.mjs's own "upload" rule (same idea, used
+// there to pick an upload-widget illustration). Here it flags a marker
+// whose own description is about the upload/drop-zone moment itself, not
+// a specific further state -- see captureExternal's own comment on why
+// that distinction matters for an external site we can't fully drive.
+const IDLE_UPLOAD_MARKER_RE =
+  /\b(upload(ing|ed)?|drop(ping|zone)?|drag(ging)?|choose file|select file|browsing|browse)\b/i;
+// IDLE_UPLOAD_MARKER_RE alone isn't enough -- a real published marker,
+// "FreeConvert's upload and processing progress indicator", contains
+// "upload" but is genuinely asking for the progress-indicator moment, not
+// the plain drop zone. Confirmed live: that marker and the section's actual
+// idle-upload marker got byte-identical real screenshots (the untouched
+// "Choose Files" widget) captioned as two different steps, the same
+// mislabeling IDLE_UPLOAD_MARKER_RE exists to prevent, just introduced by
+// this classifier itself. A description naming any further-state word
+// (beyond RESULT_STATE_RE's own list) alongside "upload" means it isn't
+// the idle marker after all.
+const FURTHER_STATE_WORD_RE =
+  /\b(progress|processing|indicator|selector|options?|choice|choices|codec|picker|dialog|menu|spinner|mid-\w+)\b/i;
 const PRIMARY_ACTION_WORD_RE =
   /convert|compress|resize|merge|remove|enhance|extract|trim|rotate|split|change|noise|generate|crop|denoise/i;
 // "click to browse" excludes the Dropzone itself: it has role="button" and
@@ -176,15 +206,35 @@ function fixturePathForSlug(slug) {
  * FreeConvert specifically during this feature's own verification pass
  * (still didn't take with a matching video fixture either, so this alone
  * isn't the whole story there -- see uploadFixtureAndVerify's caller), but
- * cheap enough to get right regardless. Keyed off the registry entry's own
- * name/URL rather than a per-tool map, since most entries clearly declare
- * their format in one or the other ("video-converter", "MP3 Compressor").
+ * cheap enough to get right regardless. Keyed primarily off the registry
+ * entry's own name/URL, since most entries clearly declare their format in
+ * one or the other ("video-converter", "MP3 Compressor").
+ *
+ * That breaks down for a genuinely multi-format tool whose own name/URL
+ * doesn't declare one -- CloudConvert's registry entry is just its bare
+ * homepage, so it always fell through to the default image fixture no
+ * matter what the surrounding article was actually about. Confirmed live:
+ * video-converter-online-free.md's CloudConvert section ("CloudConvert's
+ * homepage with the drop area for a file") got a real screenshot of
+ * CloudConvert's "JPG Converter" page with test-image.jpg uploaded --
+ * factually wrong for a video-conversion article. `contextText` (the
+ * marker's own section text, plus the article's frontmatter category) is
+ * the fallback signal for exactly this case: only consulted when the
+ * tool's own name/URL didn't already decide it, so a tool that DOES
+ * declare its format (FreeConvert's "/video-converter" URL) is unaffected.
  */
-function externalFixtureFor(externalTool) {
-  const haystack = `${externalTool.name} ${externalTool.url}`.toLowerCase();
-  if (/video/.test(haystack)) return path.join(FIXTURES_DIR, "test-video.mp4");
-  if (/audio|mp3|wav/.test(haystack)) return path.join(FIXTURES_DIR, "test-audio.wav");
-  if (/pdf|document/.test(haystack)) return path.join(FIXTURES_DIR, "test-document.pdf");
+export function externalFixtureFor(externalTool, contextText = "") {
+  const pickFixture = (haystack) => {
+    if (/video/.test(haystack)) return "test-video.mp4";
+    if (/audio|mp3|wav/.test(haystack)) return "test-audio.wav";
+    if (/pdf|document/.test(haystack)) return "test-document.pdf";
+    return null;
+  };
+  const ownHaystack = `${externalTool.name} ${externalTool.url}`.toLowerCase();
+  const ownMatch = pickFixture(ownHaystack);
+  if (ownMatch) return path.join(FIXTURES_DIR, ownMatch);
+  const contextMatch = pickFixture(contextText.toLowerCase());
+  if (contextMatch) return path.join(FIXTURES_DIR, contextMatch);
   return path.join(FIXTURES_DIR, "test-image.jpg");
 }
 
@@ -246,7 +296,12 @@ export function findInternalTool(searchText, frontmatterRelatedTool) {
 
   for (const t of tools) {
     for (const needle of [t.name.toLowerCase(), t.slug.replace(/-/g, " ")]) {
-      const idx = lower.lastIndexOf(needle);
+      // lastGenuineMentionIndex, not a plain lastIndexOf -- a passing
+      // comparison ("the same setting desktop tools like HandBrake
+      // expose directly") shouldn't count as this tool being the
+      // marker's actual subject. See textMatch.mjs's own comment for the
+      // real live mislabeling this fixes.
+      const idx = lastGenuineMentionIndex(lower, needle);
       if (idx > bestIndex) {
         bestIndex = idx;
         bestLength = needle.length;
@@ -645,6 +700,21 @@ async function captureInternal(browser, tool, description, maxAttempts = 3) {
         } else {
           note += " (result state requested, but no matching action button was found -- captured the upload state)";
         }
+      } else if (MID_PROCESS_STATE_RE.test(description)) {
+        // Deliberately the opposite of the branch above: click, then
+        // screenshot right away instead of waiting for anything further --
+        // waiting for the download button here would capture the finished
+        // result, not the "still working" moment this marker actually asked
+        // for. On a large real file this genuinely catches the "Working…"
+        // button state; on ffmpeg-wasm's small test fixtures processing can
+        // finish before the screenshot call lands, which is an inherent
+        // limit of using a tiny fixture for this specific marker type, not
+        // a bug in this branch -- see the PR description for what this
+        // looked like against the real fixture.
+        const clicked = await clickPrimaryAction(page);
+        note += clicked
+          ? " (mid-process state requested; captured immediately after clicking the primary action)"
+          : " (mid-process state requested, but no matching action button was found -- captured the upload state)";
       }
       const screenshot = await screenshotToolContent(page);
       await page.close();
@@ -665,8 +735,22 @@ async function captureInternal(browser, tool, description, maxAttempts = 3) {
  * of the marker (no raw error strings/URLs in front of a reader);
  * logNote carries the full technical detail for the run summary /
  * PR description, which is where that detail is actually useful.
+ *
+ * description is the marker's own text (e.g. "FreeConvert's video
+ * compressor with a file uploaded") -- only used to tell an idle
+ * upload-prompt marker apart from one describing a specific further state
+ * (see IDLE_UPLOAD_MARKER_RE's own comment below for why that distinction
+ * matters). Optional/blank for callers that don't have it, in which case
+ * this behaves as if every marker described a further state.
+ *
+ * fixtureContext is the broader text (the marker's whole section, plus the
+ * article's frontmatter category) used only as a fallback signal for
+ * externalFixtureFor -- see that function's own comment for why a
+ * multi-format tool like CloudConvert needs it. Optional/blank for callers
+ * that don't have it, in which case externalFixtureFor falls straight
+ * through to the default image fixture, same as before this existed.
  */
-async function captureExternal(page, externalTool) {
+async function captureExternal(page, externalTool, description = "", fixtureContext = "") {
   await page.setViewportSize(VIEWPORT);
   let response;
   try {
@@ -741,30 +825,52 @@ async function captureExternal(page, externalTool) {
     const hasFileInput = (await fileInput.count()) > 0;
     let uploaded = false;
     if (hasFileInput) {
-      uploaded = await uploadFixtureAndVerify(page, externalFixtureFor(externalTool), 2).catch(() => false);
+      uploaded = await uploadFixtureAndVerify(page, externalFixtureFor(externalTool, fixtureContext), 2).catch(() => false);
     }
     // A file input existing isn't the same as the upload actually landing --
     // several real sites (confirmed on FreeConvert's real video-converter
     // page during this feature's own verification pass) wire the visible
     // "Choose Files" button to a decoy/placeholder <input>, or don't attach
     // their real change handler the way setInputFiles's dispatched event
-    // expects, so the page silently stays on its untouched upload prompt no
-    // matter how many times a marker in the same article asks for a
+    // expects, so the page can silently stay on its untouched upload prompt
+    // no matter how many times a marker in the same article asks for a
     // different later state ("compression options", "mid-compression",
-    // "finished result"). Screenshotting that anyway, over and over, is
-    // exactly the "same wrong image for every step" bug a reader flagged.
-    // Treating a verified-failed upload as a genuine capture failure (the
-    // same skipKind an unreachable site gets) routes it to a fallback
-    // illustration instead -- honest about what wasn't actually captured,
-    // rather than a real screenshot of the wrong state.
-    if (hasFileInput && !uploaded) {
+    // "finished result"). This USED to route every verified-failed upload
+    // to a fallback illustration uniformly, on the theory that a fabricated
+    // mockup was more honest than a real screenshot of the wrong state.
+    // Per explicit correction, that was backwards for a marker that's just
+    // asking to see the upload prompt itself ("go to FreeConvert and
+    // upload your file"): the untouched upload widget IS a real, honest
+    // answer to that -- no fabrication needed, and cropped correctly (see
+    // screenshotAroundElement below) it's exactly the "normal screenshot"
+    // that was asked for. But it's genuinely the WRONG picture for a
+    // marker describing a specific state further down the flow ("the
+    // codec selector showing H.264 and H.265", "the progress bar",
+    // "the finished result screen") -- this generic automation has no way
+    // to actually reach those, and confirmed live (see the PR description)
+    // that every such marker for the same tool gets byte-identical real
+    // screenshots of the untouched upload prompt when the upload doesn't
+    // land, which would just mislabel that same image under four different
+    // captions. So only a marker whose own description is about the
+    // upload/drop-zone moment itself gets the guaranteed real screenshot;
+    // anything asking for a further state keeps the fallback-illustration
+    // behavior for now (illustrating that specific described state is a
+    // separate, later piece of work).
+    const isIdleUploadMarker =
+      IDLE_UPLOAD_MARKER_RE.test(description) &&
+      !RESULT_STATE_RE.test(description) &&
+      !FURTHER_STATE_WORD_RE.test(description);
+    if (hasFileInput && !uploaded && !isIdleUploadMarker) {
       return {
         skipped: true,
         skipKind: "unreachable",
         publicNote: `Screenshot pending: ${externalTool.name}'s upload didn't visibly complete during this pass.`,
-        logNote: `${externalTool.name}'s page never visibly changed after a real upload attempt (retried) -- the site's actual upload wiring couldn't be driven generically`,
+        logNote: `${externalTool.name}'s page never visibly changed after a real upload attempt (retried) -- this marker describes a specific state ("${description}") beyond the plain upload prompt, which this generic automation can't manufacture on demand`,
       };
     }
+    const uploadNote = hasFileInput && !uploaded
+      ? " (upload attempt did not visibly complete -- captured the page's current state)"
+      : "";
     reason = await unsafeReason(page);
     if (reason) {
       return {
@@ -792,7 +898,7 @@ async function captureExternal(page, externalTool) {
     return {
       screenshot,
       note: hasFileInput
-        ? `External tool: ${externalTool.name} (attempted a real upload interaction)`
+        ? `External tool: ${externalTool.name} (attempted a real upload interaction${uploadNote})`
         : `External tool: ${externalTool.name} (no upload UI found on this page -- captured as-is)`,
     };
   }
@@ -923,7 +1029,12 @@ async function processDraft(browser, filePath, summary, externalShotCounts) {
           const page = await browser.newPage();
           let result;
           try {
-            result = await captureExternal(page, externalTool);
+            result = await captureExternal(
+              page,
+              externalTool,
+              trimmedDescription,
+              `${data.category ?? ""} ${sectionContext}`,
+            );
           } finally {
             await page.close();
           }
