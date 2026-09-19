@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540">
+  <rect width="960" height="540" fill="#F4F6F9" />
+  <rect x="90" y="78" width="780" height="372" rx="8" fill="#FFFFFF" />
+  <path d="M 90 94 A 16 16 0 0 1 106 78 L 854 78 A 16 16 0 0 1 870 94 L 870 112 L 90 112 Z" fill="#E5E7EB" />
+  <path d="M 758 90 L 768 90" stroke="#1A1A1A" stroke-width="1.4" stroke-linecap="round" />
+  <rect x="798" y="90" width="10" height="10" fill="none" stroke="#1A1A1A" stroke-width="1.4" />
+  <path d="M 838 89 L 848 101 M 848 89 L 838 101" stroke="#1A1A1A" stroke-width="1.6" stroke-linecap="round" />
+  <text x="106" y="99" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="600" fill="#1A1A1A" text-anchor="start">Untitled video — Clipchamp</text>
+  
+  <rect x="330" y="230" width="79.545" height="32" rx="6" fill="#1A1A1A" />
+  <text x="369.7725" y="250" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF" text-anchor="middle">Export</text>
+  <rect x="419.545" y="230" width="64" height="32" rx="6" fill="#FFFFFF" stroke="#D1D5DB" stroke-width="1.5" />
+  <rect x="493.545" y="230" width="48" height="32" rx="6" fill="#FFFFFF" stroke="#D1D5DB" stroke-width="1.5" />
+  <line x1="480" y1="386" x2="360" y2="246" stroke="#C0293F" stroke-width="2" stroke-dasharray="4,3" />
+  <circle cx="360" cy="246" r="4" fill="#C0293F" />
+  <rect x="322.1368" y="386" width="315.72640000000007" height="29.650000000000002" rx="6" fill="#FFFFFF" stroke="#C0293F" stroke-width="2" />
+  <text x="480" y="404.92" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="700" fill="#C0293F" text-anchor="middle">Export button in Clipchamp's editor</text>
+  <text x="480" y="494" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="20" font-weight="400" fill="#6B7280" text-anchor="middle">Windows</text>
+</svg>
