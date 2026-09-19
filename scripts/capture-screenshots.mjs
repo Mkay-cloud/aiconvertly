@@ -50,6 +50,7 @@
  * markers.
  */
 import fs from "node:fs";
+import os from "node:os";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { LIBFIX_DIR } from "./setup-playwright-libfix.mjs";
@@ -295,10 +296,17 @@ async function waitForServer(url, timeoutMs) {
 }
 
 function startDevServer() {
+  // detached:true (setsid) made the dev server unreachable on this
+  // device's sandbox: it would print "Ready" and even bind the port, but
+  // sibling processes then got ECONNREFUSED/ECONNRESET against it (and it
+  // sometimes vanished from the process list entirely within a minute of
+  // starting), while a non-detached child stayed reachable. Kept attached
+  // to this process instead, which is fine here since main() awaits this
+  // whole script to completion before it would exit anyway.
   const child = spawn("npm", ["run", "dev", "--", "-p", String(DEV_SERVER_PORT)], {
     cwd: REPO_ROOT,
     stdio: "ignore",
-    detached: true,
+    detached: false,
   });
   return child;
 }
@@ -438,6 +446,23 @@ async function launchBrowser() {
     // anyway for most hosts.
     if (fs.existsSync(CHROMIUM_FALLBACK_PATH)) {
       return chromium.launch({ executablePath: CHROMIUM_FALLBACK_PATH });
+    }
+    // On a machine without /opt/pw-browsers (e.g. a user's own device
+    // rather than the cloud sandbox this was originally built for), the
+    // default chromium.launch() above picks Playwright's headless-shell
+    // binary, which segfaults in some sandboxes even with the libXdamage
+    // fix applied. The full "chrome" binary in the same local
+    // `npx playwright install chromium` cache launches fine, so look for
+    // it directly rather than giving up.
+    const cacheDir = path.join(os.homedir(), ".cache", "ms-playwright");
+    if (fs.existsSync(cacheDir)) {
+      const chromiumDir = fs.readdirSync(cacheDir).find((name) => /^chromium-\d+$/.test(name));
+      if (chromiumDir) {
+        const localChrome = path.join(cacheDir, chromiumDir, "chrome-linux64", "chrome");
+        if (fs.existsSync(localChrome)) {
+          return chromium.launch({ executablePath: localChrome });
+        }
+      }
     }
     throw new Error("Could not launch Chromium (no matching Playwright browser, and no fallback found).");
   }
@@ -985,7 +1010,11 @@ async function main() {
   if (needsInternal) {
     console.log(`Starting dev server on :${DEV_SERVER_PORT} for internal tool screenshots...`);
     devServer = startDevServer();
-    const up = await waitForServer(DEV_SERVER_BASE_URL, 60000);
+    // 60s was too tight on this device's slower filesystem (first cold
+    // start observed taking ~42-70s just to bind the port, before any
+    // page compiles); give it more headroom rather than failing the whole
+    // capture run over a slow-but-working dev server.
+    const up = await waitForServer(DEV_SERVER_BASE_URL, 150000);
     if (!up) throw new Error("Dev server didn't come up in time.");
   }
 
