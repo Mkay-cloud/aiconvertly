@@ -29,7 +29,7 @@ regardless of which group it's in.
 | 8 | Video | Compress a video under a size limit (Discord, email, WhatsApp) | video mb reducer, compress video size, reduce video file size | compress-video | Distinct intent from #7 — hard limit, not general "smaller" -- Published as `video-mb-reducer` | Published |
 | 9 | Video | Shrink a video without losing quality: decrease, downsize, downsample | decrease video size, downsize video, shrink video size | compress-video | Published as `shrink-video-size` | Published |
 | 10 | Video | How to change video resolution (480p / 720p / 1080p) | resize video, resize video online | video-resolution-converter | Published as `resize-video-online` | Published |
-| 11 | PDF | How to compress a PDF online for free | pdf size reducer, pdf compressor free | merge-pdf | Biggest volume gap in the whole research set — write as genuinely helpful general guide; note honestly that a dedicated PDF compressor isn't available yet (mention Merge PDF only in passing, don't force the fit) | Pending |
+| 11 | PDF | How to compress a PDF online for free | pdf size reducer, pdf compressor free | merge-pdf | Biggest volume gap in the whole research set — write as genuinely helpful general guide; note honestly that a dedicated PDF compressor isn't available yet (mention Merge PDF only in passing, don't force the fit) -- Published as `pdf-compressor-free` | Published |
 | 12 | General | How to compress or zip any file type | file compressor, compress file, reduce file size | image-compressor, compress-video | Route to the format-specific tools that do exist; general/zip content stays informational | Pending |
 
 ## Backlog (Pending Review)

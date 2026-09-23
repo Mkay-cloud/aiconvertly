@@ -210,6 +210,7 @@ function macAppFor(description) {
 const WINDOWS_APPS = [
   { match: ["clipchamp"], title: "Untitled video — Clipchamp", ribbon: null },
   { match: ["xbox game bar", "game bar", "win+g"], title: "Xbox Game Bar", ribbon: null },
+  { match: ["microsoft word", "using word"], title: "Document1 — Word", ribbon: ["Compress Pictures", "Save As"] },
 ];
 const DEFAULT_WINDOWS_APP = { title: "Photos", ribbon: ["Rotate", "Edit & Create", "Share", "Delete"] };
 

@@ -47,6 +47,13 @@ export const EXTERNAL_TOOLS = [
   // is homepage-only rather than web-interactive, same reasoning as
   // Canva above.
   { match: ["youtube studio"], name: "YouTube Studio", url: "https://studio.youtube.com/", kind: "homepage-only" },
+  // Added for the pdf-compressor-free article -- all four are real, free,
+  // no-signup-required online PDF compressors with a genuine upload/
+  // compress/download flow, safe for a generic file-upload interaction.
+  { match: ["adobe acrobat", "acrobat online", "adobe\u0027s compress pdf"], name: "Adobe Acrobat", url: "https://www.adobe.com/acrobat/online/compress-pdf.html", kind: "web-interactive" },
+  { match: ["smallpdf"], name: "Smallpdf", url: "https://smallpdf.com/compress-pdf", kind: "web-interactive" },
+  { match: ["ilovepdf", "ilove pdf"], name: "iLovePDF", url: "https://www.ilovepdf.com/compress_pdf", kind: "web-interactive" },
+  { match: ["pdf24"], name: "PDF24", url: "https://tools.pdf24.org/en/compress-pdf", kind: "web-interactive" },
 ];
 
 /**
