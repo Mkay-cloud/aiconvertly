@@ -54,6 +54,15 @@ export const EXTERNAL_TOOLS = [
   { match: ["smallpdf"], name: "Smallpdf", url: "https://smallpdf.com/compress-pdf", kind: "web-interactive" },
   { match: ["ilovepdf", "ilove pdf"], name: "iLovePDF", url: "https://www.ilovepdf.com/compress_pdf", kind: "web-interactive" },
   { match: ["pdf24"], name: "PDF24", url: "https://tools.pdf24.org/en/compress-pdf", kind: "web-interactive" },
+  // Added for the reduce-file-size article -- both are real desktop archivers
+  // with no browser-drivable upload/compress flow of their own (right-click
+  // context-menu tools, not websites with a file-upload form), so
+  // homepage-only, same reasoning as HandBrake/Movavi/etc. above. 7-Zip's
+  // URL is deliberately the plain https://www.7-zip.org/ official domain,
+  // not a fork or mirror -- there are known malware-laced fake "7-Zip"
+  // installer sites, so this is the one confirmed genuine.
+  { match: ["7-zip", "7zip"], name: "7-Zip", url: "https://www.7-zip.org/", kind: "homepage-only" },
+  { match: ["winrar"], name: "WinRAR", url: "https://www.win-rar.com/", kind: "homepage-only" },
 ];
 
 /**
