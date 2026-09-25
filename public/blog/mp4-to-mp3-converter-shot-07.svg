@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540">
+  <rect width="960" height="540" fill="#141414" />
+  <rect x="90" y="78" width="780" height="372" rx="8" fill="#1E1E1E" />
+  <path d="M 90 94 A 16 16 0 0 1 106 78 L 854 78 A 16 16 0 0 1 870 94 L 870 112 L 90 112 Z" fill="#0F0F0F" />
+  <path d="M 758 90 L 768 90" stroke="#EDEDED" stroke-width="1.4" stroke-linecap="round" />
+  <rect x="798" y="90" width="10" height="10" fill="none" stroke="#EDEDED" stroke-width="1.4" />
+  <path d="M 838 89 L 848 101 M 848 89 L 838 101" stroke="#EDEDED" stroke-width="1.6" stroke-linecap="round" />
+  <path d="M 106 88 L 118 102 L 94 102 Z" fill="#EDEDED" />
+  <text x="126" y="99" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="600" fill="#EDEDED" text-anchor="start">VLC media player</text>
+  <rect x="90" y="112" width="780" height="28" fill="#1E1E1E" />
+  <text x="106" y="130" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="400" fill="#9A9A9A" text-anchor="start">Media</text>
+  <text x="162.01600000000002" y="130" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="400" fill="#9A9A9A" text-anchor="start">Playback</text>
+  <text x="237.43600000000004" y="130" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="400" fill="#9A9A9A" text-anchor="start">Audio</text>
+  <text x="291.076" y="130" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="400" fill="#9A9A9A" text-anchor="start">Video</text>
+  <text x="344.716" y="130" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="400" fill="#9A9A9A" text-anchor="start">Subtitle</text>
+  <text x="411.424" y="130" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="400" fill="#9A9A9A" text-anchor="start">Tools</text>
+  <text x="465.06399999999996" y="130" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="400" fill="#9A9A9A" text-anchor="start">View</text>
+  <text x="516.064" y="130" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="400" fill="#9A9A9A" text-anchor="start">Help</text>
+  <rect x="108" y="158" width="744" height="234" rx="8" fill="#F4F6F9" stroke="#D1D5DB" stroke-width="1" />
+  <circle cx="168" cy="240" r="30" fill="#FFFFFF" stroke="#1A1A1A" stroke-width="2" />
+  <circle cx="168" cy="240" r="14" fill="none" stroke="#6B7280" stroke-width="3.5" opacity="0.4" />
+  <path d="M 168 226 A 14 14 0 0 1 180.6 246.3" fill="none" stroke="#1A1A1A" stroke-width="3.5" stroke-linecap="round" />
+  <text x="224" y="238" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="20" font-weight="700" fill="#1A1A1A" text-anchor="start">Processing…</text>
+  <line x1="480" y1="328" x2="168" y2="240" stroke="#C0293F" stroke-width="2" stroke-dasharray="4,3" />
+  <circle cx="168" cy="240" r="4" fill="#C0293F" />
+  <rect x="147.6646000000003" y="328" width="664.6707999999994" height="29.650000000000002" rx="6" fill="#FFFFFF" stroke="#C0293F" stroke-width="2" />
+  <text x="480" y="346.92" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="700" fill="#C0293F" text-anchor="middle">VLC's Convert/Stream dialog on Mac with Audio - MP3 chosen as the profile</text>
+  <rect x="90" y="410" width="780" height="40" fill="#1B1B1B" />
+  <rect x="110" y="420" width="740" height="4" rx="2" fill="#3A3A3A" />
+  <rect x="110" y="420" width="251.60000000000002" height="4" rx="2" fill="#8A8A8A" />
+  <circle cx="361.6" cy="422" r="5" fill="#EDEDED" />
+  <path d="M 116 438 L 116 426 L 126 432 Z" fill="#EDEDED" />
+  <text x="850" y="436" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="400" fill="#B5B5B5" text-anchor="end">01:12 / 03:40</text>
+  <text x="480" y="494" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="20" font-weight="400" fill="#EDEDED" text-anchor="middle">VLC</text>
+</svg>
