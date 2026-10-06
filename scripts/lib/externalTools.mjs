@@ -63,6 +63,13 @@ export const EXTERNAL_TOOLS = [
   // installer sites, so this is the one confirmed genuine.
   { match: ["7-zip", "7zip"], name: "7-Zip", url: "https://www.7-zip.org/", kind: "homepage-only" },
   { match: ["winrar"], name: "WinRAR", url: "https://www.win-rar.com/", kind: "homepage-only" },
+  // Added for the reduce-image-size article -- both are real, free, no-
+  // signup image compressors with a genuine drag-and-drop upload/compress
+  // flow. TinyPNG's free web tool compresses automatically (no manual
+  // quality control); Squoosh runs entirely client-side with a visible
+  // quality slider and codec picker, no upload to any server at all.
+  { match: ["tinypng"], name: "TinyPNG", url: "https://tinypng.com/", kind: "web-interactive" },
+  { match: ["squoosh"], name: "Squoosh", url: "https://squoosh.app/", kind: "web-interactive" },
 ];
 
 /**
