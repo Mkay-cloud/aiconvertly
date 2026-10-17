@@ -17,7 +17,7 @@ That's not a gap Microsoft is likely to close. Here's what PowerToys Image Resiz
 
 Once installed, it adds a **Resize with Image Resizer** entry to the right-click menu for any image or selection of images in File Explorer. You can also drag a selection with the right mouse button to resize-and-save in one motion, or drive it from a command line with `PowerToys.ImageResizerCLI.exe` for scripted batches.
 
-![the official Microsoft Learn documentation page for PowerToys](/blog/powertoys-image-resizer-shot-01.png)
+![the official Microsoft Learn documentation page for PowerToys Image Resizer](/blog/powertoys-image-resizer-shot-01.png)
 
 Inside, it offers four built-in presets, Small, Medium, Large, and Phone, plus custom sizes you define yourself in pixels, inches, centimeters, or percent. Three fit modes control how the output actually matches that target: **Fit** scales the whole image to fit inside the box without cropping, **Fill** scales and crops to fill the box exactly, and **Stretch** forces the exact dimensions regardless of the original proportions, distorting the image if the aspect ratios don't match. An **Ignore the orientation of pictures** option lets you process a mixed batch of portrait and landscape photos to the same effective size without it swapping width and height on you. The CLI adds JPEG quality control (1-100), metadata stripping, and a shrink-only mode that skips any file already smaller than the target.
 
@@ -35,7 +35,7 @@ If what you actually need right now is just one photo, not a folder, AI Convertl
 
 3. Click **Resize & download**.
 
-![Percentage mode set partway through, right after clicking Resize & download, showing the result](/blog/powertoys-image-resizer-shot-03.png)
+![Percentage mode with the slider set to 50%, right before clicking Resize & download](/blog/powertoys-image-resizer-shot-03.png)
 
 Where this honestly falls short of PowerToys: it handles one file at a time, with no batch button, no saved presets, and no Fit/Fill/Stretch crop modes. If a single resize is genuinely all you need, that's rarely a problem. If you're processing a whole folder, keep reading.
 
@@ -43,19 +43,13 @@ Where this honestly falls short of PowerToys: it handles one file at a time, wit
 
 The closest real equivalent to PowerToys' "select many, resize once" workflow, without installing anything and without it being Windows-only, is a browser tool built specifically for batches. Go to birme.net.
 
-1. Drag your whole folder of images onto the drop area, or click to browse and select them all at once. It takes JPG, PNG, WebP, and AVIF.
+1. Drag your whole folder of images onto the drop area, or click to browse and select them all at once. It takes JPG, PNG, WebP, and AVIF. Each one lands as its own thumbnail with a crop handle, next to the Width, Height, and Ratio fields.
 
-![several images dropped into the batch resizer's queue, each showing its own thumbnail](/blog/powertoys-image-resizer-shot-04.png)
+![an image loaded into BIRME, with the Width, Height, and Ratio fields and the Download zip / Download Files buttons visible](/blog/powertoys-image-resizer-shot-04.png)
 
 2. Enter a width and height in pixels, leaving one field on Auto to keep it proportional, the same idea as locking aspect ratio. A "Do not resize" option skips resizing entirely if you only want format conversion.
-
-![the width and height fields set, with auto-proportion and an output format dropdown set to JPEG with a quality percentage](/blog/powertoys-image-resizer-shot-05.png)
-
 3. Pick an output format, keep the original or convert everything to JPEG, WebP, or AVIF, and set a quality percentage (around 80% is a reasonable default for web use).
-
-4. Click **Download zip** to get every resized file back in one archive.
-
-![the batch finishing, with the Download zip button visible next to the processed images](/blog/powertoys-image-resizer-shot-06.png)
+4. Click **Download zip** to get every resized file back in one archive, or **Download Files** to save them individually.
 
 The tradeoff against PowerToys: processing is genuinely client-side (the tool states images aren't uploaded to a server), but it's still a website, so you're trusting that claim rather than it being enforced by your own OS the way a local utility is. It's also missing PowerToys' saved custom presets and its ignore-orientation option, there's no memory between visits. What it adds that PowerToys doesn't have at all: an automatic focal-point crop when you need Fill-style cropping, and it runs the same way on a Mac, a Chromebook, or Windows without caring which one you're on.
 
@@ -65,17 +59,17 @@ macOS ships with a built-in way to resize many photos at once, Preview, though t
 
 1. In Finder, select every image you want resized, right-click, choose **Open With**, then **Preview**. This opens all of them in one window with a thumbnail strip down the left side.
 
-![on a Mac, selecting multiple images in Finder before opening them together in Preview](/blog/powertoys-image-resizer-shot-07.svg)
+![on a Mac, selecting multiple images in Finder before opening them together in Preview](/blog/powertoys-image-resizer-shot-05.svg)
 
 2. In Preview's menu bar, go to **Edit → Select All** to select every thumbnail in the strip.
 
 3. Click **Tools → Adjust Size…**
 
-![in Preview, the Tools menu open with Adjust Size highlighted](/blog/powertoys-image-resizer-shot-08.svg)
+![in Preview, the Tools menu open with Adjust Size highlighted](/blog/powertoys-image-resizer-shot-06.svg)
 
 4. Set a **Fit Into** preset, or type an exact width or height with the other field left blank to scale proportionally. Keep **Scale proportionally** and **Resample image** checked.
 
-![the Adjust Size dialog in Preview, showing the Fit Into dropdown and Width/Height fields](/blog/powertoys-image-resizer-shot-09.svg)
+![the Adjust Size dialog in Preview, showing the Fit Into dropdown and Width/Height fields](/blog/powertoys-image-resizer-shot-07.svg)
 
 5. Click **OK**. The resize applies to every selected image at once, exactly like PowerToys' single-click batch job.
 
