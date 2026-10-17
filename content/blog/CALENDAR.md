@@ -42,7 +42,7 @@ regardless of which group it's in.
 | 16 | Image | How to resize an image by exact pixels or percentage | resize image, resize photo, resize jpg | image-resizer | Published as `resize-image-pixels` | Published |
 | 17 | Image | How to reduce image file size without changing dimensions | reduce image size, image size reducer | image-compressor | Published as `reduce-image-size` | Published |
 | 18 | Image | iLoveIMG alternatives: free browser-based image tools | iloveimg, i love image resizer | image-resizer, image-compressor, image-converter | Published as `iloveimg-alternatives` | Published |
-| 19 | Image | PowerToys Image Resizer alternative (for Mac/browser users) | powertoys image resizer | image-resizer | | Pending |
+| 19 | Image | PowerToys Image Resizer alternative (for Mac/browser users) | powertoys image resizer | image-resizer | Published as `powertoys-image-resizer` | Published |
 | 20 | Image | How to resize images for Canva, Instagram & other social platforms | canva image resizer | image-resizer | | Pending |
 | 21 | Image | How to crop an image online | crop image online, crop photos | image-resizer | Honest informational piece; no cropping tool exists (mention the resizer resizes, it doesn't crop) | Pending |
 | 22 | Image | WebP won't open? How to convert WebP to PNG | convert webp to png, webp to png converter | webp-to-png | | Pending |

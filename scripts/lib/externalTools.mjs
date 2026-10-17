@@ -70,6 +70,12 @@ export const EXTERNAL_TOOLS = [
   // quality slider and codec picker, no upload to any server at all.
   { match: ["tinypng"], name: "TinyPNG", url: "https://tinypng.com/", kind: "web-interactive" },
   { match: ["squoosh"], name: "Squoosh", url: "https://squoosh.app/", kind: "web-interactive" },
+  // Added for the powertoys-image-resizer article -- a real, free,
+  // no-signup browser-based batch image resizer with a genuine drag-and-drop
+  // upload/resize/download flow (the page itself states processing happens
+  // client-side, not uploaded to a server), so web-interactive, same
+  // reasoning as TinyPNG/Squoosh above.
+  { match: ["birme"], name: "BIRME", url: "https://www.birme.net/", kind: "web-interactive" },
 ];
 
 /**
